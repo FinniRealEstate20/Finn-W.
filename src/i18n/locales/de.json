@@ -1,0 +1,252 @@
+{
+  "marketing": {
+    "nav": {
+      "features": "Funktionen",
+      "pricing": "Preise",
+      "demo": "Demo",
+      "login": "Anmelden"
+    },
+    "hero": {
+      "eyebrow": "Für Immobilienmakler",
+      "title": "Aus jedem Notartermin werden vier Google-Bewertungen.",
+      "subtitle": "PropAfterCare betreut deine Käufer automatisch von der Unterschrift bis zum Einzug. Du sammelst Bewertungen, Empfehlungen und Folgegeschäft – ohne einen einzigen Anruf zu machen.",
+      "ctaPrimary": "Pilotplatz sichern",
+      "ctaSecondary": "Live-Demo ansehen",
+      "trust": "Pilotmarkt Frankfurt · DSGVO-konform · EU-Hosting"
+    },
+    "pitch": {
+      "title": "Das eigentliche Problem ist nicht der Käufer.",
+      "body": "Das eigentliche Problem ist, dass du nach dem Notartermin aus dem Leben deines Kunden verschwindest. Damit verlierst du Bewertungen, Empfehlungen und Folgegeschäft. PropAfterCare hält dich präsent – automatisch.",
+      "stat1Value": "+14",
+      "stat1Label": "neue Google-Bewertungen pro Jahr (bei 40 Deals × 35% Conversion)",
+      "stat2Value": "4,8 ★",
+      "stat2Label": "durchschnittliche Sternzahl im Pilotmarkt",
+      "stat3Value": "<15 Min",
+      "stat3Label": "Setup pro Käufer – vollautomatisch via CRM-Trigger"
+    },
+    "features": {
+      "title": "Was deine Käufer erleben",
+      "items": [
+        {
+          "title": "Meilenstein-Tracker",
+          "body": "Von der Auflassungsvormerkung bis zur Nebenkostenabrechnung – jede Phase als To-do mit Erklärung in Muttersprache."
+        },
+        {
+          "title": "Formular-Hub",
+          "body": "GEZ, Nachsendeauftrag, Versorger-Ummeldung. Vorausgefüllt aus dem Profil. Ein Klick, fertig."
+        },
+        {
+          "title": "KI-Assistent mit Guardrails",
+          "body": "Antwortet auf typische Fragen, gibt aber nie konkreten Rechts- oder Steuerrat. Eskaliert direkt an unsere geprüften Experten."
+        },
+        {
+          "title": "Reputations-Cockpit",
+          "body": "Du siehst in Echtzeit, wie deine Bewertungen wachsen. Optimal getimt nach Einzug, im richtigen emotionalen Moment."
+        }
+      ]
+    },
+    "demo": {
+      "title": "Live-Demo: So meldet ein Käufer den Strom an",
+      "subtitle": "Das stärkste Verkaufsargument – in 60 Sekunden.",
+      "cta": "Demo öffnen"
+    },
+    "pricing": {
+      "title": "Faires Preismodell",
+      "subtitle": "Jährliche Zahlung: 20% Rabatt.",
+      "tiers": [
+        { "name": "Starter", "price": "49 €", "deals": "bis 12 Deals / Jahr", "audience": "Einzelmakler" },
+        { "name": "Pro", "price": "129 €", "deals": "bis 40 Deals / Jahr", "audience": "Kleines Büro" },
+        { "name": "Agency", "price": "299 €", "deals": "unbegrenzt", "audience": "5–15 Mitarbeiter" }
+      ],
+      "cta": "Pilotpreis: 0 € für die ersten 6 Monate"
+    },
+    "footer": {
+      "tagline": "Post-Closing Gap geschlossen.",
+      "imprint": "Impressum",
+      "privacy": "Datenschutz",
+      "terms": "AGB"
+    }
+  },
+  "common": {
+    "language": "Sprache",
+    "back": "Zurück",
+    "next": "Weiter",
+    "continue": "Weitermachen",
+    "save": "Speichern",
+    "done": "Erledigt",
+    "open": "Öffnen",
+    "skip": "Überspringen",
+    "broker": "Dein Makler",
+    "poweredBy": "Powered by PropAfterCare",
+    "disclaimer": "Keine Rechts- oder Steuerberatung. Für verbindliche Auskünfte wende dich an einen zugelassenen Berater."
+  },
+  "welcome": {
+    "greeting": "Herzlichen Glückwunsch, {name}!",
+    "subtitle": "Du hast gerade einen großen Schritt gemacht. Die nächsten Wochen begleiten wir dich – Schritt für Schritt.",
+    "brokerLine": "{broker} hat dich bei PropAfterCare angemeldet, damit du nichts Wichtiges vergisst.",
+    "startCta": "In 2 Minuten startklar"
+  },
+  "onboarding": {
+    "title": "Lass uns dich kurz kennenlernen",
+    "subtitle": "Diese Angaben helfen uns, dir nur die für dich relevanten Dinge zu zeigen.",
+    "fields": {
+      "propertyType": "Was hast du gekauft?",
+      "propertyTypeOptions": {
+        "ownUse": "Zum Selbstbewohnen",
+        "investment": "Als Kapitalanlage"
+      },
+      "moveInDate": "Geschätztes Einzugsdatum",
+      "language": "Bevorzugte Sprache",
+      "city": "Stadt",
+      "name": "Wie sollen wir dich ansprechen?"
+    },
+    "submit": "Mein Dashboard öffnen"
+  },
+  "dashboard": {
+    "greeting": "Hallo {name}",
+    "todayLine": "Das hier solltest du heute angehen:",
+    "progress": "Fortschritt insgesamt",
+    "phaseTitle": "Phase {number}",
+    "phases": {
+      "1": { "title": "Direkt nach dem Notar", "subtitle": "Woche 1–4 nach Unterschrift" },
+      "2": { "title": "Vor der Übergabe", "subtitle": "Woche 4–12" },
+      "3": { "title": "Übergabe & Einzug", "subtitle": "Schlüssel in der Hand" },
+      "4": { "title": "Nach dem Einzug", "subtitle": "Monat 3–12" }
+    },
+    "askAi": "Frag den Assistenten",
+    "documents": "Formular-Hub",
+    "tasksDone": "{done} von {total} erledigt"
+  },
+  "milestones": {
+    "auflassung": {
+      "title": "Auflassungsvormerkung prüfen",
+      "body": "Der Notar sendet dir die Bestätigung der Auflassungsvormerkung. Damit ist im Grundbuch reserviert, dass du Eigentümer wirst."
+    },
+    "faelligkeit": {
+      "title": "Fälligkeitsmitteilung abwarten",
+      "body": "Erst wenn der Notar dir die Fälligkeitsmitteilung schickt, darf der Kaufpreis überwiesen werden. Vorher nicht."
+    },
+    "kaufpreis": {
+      "title": "Kaufpreis überweisen",
+      "body": "Überweise streng nach den Anweisungen der Fälligkeitsmitteilung. Falls du eine Bank dazwischen hast, informiere sie rechtzeitig."
+    },
+    "grunderwerb": {
+      "title": "Grunderwerbsteuer zahlen",
+      "body": "Das Finanzamt schickt den Bescheid. Erst nach Zahlung gibt es die Unbedenklichkeitsbescheinigung – Voraussetzung für die Umschreibung im Grundbuch."
+    },
+    "wohngebaeude": {
+      "title": "Wohngebäudeversicherung übernehmen",
+      "body": "Die Versicherung des Verkäufers geht automatisch auf dich über. Innerhalb eines Monats kannst du außerordentlich kündigen."
+    },
+    "handwerker": {
+      "title": "Handwerker koordinieren",
+      "body": "Du planst Renovierungen? Aus unserem geprüften Netzwerk erhältst du 3 Angebote in 48 Stunden."
+    },
+    "uebergabe": {
+      "title": "Übergabeprotokoll vorbereiten",
+      "body": "Lade unsere Checkliste – Zählerstände, Mängel, Schlüsselanzahl. Nichts vergessen."
+    },
+    "ummeldung": {
+      "title": "Beim Einwohnermeldeamt ummelden",
+      "body": "Pflicht innerhalb von 14 Tagen nach Einzug. Wir zeigen dir das richtige Formular für deine Stadt."
+    },
+    "versorger": {
+      "title": "Versorger anmelden",
+      "body": "Strom, Gas, Wasser, Internet. Wir haben für dich die Anbieter im Vergleich – und füllen das meiste schon vor."
+    },
+    "mietvertrag": {
+      "title": "Mietvertrag vorbereiten",
+      "body": "Für deine Kapitalanlage. Rechtlich geprüftes Template, an dein Objekt angepasst."
+    },
+    "afa": {
+      "title": "AfA-Dokumentation anlegen",
+      "body": "Sammle ab jetzt alle relevanten Belege. Wir verlinken dich mit einem Steuerberater aus dem Netzwerk."
+    },
+    "nebenkosten": {
+      "title": "Erste Nebenkostenabrechnung",
+      "body": "Spätestens 12 Monate nach Mietbeginn musst du abrechnen. Wir erinnern dich rechtzeitig."
+    }
+  },
+  "documents": {
+    "title": "Formular-Hub",
+    "subtitle": "Alle Anmeldungen und Ummeldungen an einem Ort. Wir haben deine Daten schon eingetragen.",
+    "categories": {
+      "authorities": "Behörden & Meldewesen",
+      "utilities": "Versorger & Infrastruktur",
+      "insurance": "Versicherungen",
+      "media": "Rundfunk & Sonstiges",
+      "rental": "Kapitalanlage"
+    },
+    "items": {
+      "registration": { "name": "Einwohnermeldeamt", "hint": "Pflicht innerhalb 14 Tage" },
+      "kfz": { "name": "Kfz ummelden", "hint": "Bei Stadtwechsel" },
+      "grundsteuer": { "name": "Grundsteuer-Erklärung", "hint": "Seit Reform 2022 Pflicht" },
+      "power": { "name": "Strom anmelden", "hint": "Vor dem Einzug erledigen" },
+      "gas": { "name": "Gas anmelden", "hint": "Inkl. Heizungsart-Abfrage" },
+      "water": { "name": "Wasser anmelden", "hint": "Regional unterschiedlich" },
+      "internet": { "name": "Internet & Telefon", "hint": "Anbietervergleich" },
+      "buildingInsurance": { "name": "Wohngebäudeversicherung", "hint": "Geht mit Grundbucheintrag über" },
+      "contentsInsurance": { "name": "Hausratversicherung", "hint": "Neue Adresse melden" },
+      "liabilityInsurance": { "name": "Haftpflicht ummelden", "hint": "Adressänderung" },
+      "gez": { "name": "Rundfunkbeitrag (GEZ)", "hint": "Neue Wohnung anmelden" },
+      "post": { "name": "Nachsendeauftrag", "hint": "Sofort nach Umzug" },
+      "bank": { "name": "Daueraufträge aktualisieren", "hint": "Checkliste mit Empfängern" },
+      "propertyManagement": { "name": "Hausverwaltung beauftragen", "hint": "Aus unserem Netzwerk" },
+      "rentalContract": { "name": "Mietvertrag erstellen", "hint": "Rechtlich geprüftes Template" },
+      "landlordLiability": { "name": "Vermieter-Haftpflicht", "hint": "Spezialversicherung" }
+    },
+    "actions": {
+      "open": "Formular öffnen",
+      "download": "Als PDF",
+      "external": "Zum Anbieter"
+    },
+    "prefilled": "Mit deinen Daten vorausgefüllt",
+    "warning": "Dieses Formular musst du selbst absenden – wir helfen nur beim Ausfüllen."
+  },
+  "chat": {
+    "title": "Frag den Assistenten",
+    "placeholder": "Was ist die Auflassungsvormerkung?",
+    "send": "Senden",
+    "intro": "Ich beantworte deine Fragen rund um Einzug, Behörden und Versicherungen – verständlich und in deiner Sprache.",
+    "guardrail": "Bei steuerlichen oder rechtlichen Fragen leite ich dich direkt an einen geprüften Experten weiter.",
+    "suggested": [
+      "Wann muss ich den Kaufpreis überweisen?",
+      "Was ist eine Auflassungsvormerkung?",
+      "Wie funktioniert die Grunderwerbsteuer?",
+      "Welche Versicherungen brauche ich?"
+    ]
+  },
+  "broker": {
+    "nav": {
+      "dashboard": "Übersicht",
+      "customers": "Kunden",
+      "reputation": "Reputation",
+      "settings": "Einstellungen"
+    },
+    "dashboard": {
+      "title": "Makler-Cockpit",
+      "subtitle": "Alle aktiven Käuferprozesse auf einen Blick.",
+      "metrics": {
+        "active": "Aktive Käufer",
+        "milestonesDone": "Erledigte Meilensteine",
+        "reviewsGenerated": "Bewertungen generiert",
+        "averageRating": "Ø Sterne"
+      },
+      "customersTitle": "Aktive Käuferprozesse",
+      "phase": "Phase {n}",
+      "lastActivity": "Letzte Aktivität: {when}"
+    },
+    "reputation": {
+      "title": "Reputations-Cockpit",
+      "subtitle": "Wie PropAfterCare deine Online-Reputation aufbaut – automatisch.",
+      "metrics": {
+        "totalReviews": "Bewertungen generiert",
+        "averageStars": "Ø Sterne",
+        "requestsSent": "Anfragen gesendet",
+        "conversion": "Conversion-Rate"
+      },
+      "lastReviewTitle": "Letzte Bewertung",
+      "pitch": "Bei 40 Deals im Jahr und 35% Conversion: 14 neue Google-Bewertungen jährlich – ohne einen Anruf."
+    }
+  }
+}
