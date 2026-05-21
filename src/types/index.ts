@@ -1,4 +1,4 @@
-export type PropertyType = 'ownUse' | 'investment';
+export type PropertyType = 'ownUse' | 'investment-self' | 'investment-managed';
 
 export type Phase = 1 | 2 | 3 | 4;
 
@@ -11,6 +11,7 @@ export type MilestoneId =
   | 'grunderwerb'
   | 'wohngebaeude'
   | 'handwerker'
+  | 'verwaltung'
   | 'uebergabe'
   | 'ummeldung'
   | 'versorger'
@@ -22,8 +23,9 @@ export interface Milestone {
   id: MilestoneId;
   phase: Phase;
   status: MilestoneStatus;
-  forPropertyType: PropertyType | 'both';
+  forPropertyType: PropertyType | 'all';
   dueInDays?: number;
+  isCriticalDeadline?: boolean;
 }
 
 export type DocumentCategory =
@@ -33,30 +35,51 @@ export type DocumentCategory =
   | 'media'
   | 'rental';
 
+export type FormSourceType = 'inhouse' | 'external_link' | 'communal_pdf';
+
+export type FormStatus = 'active' | 'under_review' | 'outdated';
+
+export type SubmissionMethod = 'in_person' | 'postal' | 'online_portal' | 'email';
+
 export type DocumentId =
-  | 'registration'
-  | 'kfz'
+  | 'wohnsitz-paderborn'
+  | 'kfz-paderborn'
   | 'grundsteuer'
-  | 'power'
+  | 'strom-westfalenweser'
+  | 'strom-stadtwerke-pb'
   | 'gas'
-  | 'water'
+  | 'wasser'
+  | 'asp-abfall'
   | 'internet'
-  | 'buildingInsurance'
-  | 'contentsInsurance'
-  | 'liabilityInsurance'
+  | 'wohngebaeude'
+  | 'hausrat'
   | 'gez'
   | 'post'
   | 'bank'
-  | 'propertyManagement'
-  | 'rentalContract'
-  | 'landlordLiability';
+  | 'verwaltung'
+  | 'mietvertrag'
+  | 'vermieterhaftpflicht';
 
-export interface DocumentItem {
+export interface FormEntry {
   id: DocumentId;
   category: DocumentCategory;
-  prefillable: boolean;
+  sourceType: FormSourceType;
+  officialSource: string;
+  status: FormStatus;
+  lastCheckedAt: string;
+  sourceVersion?: string;
+  forPropertyType: PropertyType | 'all';
+  region: 'paderborn' | 'nationwide';
+  submissionMethod: SubmissionMethod;
+  submissionTarget?: string;
+  triggerMilestone?: MilestoneId;
+  urgencyDays?: number;
+  estimatedTimeMin?: number;
+  estimatedCost?: string;
+  estimatedProcessing?: string;
+  consequenceIfMissing?: string;
+  prefillCopyFields?: string[];
   externalUrl?: string;
-  forPropertyType: PropertyType | 'both';
 }
 
 export interface Broker {
@@ -76,13 +99,18 @@ export interface Broker {
     lastReviewText: string;
     lastReviewStars: number;
   };
+  curatorPoints: {
+    currentQuarter: number;
+    totalConfirmed: number;
+    rank?: number;
+  };
 }
 
 export interface Buyer {
   id: string;
   name: string;
   email: string;
-  language: 'de' | 'tr' | 'ar' | 'ru';
+  language: 'de';
   propertyType: PropertyType;
   city: string;
   address: string;
@@ -90,5 +118,7 @@ export interface Buyer {
   moveInDate: string;
   brokerId: string;
   milestones: Milestone[];
+  profileCompleteness: number;
+  aiChatUsed: boolean;
   createdAt: string;
 }

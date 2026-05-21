@@ -7,20 +7,20 @@
       "login": "Anmelden"
     },
     "hero": {
-      "eyebrow": "Für Immobilienmakler",
+      "eyebrow": "Pilotmarkt Paderborn · Sommer 2026",
       "title": "Aus jedem Notartermin werden vier Google-Bewertungen.",
       "subtitle": "PropAfterCare betreut deine Käufer automatisch von der Unterschrift bis zum Einzug. Du sammelst Bewertungen, Empfehlungen und Folgegeschäft – ohne einen einzigen Anruf zu machen.",
       "ctaPrimary": "Pilotplatz sichern",
       "ctaSecondary": "Live-Demo ansehen",
-      "trust": "Pilotmarkt Frankfurt · DSGVO-konform · EU-Hosting"
+      "trust": "Paderborn-spezifisch · DSGVO-konform · EU-Hosting"
     },
     "pitch": {
       "title": "Das eigentliche Problem ist nicht der Käufer.",
       "body": "Das eigentliche Problem ist, dass du nach dem Notartermin aus dem Leben deines Kunden verschwindest. Damit verlierst du Bewertungen, Empfehlungen und Folgegeschäft. PropAfterCare hält dich präsent – automatisch.",
-      "stat1Value": "+14",
-      "stat1Label": "neue Google-Bewertungen pro Jahr (bei 40 Deals × 35% Conversion)",
-      "stat2Value": "4,8 ★",
-      "stat2Label": "durchschnittliche Sternzahl im Pilotmarkt",
+      "stat1Value": "+10",
+      "stat1Label": "neue Google-Bewertungen pro Jahr (25 Deals × 40% Conversion)",
+      "stat2Value": "4,9 ★",
+      "stat2Label": "Ø-Sterne im Paderborner Pilot",
       "stat3Value": "<15 Min",
       "stat3Label": "Setup pro Käufer – vollautomatisch via CRM-Trigger"
     },
@@ -29,24 +29,24 @@
       "items": [
         {
           "title": "Meilenstein-Tracker",
-          "body": "Von der Auflassungsvormerkung bis zur Nebenkostenabrechnung – jede Phase als To-do mit Erklärung in Muttersprache."
+          "body": "Von der Auflassungsvormerkung bis zur Nebenkostenabrechnung – jede Phase als To-do, klar erklärt."
         },
         {
-          "title": "Formular-Hub",
-          "body": "GEZ, Nachsendeauftrag, Versorger-Ummeldung. Vorausgefüllt aus dem Profil. Ein Klick, fertig."
+          "title": "Formular-Hub für Paderborn",
+          "body": "Wohnsitz-Anmeldung, KFZ, Stadtwerke, ASP-Abfall. Mit Profildaten vorausgefüllt oder als Direktlink. Quelle und Stand transparent."
         },
         {
           "title": "KI-Assistent mit Guardrails",
-          "body": "Antwortet auf typische Fragen, gibt aber nie konkreten Rechts- oder Steuerrat. Eskaliert direkt an unsere geprüften Experten."
+          "body": "Antwortet auf typische Fragen, gibt aber nie konkreten Rechts- oder Steuerrat. Eskaliert direkt an unsere Paderborner Experten."
         },
         {
           "title": "Reputations-Cockpit",
-          "body": "Du siehst in Echtzeit, wie deine Bewertungen wachsen. Optimal getimt nach Einzug, im richtigen emotionalen Moment."
+          "body": "Du siehst in Echtzeit, wie deine Bewertungen wachsen. Optimal getimt, 7 Tage nach Einzug, wenn Käufer das System wirklich erlebt haben."
         }
       ]
     },
     "demo": {
-      "title": "Live-Demo: So meldet ein Käufer den Strom an",
+      "title": "Live-Demo: So meldet ein Käufer den Wohnsitz in Paderborn an",
       "subtitle": "Das stärkste Verkaufsargument – in 60 Sekunden.",
       "cta": "Demo öffnen"
     },
@@ -68,7 +68,6 @@
     }
   },
   "common": {
-    "language": "Sprache",
     "back": "Zurück",
     "next": "Weiter",
     "continue": "Weitermachen",
@@ -82,29 +81,33 @@
   },
   "welcome": {
     "greeting": "Herzlichen Glückwunsch, {name}!",
-    "subtitle": "Du hast gerade einen großen Schritt gemacht. Die nächsten Wochen begleiten wir dich – Schritt für Schritt.",
+    "subtitle": "Du hast gerade einen großen Schritt gemacht. Die nächsten Wochen begleiten wir dich – Schritt für Schritt durch deinen Einzug in Paderborn.",
     "brokerLine": "{broker} hat dich bei PropAfterCare angemeldet, damit du nichts Wichtiges vergisst.",
     "startCta": "In 2 Minuten startklar"
   },
   "onboarding": {
     "title": "Lass uns dich kurz kennenlernen",
-    "subtitle": "Diese Angaben helfen uns, dir nur die für dich relevanten Dinge zu zeigen.",
+    "subtitle": "Nur das Nötigste. Den Rest fragen wir bei Bedarf später ab.",
     "fields": {
       "propertyType": "Was hast du gekauft?",
       "propertyTypeOptions": {
         "ownUse": "Zum Selbstbewohnen",
-        "investment": "Als Kapitalanlage"
+        "ownUseHint": "Du ziehst selbst ein",
+        "investment-self": "Kapitalanlage, selbst vermietend",
+        "investmentSelfHint": "Du verwaltest deinen Mieter selbst",
+        "investment-managed": "Kapitalanlage mit Hausverwaltung",
+        "investmentManagedHint": "Eine Verwaltung kümmert sich um den Mieter"
       },
-      "moveInDate": "Geschätztes Einzugsdatum",
-      "language": "Bevorzugte Sprache",
+      "moveInDate": "Geschätztes Einzugsdatum / Übergabedatum",
       "city": "Stadt",
+      "cityHint": "Aktuell nur Paderborn verfügbar",
       "name": "Wie sollen wir dich ansprechen?"
     },
     "submit": "Mein Dashboard öffnen"
   },
   "dashboard": {
     "greeting": "Hallo {name}",
-    "todayLine": "Das hier solltest du heute angehen:",
+    "todayLine": "Das hier solltest du als Nächstes angehen:",
     "progress": "Fortschritt insgesamt",
     "phaseTitle": "Phase {number}",
     "phases": {
@@ -114,8 +117,15 @@
       "4": { "title": "Nach dem Einzug", "subtitle": "Monat 3–12" }
     },
     "askAi": "Frag den Assistenten",
-    "documents": "Formular-Hub",
-    "tasksDone": "{done} von {total} erledigt"
+    "documents": "Formular-Hub Paderborn",
+    "tasksDone": "{done} von {total} erledigt",
+    "profileCard": {
+      "title": "Profil vervollständigen",
+      "subtitle": "Damit wir Formulare für dich vorbefüllen können",
+      "completeness": "{percent}% vollständig",
+      "cta": "Jetzt ergänzen"
+    },
+    "criticalBanner": "Kritische Frist – {days} Tage verbleibend"
   },
   "milestones": {
     "auflassung": {
@@ -132,7 +142,7 @@
     },
     "grunderwerb": {
       "title": "Grunderwerbsteuer zahlen",
-      "body": "Das Finanzamt schickt den Bescheid. Erst nach Zahlung gibt es die Unbedenklichkeitsbescheinigung – Voraussetzung für die Umschreibung im Grundbuch."
+      "body": "Das Finanzamt Paderborn schickt den Bescheid. Erst nach Zahlung gibt es die Unbedenklichkeitsbescheinigung – Voraussetzung für die Umschreibung im Grundbuch."
     },
     "wohngebaeude": {
       "title": "Wohngebäudeversicherung übernehmen",
@@ -140,19 +150,23 @@
     },
     "handwerker": {
       "title": "Handwerker koordinieren",
-      "body": "Du planst Renovierungen? Aus unserem geprüften Netzwerk erhältst du 3 Angebote in 48 Stunden."
+      "body": "Du planst Renovierungen? Aus unserem geprüften Paderborner Netzwerk erhältst du 3 Angebote in 48 Stunden."
+    },
+    "verwaltung": {
+      "title": "Hausverwaltung auswählen",
+      "body": "Wir empfehlen geprüfte Hausverwaltungen aus Paderborn und Umgebung. Die Verwaltung übernimmt danach Mietersuche, Abfall, Wasser und Nebenkosten."
     },
     "uebergabe": {
       "title": "Übergabeprotokoll vorbereiten",
       "body": "Lade unsere Checkliste – Zählerstände, Mängel, Schlüsselanzahl. Nichts vergessen."
     },
     "ummeldung": {
-      "title": "Beim Einwohnermeldeamt ummelden",
-      "body": "Pflicht innerhalb von 14 Tagen nach Einzug. Wir zeigen dir das richtige Formular für deine Stadt."
+      "title": "Beim Bürgerservice Paderborn ummelden",
+      "body": "Pflicht innerhalb von 14 Tagen nach Einzug. In Paderborn elektronisch oder mit Termin in Bahnhofstraße 50."
     },
     "versorger": {
       "title": "Versorger anmelden",
-      "body": "Strom, Gas, Wasser, Internet. Wir haben für dich die Anbieter im Vergleich – und füllen das meiste schon vor."
+      "body": "Strom, Gas, Wasser, Internet. Wir zeigen dir die Optionen für Paderborn – Stadtwerke oder Westfalen Weser."
     },
     "mietvertrag": {
       "title": "Mietvertrag vorbereiten",
@@ -160,7 +174,7 @@
     },
     "afa": {
       "title": "AfA-Dokumentation anlegen",
-      "body": "Sammle ab jetzt alle relevanten Belege. Wir verlinken dich mit einem Steuerberater aus dem Netzwerk."
+      "body": "Sammle ab jetzt alle relevanten Belege. Wir verlinken dich mit einem Paderborner Steuerberater aus dem Netzwerk."
     },
     "nebenkosten": {
       "title": "Erste Nebenkostenabrechnung",
@@ -168,8 +182,8 @@
     }
   },
   "documents": {
-    "title": "Formular-Hub",
-    "subtitle": "Alle Anmeldungen und Ummeldungen an einem Ort. Wir haben deine Daten schon eingetragen.",
+    "title": "Formular-Hub Paderborn",
+    "subtitle": "Alle Anmeldungen und Ummeldungen an einem Ort. Wir haben deine Daten schon eingetragen oder verlinken dich direkt zum offiziellen Portal.",
     "categories": {
       "authorities": "Behörden & Meldewesen",
       "utilities": "Versorger & Infrastruktur",
@@ -177,23 +191,34 @@
       "media": "Rundfunk & Sonstiges",
       "rental": "Kapitalanlage"
     },
+    "sourceType": {
+      "inhouse": "Vorausgefüllt",
+      "external_link": "Externes Portal",
+      "communal_pdf": "Behörden-PDF"
+    },
+    "sourceTypeHint": {
+      "inhouse": "Wir generieren das Formular mit deinen Daten",
+      "external_link": "Direkt zum offiziellen Anbieter – Daten zum Kopieren bereit",
+      "communal_pdf": "Offizielles Behördenformular, mit deinen Daten ausgefüllt"
+    },
     "items": {
-      "registration": { "name": "Einwohnermeldeamt", "hint": "Pflicht innerhalb 14 Tage" },
-      "kfz": { "name": "Kfz ummelden", "hint": "Bei Stadtwechsel" },
-      "grundsteuer": { "name": "Grundsteuer-Erklärung", "hint": "Seit Reform 2022 Pflicht" },
-      "power": { "name": "Strom anmelden", "hint": "Vor dem Einzug erledigen" },
-      "gas": { "name": "Gas anmelden", "hint": "Inkl. Heizungsart-Abfrage" },
-      "water": { "name": "Wasser anmelden", "hint": "Regional unterschiedlich" },
-      "internet": { "name": "Internet & Telefon", "hint": "Anbietervergleich" },
-      "buildingInsurance": { "name": "Wohngebäudeversicherung", "hint": "Geht mit Grundbucheintrag über" },
-      "contentsInsurance": { "name": "Hausratversicherung", "hint": "Neue Adresse melden" },
-      "liabilityInsurance": { "name": "Haftpflicht ummelden", "hint": "Adressänderung" },
+      "wohnsitz-paderborn": { "name": "Wohnsitz-Anmeldung Paderborn", "hint": "Pflicht innerhalb 14 Tagen" },
+      "kfz-paderborn": { "name": "KFZ ummelden (i-Kfz)", "hint": "Komplett online in 3 Min" },
+      "grundsteuer": { "name": "Grundsteuer-Erklärung (ELSTER)", "hint": "Seit Reform 2022 Pflicht" },
+      "strom-westfalenweser": { "name": "Strom: Westfalen Weser Energie", "hint": "Online-Anmeldung möglich" },
+      "strom-stadtwerke-pb": { "name": "Strom: Stadtwerke Paderborn", "hint": "Termin vor Ort erforderlich" },
+      "gas": { "name": "Gas anmelden", "hint": "Westfalen Weser oder Stadtwerke" },
+      "wasser": { "name": "Wasseranmeldung", "hint": "Nur als Eigentümer/Vermieter" },
+      "asp-abfall": { "name": "ASP Abfallanmeldung Paderborn", "hint": "20 € pro Änderung, nur Eigentümer" },
+      "internet": { "name": "Internet & Telefon", "hint": "Verivox-Vergleich" },
+      "wohngebaeude": { "name": "Wohngebäudeversicherung", "hint": "Sonderkündigungsrecht 1 Monat" },
+      "hausrat": { "name": "Hausratversicherung", "hint": "Neue Adresse" },
       "gez": { "name": "Rundfunkbeitrag (GEZ)", "hint": "Neue Wohnung anmelden" },
       "post": { "name": "Nachsendeauftrag", "hint": "Sofort nach Umzug" },
       "bank": { "name": "Daueraufträge aktualisieren", "hint": "Checkliste mit Empfängern" },
-      "propertyManagement": { "name": "Hausverwaltung beauftragen", "hint": "Aus unserem Netzwerk" },
-      "rentalContract": { "name": "Mietvertrag erstellen", "hint": "Rechtlich geprüftes Template" },
-      "landlordLiability": { "name": "Vermieter-Haftpflicht", "hint": "Spezialversicherung" }
+      "verwaltung": { "name": "Hausverwaltung beauftragen", "hint": "Aus unserem Paderborner Netzwerk" },
+      "mietvertrag": { "name": "Mietvertrag erstellen", "hint": "Rechtlich geprüftes Template" },
+      "vermieterhaftpflicht": { "name": "Vermieter-Haftpflicht", "hint": "Spezialversicherung" }
     },
     "actions": {
       "open": "Formular öffnen",
@@ -201,18 +226,37 @@
       "external": "Zum Anbieter"
     },
     "prefilled": "Mit deinen Daten vorausgefüllt",
-    "warning": "Dieses Formular musst du selbst absenden – wir helfen nur beim Ausfüllen."
+    "warning": "Dieses Formular musst du selbst absenden – wir helfen nur beim Ausfüllen.",
+    "sourceLine": "Quelle: {source} · geprüft am {date}",
+    "underReview": "In Prüfung – nutzbar mit Vorsicht",
+    "copyBox": {
+      "title": "Diese Daten brauchst du gleich – Klick zum Kopieren:",
+      "copy": "Kopieren",
+      "copied": "Kopiert ✓"
+    },
+    "submission": {
+      "in_person": "Persönlich vor Ort",
+      "postal": "Per Post",
+      "online_portal": "Online-Portal",
+      "email": "Per E-Mail"
+    },
+    "meta": {
+      "duration": "Dauer",
+      "cost": "Kosten",
+      "processing": "Bearbeitung"
+    },
+    "reportOutdated": "Formular nicht aktuell? Makler informieren →"
   },
   "chat": {
     "title": "Frag den Assistenten",
     "placeholder": "Was ist die Auflassungsvormerkung?",
     "send": "Senden",
-    "intro": "Ich beantworte deine Fragen rund um Einzug, Behörden und Versicherungen – verständlich und in deiner Sprache.",
-    "guardrail": "Bei steuerlichen oder rechtlichen Fragen leite ich dich direkt an einen geprüften Experten weiter.",
+    "intro": "Ich beantworte deine Fragen rund um Einzug, Behörden und Versicherungen – verständlich und immer mit Bezug auf Paderborn.",
+    "guardrail": "Bei steuerlichen oder rechtlichen Fragen leite ich dich direkt an einen geprüften Paderborner Experten weiter.",
     "suggested": [
       "Wann muss ich den Kaufpreis überweisen?",
-      "Was ist eine Auflassungsvormerkung?",
-      "Wie funktioniert die Grunderwerbsteuer?",
+      "Wie funktioniert die elektronische Wohnsitz-Anmeldung in Paderborn?",
+      "Stadtwerke oder Westfalen Weser?",
       "Welche Versicherungen brauche ich?"
     ]
   },
@@ -221,6 +265,7 @@
       "dashboard": "Übersicht",
       "customers": "Kunden",
       "reputation": "Reputation",
+      "curators": "Mitkuratoren",
       "settings": "Einstellungen"
     },
     "dashboard": {
@@ -234,7 +279,12 @@
       },
       "customersTitle": "Aktive Käuferprozesse",
       "phase": "Phase {n}",
-      "lastActivity": "Letzte Aktivität: {when}"
+      "lastActivity": "Letzte Aktivität: {when}",
+      "profileLabel": {
+        "ownUse": "Eigennutzung",
+        "investment-self": "Kapitalanlage (selbst)",
+        "investment-managed": "Kapitalanlage (Verwaltung)"
+      }
     },
     "reputation": {
       "title": "Reputations-Cockpit",
@@ -246,7 +296,29 @@
         "conversion": "Conversion-Rate"
       },
       "lastReviewTitle": "Letzte Bewertung",
-      "pitch": "Bei 40 Deals im Jahr und 35% Conversion: 14 neue Google-Bewertungen jährlich – ohne einen Anruf."
+      "pitch": "Bei 25 Deals/Jahr in Paderborn und 40% Conversion: 10 neue Google-Bewertungen jährlich – ohne einen Anruf. Nach 2 Jahren stehst du an der Spitze deines lokalen Marktes.",
+      "triggerTitle": "Wie der Bewertungs-Trigger funktioniert",
+      "triggerSteps": [
+        "Käufer hakt 'Eingezogen ✓' im Dashboard ab",
+        "System wartet 7 Tage (Einzugschaos abklingen lassen)",
+        "Prüft: ≥5 Meilensteine erledigt UND KI-Chat ≥1× genutzt",
+        "Persönliche E-Mail im Namen des Maklers mit Direktlink zu Google",
+        "Käufer hinterlässt Bewertung mit nur einem Klick"
+      ]
+    },
+    "curators": {
+      "title": "Mitkuratoren-Programm",
+      "subtitle": "Melde veraltete Formulare und hilf allen Maklern in deiner Region.",
+      "yourPoints": "Deine Punkte (Quartal)",
+      "totalConfirmed": "Bestätigt insgesamt",
+      "yourRank": "Dein Rang in OWL",
+      "rewards": {
+        "title": "Belohnungen",
+        "tier3": "3 Punkte → 1 Monat Abo kostenlos",
+        "tier6": "6 Punkte → 2 Monate kostenlos + Top-Mitkurator-Badge",
+        "tier9": "9+ Punkte → persönliches Dankschreiben der Geschäftsführung"
+      },
+      "leaderboardTitle": "Top 5 Mitkuratoren OWL (dieses Quartal)"
     }
   }
 }

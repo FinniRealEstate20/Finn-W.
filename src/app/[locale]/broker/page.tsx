@@ -35,6 +35,9 @@ export default async function BrokerDashboardPage({
               <Link href={`/${locale}/broker/reputation`} className="hover:text-ink">
                 {t('nav.reputation')}
               </Link>
+              <Link href={`/${locale}/broker/curators`} className="hover:text-ink">
+                {t('nav.curators')}
+              </Link>
             </nav>
             <div className="flex items-center gap-2">
               <Image
@@ -95,12 +98,10 @@ export default async function BrokerDashboardPage({
                 <article key={buyer.id} className="card">
                   <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <div>
-                      <div className="flex items-center gap-2">
+                      <div className="flex flex-wrap items-center gap-2">
                         <h3 className="text-base font-semibold text-ink">{buyer.name}</h3>
                         <span className="chip">
-                          {buyer.propertyType === 'investment'
-                            ? 'Kapitalanlage'
-                            : 'Eigennutzung'}
+                          {t(`dashboard.profileLabel.${buyer.propertyType}`)}
                         </span>
                         <span className="text-xs text-ink-muted">
                           {t('dashboard.phase', { n: currentPhase })}

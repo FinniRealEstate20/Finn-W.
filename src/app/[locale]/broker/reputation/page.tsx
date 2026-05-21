@@ -17,6 +17,8 @@ export default async function BrokerReputationPage({
     (mockBroker.reviews.total / mockBroker.reviews.requestsSent) * 100
   );
 
+  const triggerSteps = t.raw('reputation.triggerSteps') as string[];
+
   return (
     <main className="min-h-screen bg-slate-50">
       <header className="border-b border-slate-200 bg-white">
@@ -31,6 +33,9 @@ export default async function BrokerReputationPage({
                 {t('nav.dashboard')}
               </Link>
               <span className="text-brand-700">{t('nav.reputation')}</span>
+              <Link href={`/${locale}/broker/curators`} className="hover:text-ink">
+                {t('nav.curators')}
+              </Link>
             </nav>
             <div className="flex items-center gap-2">
               <Image
@@ -104,7 +109,7 @@ export default async function BrokerReputationPage({
               &ldquo;{mockBroker.reviews.lastReviewText}&rdquo;
             </p>
             <div className="mt-4 text-xs text-ink-muted">
-              Automatisch ausgelöst durch PropAfterCare · 24h nach Einzug
+              Automatisch ausgelöst durch PropAfterCare · 7 Tage nach Einzug
             </div>
           </article>
         </section>
@@ -112,16 +117,10 @@ export default async function BrokerReputationPage({
         {/* Trigger logic explanation */}
         <section className="mt-10">
           <h2 className="mb-4 text-lg font-semibold text-ink">
-            Wie der Bewertungs-Trigger funktioniert
+            {t('reputation.triggerTitle')}
           </h2>
           <ol className="space-y-3">
-            {[
-              'Käufer hakt 3+ Meilensteine ab',
-              'Plattform erkennt: Einzug abgeschlossen oder Schlüsselübergabe ✓',
-              '24 Stunden Wartezeit (emotionaler Hochpunkt)',
-              'Persönliche Nachricht im Namen des Maklers mit Direktlink zu Google',
-              'Käufer hinterlässt Bewertung mit nur einem Klick'
-            ].map((step, i) => (
+            {triggerSteps.map((step, i) => (
               <li key={i} className="flex items-start gap-3">
                 <span className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-brand-100 text-xs font-bold text-brand-700">
                   {i + 1}
