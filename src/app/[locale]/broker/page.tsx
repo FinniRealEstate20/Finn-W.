@@ -2,9 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { mockBroker, mockBuyers } from '@/lib/mockData';
-import { progressFor } from '@/lib/milestones';
-import { StatCard } from '@/components/StatCard';
-import { ProgressBar } from '@/components/ProgressBar';
+import { InteractiveBrokerList } from '@/components/InteractiveBrokerList';
 
 export default async function BrokerDashboardPage({
   params
@@ -14,11 +12,6 @@ export default async function BrokerDashboardPage({
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations('broker');
-  const totalMilestones = mockBuyers.reduce((sum, b) => sum + b.milestones.length, 0);
-  const doneMilestones = mockBuyers.reduce(
-    (sum, b) => sum + b.milestones.filter(m => m.status === 'done').length,
-    0
-  );
 
   return (
     <main className="min-h-screen bg-slate-50">
@@ -59,70 +52,10 @@ export default async function BrokerDashboardPage({
         <h1 className="text-3xl font-bold text-ink">{t('dashboard.title')}</h1>
         <p className="mt-1 text-ink-soft">{t('dashboard.subtitle')}</p>
 
-        {/* Metrics */}
-        <div className="mt-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
-          <StatCard
-            label={t('dashboard.metrics.active')}
-            value={`${mockBuyers.length}`}
-          />
-          <StatCard
-            label={t('dashboard.metrics.milestonesDone')}
-            value={`${doneMilestones}/${totalMilestones}`}
-          />
-          <StatCard
-            label={t('dashboard.metrics.reviewsGenerated')}
-            value={`${mockBroker.reviews.total}`}
-            accent="emerald"
-          />
-          <StatCard
-            label={t('dashboard.metrics.averageRating')}
-            value={`${mockBroker.reviews.average} ★`}
-            accent="amber"
-          />
-        </div>
-
-        {/* Customer list */}
-        <section className="mt-10">
-          <h2 className="mb-4 text-lg font-semibold text-ink">
-            {t('dashboard.customersTitle')}
-          </h2>
-          <div className="space-y-3">
-            {mockBuyers.map(buyer => {
-              const { percent, done, total } = progressFor(buyer.milestones);
-              const currentPhase =
-                buyer.milestones.find(m => m.status === 'in_progress')?.phase ??
-                buyer.milestones.find(m => m.status === 'open')?.phase ??
-                4;
-
-              return (
-                <article key={buyer.id} className="card">
-                  <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                    <div>
-                      <div className="flex flex-wrap items-center gap-2">
-                        <h3 className="text-base font-semibold text-ink">{buyer.name}</h3>
-                        <span className="chip">
-                          {t(`dashboard.profileLabel.${buyer.propertyType}`)}
-                        </span>
-                        <span className="text-xs text-ink-muted">
-                          {t('dashboard.phase', { n: currentPhase })}
-                        </span>
-                      </div>
-                      <div className="mt-1 text-sm text-ink-muted">
-                        {buyer.address}
-                      </div>
-                    </div>
-                    <div className="flex flex-col items-end gap-1">
-                      <span className="text-sm font-medium text-ink">
-                        {done}/{total} erledigt · {percent}%
-                      </span>
-                      <ProgressBar percent={percent} className="w-48" />
-                    </div>
-                  </div>
-                </article>
-              );
-            })}
-          </div>
-        </section>
+        <InteractiveBrokerList
+          buyers={[...mockBuyers]}
+          broker={mockBroker}
+        />
       </div>
     </main>
   );
