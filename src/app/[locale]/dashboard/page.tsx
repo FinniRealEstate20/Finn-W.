@@ -1,11 +1,9 @@
 import Link from 'next/link';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { mockBroker, getDefaultBuyer } from '@/lib/mockData';
-import { milestonesByPhase, progressFor } from '@/lib/milestones';
 import { BrokerHeader } from '@/components/BrokerHeader';
 import { ProgressBar } from '@/components/ProgressBar';
-import { PhaseSection } from '@/components/PhaseSection';
-import type { Phase } from '@/types';
+import { InteractiveDashboard } from '@/components/InteractiveDashboard';
 
 export default async function DashboardPage({
   params
@@ -17,55 +15,13 @@ export default async function DashboardPage({
   const t = await getTranslations('dashboard');
   const tc = await getTranslations('common');
   const buyer = getDefaultBuyer();
-  const grouped = milestonesByPhase(buyer.milestones);
-  const { done, total, percent } = progressFor(buyer.milestones);
-  const phases: Phase[] = [1, 2, 3, 4];
-
-  const criticalOpen = buyer.milestones.find(
-    m => m.status !== 'done' && m.isCriticalDeadline
-  );
 
   return (
     <main className="min-h-screen bg-slate-50">
       <BrokerHeader broker={mockBroker} locale={locale} />
 
       <div className="container-page py-10">
-        {/* Greeting + Progress */}
-        <section className="card mb-6">
-          <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
-            <div>
-              <h1 className="text-3xl font-bold text-ink">
-                {t('greeting', { name: buyer.name })}
-              </h1>
-              <p className="mt-1 text-ink-soft">{t('todayLine')}</p>
-            </div>
-            <div className="text-right">
-              <div className="text-xs font-medium uppercase tracking-wide text-ink-muted">
-                {t('progress')}
-              </div>
-              <div className="text-2xl font-bold text-brand-600">{percent}%</div>
-              <div className="text-xs text-ink-muted">
-                {t('tasksDone', { done, total })}
-              </div>
-            </div>
-          </div>
-          <ProgressBar percent={percent} className="mt-5" />
-        </section>
-
-        {/* Critical-Deadline Banner */}
-        {criticalOpen && (
-          <div className="mb-6 flex items-start gap-3 rounded-2xl border border-red-200 bg-red-50 p-4">
-            <div className="text-2xl">⏰</div>
-            <div className="flex-1">
-              <div className="text-sm font-semibold text-red-900">
-                {t('criticalBanner', { days: criticalOpen.dueInDays ?? 14 })}
-              </div>
-              <div className="mt-0.5 text-xs text-red-800">
-                Aufgabe: <strong>{criticalOpen.id}</strong> – wir erinnern dich bis es erledigt ist.
-              </div>
-            </div>
-          </div>
-        )}
+        <InteractiveDashboard buyer={buyer} />
 
         {/* Profile completeness card (Hybrid-Onboarding) */}
         {buyer.profileCompleteness < 100 && (
@@ -92,7 +48,7 @@ export default async function DashboardPage({
         )}
 
         {/* Quick Actions */}
-        <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div className="mb-8 mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
           <Link href={`/${locale}/documents`} className="card flex items-center gap-4 transition hover:border-brand-300 hover:shadow-lg">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-brand-50 text-brand-600">
               <svg className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
@@ -115,15 +71,6 @@ export default async function DashboardPage({
               <div className="text-sm text-ink-muted">Verständlich, mit Paderborn-Bezug</div>
             </div>
           </Link>
-        </div>
-
-        {/* Phases */}
-        <div className="space-y-10">
-          {phases.map(p =>
-            grouped[p].length > 0 ? (
-              <PhaseSection key={p} phase={p} milestones={grouped[p]} />
-            ) : null
-          )}
         </div>
 
         <p className="mt-12 text-center text-xs text-ink-muted">{tc('disclaimer')}</p>

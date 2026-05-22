@@ -1,9 +1,19 @@
+'use client';
+
 import { useTranslations } from 'next-intl';
 import { MilestoneCard } from './MilestoneCard';
 import { progressFor } from '@/lib/milestones';
 import type { Milestone, Phase } from '@/types';
 
-export function PhaseSection({ phase, milestones }: { phase: Phase; milestones: Milestone[] }) {
+export function PhaseSection({
+  phase,
+  milestones,
+  onToggle
+}: {
+  phase: Phase;
+  milestones: Milestone[];
+  onToggle?: (id: string) => void;
+}) {
   const t = useTranslations('dashboard');
   const { done, total } = progressFor(milestones);
 
@@ -25,7 +35,7 @@ export function PhaseSection({ phase, milestones }: { phase: Phase; milestones: 
       </div>
       <div className="space-y-2">
         {milestones.map(m => (
-          <MilestoneCard key={m.id} milestone={m} />
+          <MilestoneCard key={m.id} milestone={m} onToggle={onToggle} />
         ))}
       </div>
     </section>
