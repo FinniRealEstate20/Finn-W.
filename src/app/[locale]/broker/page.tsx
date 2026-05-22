@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { mockBroker, mockBuyers } from '@/lib/mockData';
 import { InteractiveBrokerList } from '@/components/InteractiveBrokerList';
+import { Logo } from '@/components/Logo';
 
 export default async function BrokerDashboardPage({
   params
@@ -18,9 +19,11 @@ export default async function BrokerDashboardPage({
       {/* Broker top nav */}
       <header className="border-b border-slate-200 bg-white">
         <div className="container-page flex items-center justify-between py-4">
-          <Link href={`/${locale}`} className="text-lg font-bold tracking-tight text-ink">
-            Prop<span className="text-brand-600">AfterCare</span>
-            <span className="ml-2 text-xs font-medium text-ink-muted">Makler-Cockpit</span>
+          <Link href={`/${locale}`} className="flex items-center gap-3" aria-label="PropAfterCare Startseite">
+            <Logo variant="full" priority className="h-9" />
+            <span className="hidden border-l border-slate-200 pl-3 text-xs font-medium text-ink-muted sm:block">
+              Makler-Cockpit
+            </span>
           </Link>
           <div className="flex items-center gap-6">
             <nav className="hidden gap-5 text-sm font-medium text-ink-soft sm:flex">

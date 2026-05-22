@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
+import { Logo } from './Logo';
 import type { Broker } from '@/types';
 
 export function BrokerHeader({ broker, locale }: { broker: Broker; locale: string }) {
@@ -26,7 +27,10 @@ export function BrokerHeader({ broker, locale }: { broker: Broker; locale: strin
             </div>
           </div>
         </Link>
-        <div className="hidden text-xs text-ink-muted sm:block">{t('poweredBy')}</div>
+        <div className="hidden items-center gap-2 text-xs text-ink-muted sm:flex">
+          <span>{t('poweredByShort')}</span>
+          <Logo variant="mark" className="h-6 w-6" />
+        </div>
       </div>
     </header>
   );

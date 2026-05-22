@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { Logo } from '@/components/Logo';
 
 export default async function LandingPage({
   params
@@ -23,8 +24,8 @@ export default async function LandingPage({
       {/* Nav */}
       <nav className="border-b border-slate-200/70 bg-white/80 backdrop-blur">
         <div className="container-page flex items-center justify-between py-4">
-          <Link href={`/${locale}`} className="text-lg font-bold tracking-tight text-ink">
-            Prop<span className="text-brand-600">AfterCare</span>
+          <Link href={`/${locale}`} aria-label="PropAfterCare Startseite">
+            <Logo variant="full" priority className="h-9" />
           </Link>
           <div className="hidden gap-7 text-sm font-medium text-ink-soft md:flex">
             <a href="#features" className="hover:text-ink">{t('nav.features')}</a>
@@ -135,8 +136,9 @@ export default async function LandingPage({
       {/* Footer */}
       <footer className="border-t border-slate-200 bg-white">
         <div className="container-page flex flex-col items-center justify-between gap-4 py-8 text-sm text-ink-muted sm:flex-row">
-          <div>
-            <span className="font-semibold text-ink">PropAfterCare</span> · {t('footer.tagline')}
+          <div className="flex items-center gap-3">
+            <Logo variant="mark" className="h-7 w-7" />
+            <span>{t('footer.tagline')}</span>
           </div>
           <div className="flex gap-5">
             <a href="#" className="hover:text-ink">{t('footer.imprint')}</a>

@@ -2,6 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { mockBroker, getDefaultBuyer } from '@/lib/mockData';
+import { Logo } from '@/components/Logo';
 
 export default async function WelcomePage({
   params
@@ -40,7 +41,11 @@ export default async function WelcomePage({
                 {t('startCta')}
               </Link>
             </div>
-            <p className="mt-6 text-xs text-ink-muted">{tc('poweredBy')}</p>
+            <div className="mt-8 flex items-center justify-center gap-2 text-xs text-ink-muted">
+              <span>{tc('poweredByShort')}</span>
+              <Logo variant="mark" className="h-5 w-5" />
+              <span className="font-medium text-ink-soft">PropAfterCare</span>
+            </div>
           </div>
         </div>
       </div>
