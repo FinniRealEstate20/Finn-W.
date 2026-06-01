@@ -11,6 +11,7 @@ import {
 import {
   confirmSubmission,
   getSubmission,
+  pushSubmissionToServer,
   recordSubmission,
   type Submission
 } from '@/lib/submissionStore';
@@ -168,6 +169,12 @@ export function DocumentForm({ form, fieldKeys, fieldLabels }: Props) {
     }
   }
 
+  function syncToServer(record: Submission) {
+    void pushSubmissionToServer(record, profile ? { email: profile.email } : undefined).then(
+      synced => setSubmission(synced)
+    );
+  }
+
   function openPrintable() {
     const fields = fieldKeys.map(k => ({
       label: fieldLabels[k] ?? k,
@@ -181,6 +188,7 @@ export function DocumentForm({ form, fieldKeys, fieldLabels }: Props) {
       status: 'draft'
     });
     setSubmission(placeholder);
+    syncToServer(placeholder);
     const html = buildPrintableHtml({
       title: t(`items.${form.id}.name`),
       subtitle: t(`items.${form.id}.hint`),
@@ -205,6 +213,7 @@ export function DocumentForm({ form, fieldKeys, fieldLabels }: Props) {
       status: 'submitted'
     });
     setSubmission(next);
+    syncToServer(next);
   }
 
   function openExternal() {
@@ -216,6 +225,7 @@ export function DocumentForm({ form, fieldKeys, fieldLabels }: Props) {
       status: 'submitted'
     });
     setSubmission(next);
+    syncToServer(next);
     if (form.externalUrl) {
       window.open(form.externalUrl, '_blank', 'noopener,noreferrer');
     }
@@ -223,7 +233,10 @@ export function DocumentForm({ form, fieldKeys, fieldLabels }: Props) {
 
   function markConfirmed() {
     const next = confirmSubmission(form.id);
-    if (next) setSubmission(next);
+    if (next) {
+      setSubmission(next);
+      syncToServer(next);
+    }
   }
 
   if (!hydrated) {
@@ -268,6 +281,15 @@ export function DocumentForm({ form, fieldKeys, fieldLabels }: Props) {
             <div className="text-xs">
               Beleg-ID {submission.receiptId} ·{' '}
               {new Date(submission.submittedAt).toLocaleString('de-DE')}
+              {submission.serverReceiptId && (
+                <>
+                  {' '}
+                  · Server-Beleg <span className="font-mono">{submission.serverReceiptId}</span>
+                </>
+              )}
+              {submission.serverError && !submission.serverReceiptId && (
+                <span className="ml-2 text-amber-700">(offline gespeichert)</span>
+              )}
             </div>
           </div>
           {submission.status !== 'confirmed' && (

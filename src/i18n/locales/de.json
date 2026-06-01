@@ -248,6 +248,44 @@
     },
     "reportOutdated": "Formular nicht aktuell? Makler informieren →"
   },
+  "profile": {
+    "title": "Dein Profil",
+    "subtitle": "Diese Daten benutzen wir, um alle Formulare automatisch vorzubefüllen. Du kannst alles jederzeit ändern.",
+    "completeness": "Profil zu {percent}% vollständig",
+    "sections": {
+      "personal": "Persönlich",
+      "newAddress": "Neue Adresse (nach Einzug)",
+      "oldAddress": "Bisherige Adresse",
+      "move": "Einzug & Objekt",
+      "meters": "Zählerstände"
+    },
+    "fields": {
+      "firstName": "Vorname",
+      "lastName": "Nachname",
+      "email": "E-Mail",
+      "phone": "Telefon",
+      "birthDate": "Geburtsdatum",
+      "steuerId": "Steuer-ID",
+      "iban": "IBAN",
+      "street": "Straße",
+      "houseNumber": "Hausnummer",
+      "postalCode": "PLZ",
+      "city": "Ort",
+      "district": "Stadtteil",
+      "moveInDate": "Einzugsdatum",
+      "propertyType": "Nutzungsart",
+      "meterElectricity": "Stromzähler",
+      "meterGas": "Gaszähler"
+    },
+    "propertyType": {
+      "ownUse": "Eigennutzung",
+      "investment-self": "Kapitalanlage (selbst vermietet)",
+      "investment-managed": "Kapitalanlage (verwaltet)"
+    },
+    "lookupHint": "Tipp: Tippe Straße + Hausnummer oder die PLZ, wir schlagen vor.",
+    "savedHint": "Änderungen werden automatisch gespeichert.",
+    "cta": "Profil bearbeiten"
+  },
   "chat": {
     "title": "Frag den Assistenten",
     "placeholder": "Was ist die Auflassungsvormerkung?",

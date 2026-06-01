@@ -43,7 +43,9 @@ export default async function DashboardPage({
                 </div>
               </div>
             </div>
-            <button className="btn-primary text-xs">{t('profileCard.cta')}</button>
+            <Link href={`/${locale}/profile`} className="btn-primary text-xs">
+              {t('profileCard.cta')}
+            </Link>
           </section>
         )}
 

@@ -10,6 +10,9 @@ export interface Submission {
   formId: DocumentId;
   status: SubmissionStatus;
   receiptId: string;
+  serverReceiptId?: string;
+  serverPersistedAt?: string;
+  serverError?: string;
   channel: 'inhouse' | 'external_link' | 'communal_pdf';
   submittedAt: string;
   confirmedAt?: string;
@@ -79,6 +82,58 @@ export function confirmSubmission(formId: DocumentId): Submission | undefined {
   store[formId] = updated;
   write(store);
   return updated;
+}
+
+export function updateSubmission(formId: DocumentId, patch: Partial<Submission>): Submission | undefined {
+  const store = read();
+  const current = store[formId];
+  if (!current) return undefined;
+  const updated: Submission = { ...current, ...patch };
+  store[formId] = updated;
+  write(store);
+  return updated;
+}
+
+export async function pushSubmissionToServer(
+  submission: Submission,
+  buyer?: { id?: string; email?: string }
+): Promise<Submission> {
+  try {
+    const res = await fetch('/api/submissions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        formId: submission.formId,
+        channel: submission.channel,
+        status: submission.status,
+        clientReceiptId: submission.receiptId,
+        source: submission.source,
+        data: submission.data,
+        buyer,
+        submittedAt: submission.submittedAt
+      })
+    });
+    if (!res.ok) {
+      const updated = updateSubmission(submission.formId, {
+        serverError: `HTTP ${res.status}`
+      });
+      return updated ?? submission;
+    }
+    const json = (await res.json()) as {
+      serverReceiptId?: string;
+      persistedAt?: string;
+    };
+    const updated = updateSubmission(submission.formId, {
+      serverReceiptId: json.serverReceiptId,
+      serverPersistedAt: json.persistedAt,
+      serverError: undefined
+    });
+    return updated ?? submission;
+  } catch (err) {
+    const message = err instanceof Error ? err.message : 'network_error';
+    const updated = updateSubmission(submission.formId, { serverError: message });
+    return updated ?? submission;
+  }
 }
 
 export function clearSubmissions() {
