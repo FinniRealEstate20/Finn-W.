@@ -1,7 +1,11 @@
+'use client';
+
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/cn';
 import { formatDate } from '@/lib/documents';
+import { getSubmission, type SubmissionStatus } from '@/lib/submissionStore';
 import type { FormEntry } from '@/types';
 
 const SOURCE_BADGE_STYLES: Record<FormEntry['sourceType'], string> = {
@@ -16,6 +20,13 @@ const SOURCE_ICONS: Record<FormEntry['sourceType'], string> = {
   communal_pdf: '🏛️'
 };
 
+const STATUS_BADGE: Record<SubmissionStatus, { label: string; cls: string }> = {
+  draft: { label: 'Entwurf', cls: 'bg-slate-100 text-ink-soft ring-slate-200' },
+  submitted: { label: 'Eingereicht', cls: 'bg-sky-50 text-sky-700 ring-sky-100' },
+  confirmed: { label: 'Erledigt ✓', cls: 'bg-emerald-50 text-emerald-700 ring-emerald-100' },
+  failed: { label: 'Fehlgeschlagen', cls: 'bg-red-50 text-red-700 ring-red-100' }
+};
+
 export function DocumentItem({
   form,
   locale
@@ -24,6 +35,11 @@ export function DocumentItem({
   locale: string;
 }) {
   const t = useTranslations('documents');
+  const [status, setStatus] = useState<SubmissionStatus | null>(null);
+
+  useEffect(() => {
+    setStatus(getSubmission(form.id)?.status ?? null);
+  }, [form.id]);
 
   return (
     <article className="flex flex-col gap-3 rounded-xl border border-slate-200 bg-white p-4 transition hover:border-brand-200 hover:shadow-card">
@@ -40,6 +56,16 @@ export function DocumentItem({
             {form.status === 'under_review' && (
               <span className="rounded-full bg-amber-50 px-2 py-0.5 text-[10px] font-medium text-amber-800 ring-1 ring-amber-100">
                 🔍 {t('underReview')}
+              </span>
+            )}
+            {status && (
+              <span
+                className={cn(
+                  'rounded-full px-2 py-0.5 text-[10px] font-medium ring-1',
+                  STATUS_BADGE[status].cls
+                )}
+              >
+                {STATUS_BADGE[status].label}
               </span>
             )}
           </div>

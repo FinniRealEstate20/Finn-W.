@@ -1,9 +1,10 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { mockBroker, getDefaultBuyer } from '@/lib/mockData';
+import { mockBroker } from '@/lib/mockData';
 import { getForm, formatDate } from '@/lib/documents';
 import { BrokerHeader } from '@/components/BrokerHeader';
+import { DocumentForm } from '@/components/DocumentForm';
 import type { DocumentId } from '@/types';
 
 const PROFILE_FIELD_LABELS: Record<string, string> = {
@@ -13,7 +14,9 @@ const PROFILE_FIELD_LABELS: Record<string, string> = {
   oldAddress: 'Alte Adresse',
   iban: 'IBAN',
   steuerId: 'Steuer-Identifikationsnummer',
-  meterReading: 'Zählerstand'
+  meterReading: 'Zählerstand',
+  email: 'E-Mail',
+  phone: 'Telefon'
 };
 
 export default async function DocumentDetailPage({
@@ -28,22 +31,8 @@ export default async function DocumentDetailPage({
 
   const t = await getTranslations('documents');
   const tc = await getTranslations('common');
-  const buyer = getDefaultBuyer();
 
-  const profileSample: Record<string, string> = {
-    name: `${buyer.name} Müller`,
-    birthDate: '12.03.1991',
-    newAddress: buyer.address,
-    oldAddress: buyer.oldAddress,
-    iban: 'DE89 4006 0000 0123 4567 89',
-    steuerId: '12 345 678 901',
-    meterReading: '—'
-  };
-
-  const fields = (form.prefillCopyFields ?? ['name', 'newAddress']).map(key => ({
-    label: PROFILE_FIELD_LABELS[key] ?? key,
-    value: profileSample[key] ?? ''
-  }));
+  const fieldKeys = form.prefillCopyFields ?? ['name', 'newAddress'];
 
   return (
     <main className="min-h-screen bg-slate-50">
@@ -99,99 +88,11 @@ export default async function DocumentDetailPage({
             </div>
           </div>
 
-          {/* Kontext nach Quelltyp */}
-          {form.sourceType === 'external_link' && (
-            <section className="card mt-8">
-              <h2 className="text-sm font-semibold text-ink">{t('copyBox.title')}</h2>
-              <p className="mt-1 text-xs text-ink-muted">
-                Du wirst gleich zum offiziellen Portal weitergeleitet ({form.officialSource.replace(/^https?:\/\//, '').replace(/\/.*$/, '')}). Hier deine Daten zum Kopieren:
-              </p>
-              <div className="mt-4 space-y-2">
-                {fields.map((f, i) => (
-                  <div
-                    key={i}
-                    className="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2"
-                  >
-                    <div>
-                      <div className="text-[11px] uppercase tracking-wide text-ink-muted">{f.label}</div>
-                      <div className="text-sm font-medium text-ink">{f.value}</div>
-                    </div>
-                    <button type="button" className="rounded-md bg-white px-3 py-1 text-xs font-semibold text-brand-700 ring-1 ring-slate-200 hover:bg-brand-50">
-                      {t('copyBox.copy')}
-                    </button>
-                  </div>
-                ))}
-              </div>
-              {form.externalUrl && (
-                <a
-                  href={form.externalUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="btn-primary mt-6 w-full"
-                >
-                  {t('actions.external')} ↗
-                </a>
-              )}
-            </section>
-          )}
-
-          {form.sourceType === 'inhouse' && (
-            <section className="card mt-8">
-              <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-medium text-emerald-700">
-                <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 16 16">
-                  <polyline points="3 8 6.5 11.5 13 5" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-                {t('prefilled')}
-              </div>
-              <div className="space-y-4">
-                {fields.map((f, i) => (
-                  <div key={i}>
-                    <label className="label">{f.label}</label>
-                    <input className="input" defaultValue={f.value} />
-                  </div>
-                ))}
-              </div>
-              <div className="mt-6 rounded-xl bg-amber-50 px-4 py-3 text-xs text-amber-900">
-                <strong>Hinweis:</strong> {t('warning')}
-              </div>
-              <div className="mt-4 flex flex-col gap-2 sm:flex-row">
-                <button type="button" className="btn-primary flex-1">
-                  {t('actions.open')}
-                </button>
-                <button type="button" className="btn-secondary flex-1">
-                  {t('actions.download')}
-                </button>
-              </div>
-            </section>
-          )}
-
-          {form.sourceType === 'communal_pdf' && (
-            <section className="card mt-8">
-              <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-amber-50 px-3 py-1.5 text-xs font-medium text-amber-800">
-                🏛️ Offizielles Behörden-Formular
-              </div>
-              <p className="text-sm text-ink-soft">
-                Wir füllen das offizielle PDF der Behörde mit deinen Profildaten aus. Du prüfst und reichst es selbst ein.
-              </p>
-              {form.sourceVersion && (
-                <p className="mt-2 text-xs text-ink-muted">Formularstand: {form.sourceVersion}</p>
-              )}
-              <div className="mt-6 space-y-3">
-                {fields.map((f, i) => (
-                  <div
-                    key={i}
-                    className="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2"
-                  >
-                    <div className="text-xs text-ink-muted">{f.label}</div>
-                    <div className="text-sm font-medium text-ink">{f.value}</div>
-                  </div>
-                ))}
-              </div>
-              <button type="button" className="btn-primary mt-6 w-full">
-                {t('actions.download')}
-              </button>
-            </section>
-          )}
+          <DocumentForm
+            form={form}
+            fieldKeys={fieldKeys}
+            fieldLabels={PROFILE_FIELD_LABELS}
+          />
 
           {/* Submission-Info */}
           <div className="mt-6 rounded-xl border border-slate-200 bg-white p-4">
