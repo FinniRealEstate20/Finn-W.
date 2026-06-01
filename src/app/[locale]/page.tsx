@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Logo } from '@/components/Logo';
+import { PromoVideo } from '@/components/PromoVideo';
 
 export default async function LandingPage({
   params
@@ -39,23 +40,28 @@ export default async function LandingPage({
       </nav>
 
       {/* Hero */}
-      <section className="container-page py-16 sm:py-24">
+      <section className="container-page pt-12 pb-10 sm:pt-16">
         <div className="mx-auto max-w-3xl text-center">
           <div className="chip mx-auto">{t('hero.eyebrow')}</div>
           <h1 className="mt-5 text-4xl font-bold tracking-tight text-ink sm:text-5xl md:text-6xl">
             {t('hero.title')}
           </h1>
           <p className="mt-6 text-lg text-ink-soft sm:text-xl">{t('hero.subtitle')}</p>
-          <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <Link href={`/${locale}/welcome`} className="btn-primary">
-              {t('hero.ctaPrimary')}
-            </Link>
-            <Link href={`/${locale}/dashboard`} className="btn-secondary">
-              {t('hero.ctaSecondary')}
-            </Link>
-          </div>
-          <p className="mt-6 text-sm text-ink-muted">{t('hero.trust')}</p>
         </div>
+
+        <div className="mx-auto mt-10 max-w-5xl">
+          <PromoVideo />
+        </div>
+
+        <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+          <Link href={`/${locale}/welcome`} className="btn-primary">
+            {t('hero.ctaPrimary')}
+          </Link>
+          <Link href={`/${locale}/dashboard`} className="btn-secondary">
+            {t('hero.ctaSecondary')}
+          </Link>
+        </div>
+        <p className="mt-6 text-center text-sm text-ink-muted">{t('hero.trust')}</p>
       </section>
 
       {/* Pitch / Stats */}

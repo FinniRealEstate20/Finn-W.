@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PropAfterCare – Werbeanimation</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --d900: #18191C; --d800: #22252B; --d700: #2E3138; --d600: #3C4049;
+      --mid: #6B7280; --midl: #9CA3AF; --border: rgba(255,255,255,0.08);
+      --blue: #5B9CF6; --blueh: #3B82F6; --bluel: #93C5FD;
+      --green: #22C55E; --orange: #F59E0B; --white: #FFFFFF;
+    }
+
+    html, body { width: 100%; height: 100%; }
+    body {
+      font-family: 'Inter', sans-serif;
+      overflow: hidden;
+      background: var(--d900);
+    }
+
+    .stage {
+      width: 100%; height: 100vh;
+      position: relative; overflow: hidden;
+      background: linear-gradient(135deg, #18191C 0%, #1E2230 50%, #18191C 100%);
+    }
+
+    .orb {
+      position: absolute; border-radius: 50%;
+      filter: blur(80px); pointer-events: none; opacity: 0;
+      animation: orbFloat 12s ease-in-out infinite;
+    }
+    .orb-1 { width: 40%; height: 70%; background: rgba(91,156,246,0.12); top: -20%; right: -10%; animation-delay: 0s; }
+    .orb-2 { width: 30%; height: 50%; background: rgba(34,197,94,0.07); bottom: -10%; left: 10%; animation-delay: 3s; }
+    .orb-3 { width: 25%; height: 45%; background: rgba(91,156,246,0.08); top: 55%; left: 55%; animation-delay: 6s; }
+
+    .grid-bg {
+      position: absolute; inset: 0; opacity: 0.03;
+      background-image: linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px);
+      background-size: 5% 9%;
+    }
+
+    .scene {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.8s cubic-bezier(0.4,0,0.2,1);
+      padding: 4%;
+    }
+    .scene.active { opacity: 1; pointer-events: all; }
+
+    .s1-wrap { display: flex; align-items: center; gap: 6%; max-width: 90%; }
+    .s1-content { display: flex; flex-direction: column; align-items: flex-start; text-align: left; }
+    .s1-icon { font-size: clamp(2rem, 6vw, 3.4rem); margin-bottom: 0.8rem; animation: s1IconFloat 3s ease-in-out infinite; }
+    .s1-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(1.4rem, 5vw, 2.6rem); font-weight: 700; color: var(--white);
+      letter-spacing: -0.03em; line-height: 1.12; margin-bottom: 0.7rem;
+    }
+    .s1-title .hl { color: var(--blue); }
+    .s1-sub { font-size: clamp(0.7rem, 2vw, 1rem); color: var(--midl); max-width: 36ch; line-height: 1.6; }
+
+    .phone-wrap { position: relative; flex-shrink: 0; animation: phoneEntry 0.8s 0.3s both; }
+    .phone {
+      width: clamp(90px, 16vw, 140px); aspect-ratio: 120/220; border-radius: 18px;
+      background: var(--d800); border: 1.5px solid var(--border);
+      position: relative; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    }
+    .phone-screen { position: absolute; inset: 6px; border-radius: 14px; background: var(--d700); overflow: hidden; }
+    .phone-notch { width: 32%; height: 4px; border-radius: 3px; background: var(--d900); margin: 7px auto 8px; }
+    .phone-msg {
+      margin: 0 7px 5px; padding: 6px 8px; border-radius: 7px;
+      background: var(--d600); font-size: clamp(6px, 1vw, 8px); color: var(--midl); line-height: 1.4;
+      opacity: 0; transform: translateY(8px); transition: opacity 0.4s, transform 0.4s;
+    }
+    .phone-msg.show { opacity: 1; transform: translateY(0); }
+    .phone-msg strong { color: var(--white); display: block; font-size: clamp(5.5px, 0.9vw, 7.5px); margin-bottom: 2px; }
+    .phone-msg.urgent { background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.3); }
+    .phone-msg.urgent strong { color: #FCA5A5; }
+    .missed-calls {
+      position: absolute; top: -8px; right: -8px;
+      background: #EF4444; color: white; border-radius: 100px;
+      font-size: clamp(7px, 1.2vw, 9px); font-weight: 700; padding: 3px 8px;
+      font-family: 'Outfit', sans-serif; box-shadow: 0 2px 8px rgba(239,68,68,0.5);
+      animation: badgePulse 1.5s ease-in-out infinite;
+    }
+
+    .s2-content { display: flex; align-items: center; gap: 5%; max-width: 92%; }
+    .s2-left { flex: 1; }
+    .s2-label { font-size: clamp(0.55rem, 1.4vw, 0.7rem); font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--blue); margin-bottom: 0.6rem; }
+    .s2-title { font-family:'Outfit',sans-serif; font-size: clamp(1.2rem, 4vw, 2rem); font-weight: 700; color: var(--white); letter-spacing: -0.03em; line-height: 1.18; margin-bottom: 0.5rem; }
+    .s2-title .hl { color: var(--blue); }
+    .s2-sub { font-size: clamp(0.68rem, 1.7vw, 0.88rem); color: var(--midl); line-height: 1.6; max-width: 34ch; }
+
+    .mini-dash {
+      width: clamp(190px, 32vw, 280px); flex-shrink: 0;
+      background: var(--d800); border-radius: 13px; border: 1px solid var(--border);
+      overflow: hidden; box-shadow: 0 16px 48px rgba(0,0,0,0.4);
+      animation: dashEntry 0.7s 0.2s both;
+    }
+    .mini-dash-bar { background: var(--d900); padding: 8px 11px; display: flex; align-items: center; gap: 5px; }
+    .mdot { width: 7px; height: 7px; border-radius: 50%; }
+    .mdot-r { background: #FF5F57; } .mdot-y { background: #FEBC2E; } .mdot-g { background: #28C840; }
+    .mini-url { font-size: clamp(6px,1vw,8px); color: var(--midl); margin-left: 4px; }
+    .mini-dash-body { padding: 12px; display: flex; flex-direction: column; gap: 7px; }
+    .mini-row { display: flex; justify-content: space-between; align-items: center; }
+    .mini-label { font-size: clamp(7px,1.1vw,9px); color: var(--midl); font-weight: 500; }
+    .mini-val { font-family:'Outfit',sans-serif; font-size: clamp(11px,1.7vw,14px); font-weight: 700; color: var(--bluel); }
+    .mini-prog-wrap { background: var(--d700); border-radius: 3px; height: 4px; }
+    .mini-prog-fill { height: 100%; border-radius: 3px; background: var(--blue); width: 0%; transition: width 1.2s ease 0.4s; }
+    .mini-step-row { display: flex; align-items: center; gap: 6px; padding: 5px 7px; border-radius: 6px; background: var(--d700); }
+    .mini-step-row.active { background: rgba(91,156,246,0.15); border: 1px solid rgba(91,156,246,0.25); }
+    .mini-step-ic { width: 14px; height: 14px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 6px; flex-shrink: 0; }
+    .done-ic { background: var(--blue); color: white; }
+    .active-ic { border: 1.5px solid var(--blue); color: var(--blue); animation: pulse 2s infinite; }
+    .todo-ic { background: var(--d600); }
+    .mini-step-txt { font-size: clamp(6.5px,1.1vw,8.5px); color: var(--midl); }
+    .mini-step-row.active .mini-step-txt { color: white; font-weight: 500; }
+    .done-txt { color: var(--bluel); }
+
+    .s3-content { width: 92%; }
+    .s3-title { font-family:'Outfit',sans-serif; font-size: clamp(1.1rem,3.4vw,1.6rem); font-weight: 700; color: var(--white); letter-spacing: -0.02em; margin-bottom: 1.1rem; text-align: center; line-height: 1.2; }
+    .s3-title .hl { color: var(--blue); }
+    .feat-cards { display: flex; gap: 2.5%; }
+    .feat-card {
+      flex: 1; background: var(--d800); border-radius: 11px; border: 1px solid var(--border);
+      padding: clamp(0.7rem, 1.6vw, 1.2rem);
+      opacity: 0; transform: translateY(20px); transition: opacity 0.5s, transform 0.5s;
+    }
+    .feat-card.show { opacity: 1; transform: translateY(0); }
+    .feat-card-icon { width: clamp(26px,3.5vw,34px); aspect-ratio: 1; border-radius: 8px; background: rgba(91,156,246,0.12); display: flex; align-items: center; justify-content: center; font-size: clamp(0.8rem,1.8vw,1.1rem); margin-bottom: 0.6rem; }
+    .feat-card-title { font-family:'Outfit',sans-serif; font-size: clamp(0.7rem,1.6vw,0.86rem); font-weight: 600; color: var(--white); margin-bottom: 0.3rem; }
+    .feat-card-text { font-size: clamp(0.6rem,1.3vw,0.74rem); color: var(--midl); line-height: 1.5; }
+    .feat-card-tag { display: inline-block; margin-top: 0.5rem; font-size: clamp(0.5rem,1vw,0.62rem); font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--blue); background: rgba(91,156,246,0.1); padding: 2px 7px; border-radius: 100px; }
+
+    .s4-content { display: flex; flex-direction: column; align-items: center; text-align: center; width: 92%; }
+    .s4-label { font-size: clamp(0.55rem,1.4vw,0.7rem); font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--green); margin-bottom: 0.6rem; }
+    .s4-title { font-family:'Outfit',sans-serif; font-size: clamp(1.3rem,4vw,2rem); font-weight: 700; color: var(--white); letter-spacing: -0.03em; line-height: 1.15; margin-bottom: 1.2rem; }
+    .s4-title .hl { color: var(--blue); }
+    .review-cards-wrap { display: flex; gap: 3%; justify-content: center; width: 100%; }
+    .review-card {
+      background: var(--white); border-radius: 11px; padding: clamp(0.7rem,1.6vw,1rem);
+      width: clamp(130px,22vw,175px); text-align: left;
+      opacity: 0; transform: translateY(16px) scale(0.95); transition: opacity 0.5s, transform 0.5s;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    }
+    .review-card.show { opacity: 1; transform: translateY(0) scale(1); }
+    .rc-stars { color: #F59E0B; font-size: clamp(0.6rem,1.4vw,0.75rem); letter-spacing: 0.05em; margin-bottom: 0.4rem; }
+    .rc-text { font-size: clamp(0.58rem,1.3vw,0.7rem); color: #374151; line-height: 1.5; margin-bottom: 0.5rem; }
+    .rc-author { font-size: clamp(0.55rem,1.1vw,0.64rem); font-weight: 600; color: #18191C; }
+    .rc-meta { font-size: clamp(0.5rem,1vw,0.6rem); color: #9CA3AF; }
+    .s4-counter { margin-top: 1.3rem; display: flex; align-items: center; gap: 0.8rem; background: var(--d800); border-radius: 10px; padding: 0.7rem 1.2rem; border: 1px solid var(--border); }
+    .counter-num { font-family:'Outfit',sans-serif; font-size: clamp(1.6rem,4vw,2.2rem); font-weight: 700; color: var(--blue); line-height: 1; min-width: 2.2ch; text-align: right; }
+    .counter-label { font-size: clamp(0.65rem,1.5vw,0.78rem); color: var(--midl); line-height: 1.4; text-align: left; }
+    .counter-label strong { color: var(--white); display: block; }
+
+    .s5-content { display: flex; flex-direction: column; align-items: center; text-align: center; }
+    .s5-logo { display: flex; align-items: center; gap: 0.7rem; margin-bottom: 1.1rem; }
+    .s5-logo-icon { width: clamp(36px,5vw,48px); aspect-ratio: 1; border-radius: 11px; background: linear-gradient(135deg, var(--blue) 0%, var(--blueh) 100%); display: flex; align-items: center; justify-content: center; font-size: clamp(1.1rem,2.4vw,1.4rem); box-shadow: 0 4px 16px rgba(91,156,246,0.4); }
+    .s5-logo-text { font-family:'Outfit',sans-serif; font-size: clamp(1.1rem,2.8vw,1.5rem); font-weight: 700; color: var(--white); letter-spacing: -0.02em; }
+    .s5-logo-text .hl { color: var(--blue); }
+    .s5-title { font-family:'Outfit',sans-serif; font-size: clamp(1.3rem,4vw,1.9rem); font-weight: 700; color: var(--white); letter-spacing: -0.03em; line-height: 1.15; margin-bottom: 0.6rem; }
+    .s5-title .hl { color: var(--blue); }
+    .s5-sub { font-size: clamp(0.7rem,1.7vw,0.85rem); color: var(--midl); max-width: 34ch; line-height: 1.6; margin-bottom: 1.3rem; }
+    .s5-btn { font-family:'Outfit',sans-serif; font-size: clamp(0.75rem,1.7vw,0.9rem); font-weight: 600; padding: 0.75rem 2rem; background: var(--blue); color: var(--white); border-radius: 8px; border: none; cursor: pointer; box-shadow: 0 4px 20px rgba(91,156,246,0.4); animation: ctaPulse 2s ease-in-out infinite; }
+
+    .progress-bar { position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: rgba(255,255,255,0.05); }
+    .progress-fill { height: 100%; background: var(--blue); width: 0%; }
+    .scene-dots { position: absolute; bottom: 14px; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; z-index: 10; }
+    .sdot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.2); transition: all 0.3s; }
+    .sdot.active { background: var(--blue); width: 20px; border-radius: 3px; }
+
+    @keyframes orbFloat { 0%{opacity:0;transform:scale(1);}20%{opacity:1;}80%{opacity:1;}100%{opacity:0;transform:scale(1.1);} }
+    @keyframes s1IconFloat { 0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);} }
+    @keyframes phoneEntry { from{opacity:0;transform:translateX(30px);}to{opacity:1;transform:translateX(0);} }
+    @keyframes dashEntry { from{opacity:0;transform:translateX(30px) scale(0.95);}to{opacity:1;transform:translateX(0) scale(1);} }
+    @keyframes badgePulse { 0%,100%{transform:scale(1);}50%{transform:scale(1.08);} }
+    @keyframes pulse { 0%,100%{opacity:1;}50%{opacity:0.4;} }
+    @keyframes ctaPulse { 0%,100%{box-shadow:0 4px 20px rgba(91,156,246,0.4);}50%{box-shadow:0 4px 32px rgba(91,156,246,0.7);} }
+
+    @media (max-aspect-ratio: 1/1) {
+      .s1-wrap, .s2-content { flex-direction: column; gap: 1.5rem; text-align: center; }
+      .s1-content { align-items: center; text-align: center; }
+      .feat-cards { flex-wrap: wrap; }
+      .feat-card { flex: 1 1 40%; }
+      .review-cards-wrap { flex-wrap: wrap; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="stage" id="stage">
+  <div class="grid-bg"></div>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+
+  <div class="scene active" id="scene-1">
+    <div class="s1-wrap">
+      <div class="s1-content">
+        <div class="s1-icon">😰</div>
+        <div class="s1-title">Nach dem Notar?<br><span class="hl">Stille.</span></div>
+        <div class="s1-sub">Käufer haben hundert Fragen. Makler sind nach dem Abschluss nicht mehr erreichbar. Der Stress beginnt genau dann.</div>
+      </div>
+      <div class="phone-wrap">
+        <div class="phone">
+          <div class="phone-screen">
+            <div class="phone-notch"></div>
+            <div class="phone-msg urgent" id="pm1"><strong>📞 Verpasst: Makler</strong>Wann überweise ich den Kaufpreis?</div>
+            <div class="phone-msg urgent" id="pm2"><strong>📞 Verpasst: Makler</strong>Noch nichts vom Notar gehört...</div>
+            <div class="phone-msg" id="pm3"><strong>💬 WhatsApp</strong>Welche Versicherung brauche ich?</div>
+            <div class="phone-msg" id="pm4"><strong>📧 E-Mail</strong>Fälligkeitsmitteilung – was heißt das?</div>
+          </div>
+        </div>
+        <div class="missed-calls" id="callBadge">5 verpasst</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="scene" id="scene-2">
+    <div class="s2-content">
+      <div class="s2-left">
+        <div class="s2-label">Die Lösung</div>
+        <div class="s2-title">Automatische Betreuung<br>ab <span class="hl">Notartermin.</span></div>
+        <div class="s2-sub">Sobald der Deal geschlossen ist, bekommt Ihr Käufer alles was er braucht – automatisch, unter Ihrem Namen.</div>
+      </div>
+      <div class="mini-dash" id="miniDash">
+        <div class="mini-dash-bar">
+          <span class="mdot mdot-r"></span><span class="mdot mdot-y"></span><span class="mdot mdot-g"></span>
+          <span class="mini-url">service.thomas-immobilien.de</span>
+        </div>
+        <div class="mini-dash-body">
+          <div class="mini-row"><span class="mini-label">Fortschritt</span><span class="mini-val">58%</span></div>
+          <div class="mini-prog-wrap"><div class="mini-prog-fill" id="miniProg"></div></div>
+          <div class="mini-step-row"><div class="mini-step-ic done-ic">&#10003;</div><span class="mini-step-txt done-txt">Notartermin &#10003;</span></div>
+          <div class="mini-step-row"><div class="mini-step-ic done-ic">&#10003;</div><span class="mini-step-txt done-txt">Kaufpreis überwiesen &#10003;</span></div>
+          <div class="mini-step-row active"><div class="mini-step-ic active-ic">&bull;</div><span class="mini-step-txt">Handwerker koordinieren</span></div>
+          <div class="mini-step-row"><div class="mini-step-ic todo-ic"></div><span class="mini-step-txt" style="color:var(--d600);">Strom & Gas anmelden</span></div>
+          <div class="mini-step-row"><div class="mini-step-ic todo-ic"></div><span class="mini-step-txt" style="color:var(--d600);">Einzug & Ummeldung</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="scene" id="scene-3">
+    <div class="s3-content">
+      <div class="s3-title">Alles was Ihr Käufer <span class="hl">wirklich braucht.</span></div>
+      <div class="feat-cards">
+        <div class="feat-card" id="fc1"><div class="feat-card-icon">🗂️</div><div class="feat-card-title">Meilenstein-Tracker</div><div class="feat-card-text">Schritt für Schritt bis zum Einzug.</div><div class="feat-card-tag">Automatisch</div></div>
+        <div class="feat-card" id="fc2"><div class="feat-card-icon">🤖</div><div class="feat-card-title">KI-Assistent</div><div class="feat-card-text">Jede Frage beantwortet. 24/7.</div><div class="feat-card-tag">4 Sprachen</div></div>
+        <div class="feat-card" id="fc3"><div class="feat-card-icon">📋</div><div class="feat-card-title">Formular-Hub</div><div class="feat-card-text">Strom, GEZ, Ummeldung – ein Klick.</div><div class="feat-card-tag">Vorausgefüllt</div></div>
+        <div class="feat-card" id="fc4"><div class="feat-card-icon">🎨</div><div class="feat-card-title">White-Label</div><div class="feat-card-text">Ihr Logo. Ihr Name. Überall.</div><div class="feat-card-tag">Ihr Brand</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="scene" id="scene-4">
+    <div class="s4-content">
+      <div class="s4-label">Das Ergebnis für Sie</div>
+      <div class="s4-title">Automatisch neue <span class="hl">Google-Bewertungen.</span></div>
+      <div class="review-cards-wrap">
+        <div class="review-card" id="rc1"><div class="rc-stars">★★★★★</div><div class="rc-text">„Endlich ein Makler der auch nach dem Notar noch da ist."</div><div class="rc-author">Yılmaz A.</div><div class="rc-meta">Frankfurt · vor 3 Tagen</div></div>
+        <div class="review-card" id="rc2"><div class="rc-stars">★★★★★</div><div class="rc-text">„Der Formular-Hub hat mir so viel Stress erspart."</div><div class="rc-author">Julia M.</div><div class="rc-meta">München · vor 1 Woche</div></div>
+        <div class="review-card" id="rc3"><div class="rc-stars">★★★★★</div><div class="rc-text">„Sehr professionell. Alle Fragen sofort beantwortet."</div><div class="rc-author">Mehmet K.</div><div class="rc-meta">Berlin · vor 2 Wochen</div></div>
+      </div>
+      <div class="s4-counter">
+        <div class="counter-num" id="counterNum">0</div>
+        <div class="counter-label"><strong>neue Bewertungen pro Jahr</strong>bei 40 Deals · 58% Conversion · vollautomatisch</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="scene" id="scene-5">
+    <div class="s5-content">
+      <div class="s5-logo">
+        <div class="s5-logo-icon">🏠</div>
+        <div class="s5-logo-text">Prop<span class="hl">After</span>Care</div>
+      </div>
+      <div class="s5-title">Nach dem Notar<br>beginnt Ihr <span class="hl">Unterschied.</span></div>
+      <div class="s5-sub">Automatische Käuferbetreuung. Mehr Google-Bewertungen. Weniger Support-Anrufe.</div>
+      <button class="s5-btn" id="ctaBtn">Kostenlose Demo anfragen →</button>
+    </div>
+  </div>
+
+  <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+  <div class="scene-dots" id="sceneDots"></div>
+</div>
+
+<script>
+  const SCENES = [
+    { id: 1, duration: 5000 },
+    { id: 2, duration: 5000 },
+    { id: 3, duration: 5000 },
+    { id: 4, duration: 6000 },
+    { id: 5, duration: 4000 },
+  ];
+  let current = 0;
+  let sceneTimer = null;
+
+  const dotsEl = document.getElementById('sceneDots');
+  SCENES.forEach((s, i) => {
+    const d = document.createElement('div');
+    d.className = 'sdot' + (i === 0 ? ' active' : '');
+    dotsEl.appendChild(d);
+  });
+
+  function runScene(idx) {
+    SCENES.forEach(s => document.getElementById('scene-' + s.id).classList.remove('active'));
+    document.querySelectorAll('.sdot').forEach(function (d, i) { d.className = 'sdot' + (i === idx ? ' active' : ''); });
+
+    const scene = SCENES[idx];
+    document.getElementById('scene-' + scene.id).classList.add('active');
+
+    if (idx === 0) animScene1();
+    if (idx === 1) animScene2();
+    if (idx === 2) animScene3();
+    if (idx === 3) animScene4();
+
+    const fill = document.getElementById('progressFill');
+    fill.style.transition = 'none';
+    fill.style.width = '0%';
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        fill.style.transition = 'width ' + scene.duration + 'ms linear';
+        fill.style.width = '100%';
+      });
+    });
+
+    clearTimeout(sceneTimer);
+    sceneTimer = setTimeout(function () {
+      current = (current + 1) % SCENES.length;
+      runScene(current);
+    }, scene.duration);
+  }
+
+  function animScene1() {
+    ['pm1','pm2','pm3','pm4'].forEach(function (id) { var el = document.getElementById(id); if (el) el.classList.remove('show'); });
+    ['pm1','pm2','pm3','pm4'].forEach(function (id, i) { setTimeout(function () { var el = document.getElementById(id); if (el) el.classList.add('show'); }, 400 + i * 600); });
+    var count = 0;
+    var badge = document.getElementById('callBadge');
+    var iv = setInterval(function () { count++; if (badge) badge.textContent = count + ' verpasst'; if (count >= 5) clearInterval(iv); }, 500);
+  }
+
+  function animScene2() {
+    var dash = document.getElementById('miniDash');
+    if (dash) { dash.style.animation = 'none'; void dash.offsetWidth; dash.style.animation = 'dashEntry 0.7s 0.2s both'; }
+    var prog = document.getElementById('miniProg');
+    if (prog) { prog.style.width = '0%'; setTimeout(function () { prog.style.width = '58%'; }, 100); }
+  }
+
+  function animScene3() {
+    ['fc1','fc2','fc3','fc4'].forEach(function (id, i) {
+      var el = document.getElementById(id);
+      if (el) { el.classList.remove('show'); setTimeout(function () { el.classList.add('show'); }, 100 + i * 120); }
+    });
+  }
+
+  function animScene4() {
+    ['rc1','rc2','rc3'].forEach(function (id, i) {
+      var el = document.getElementById(id);
+      if (el) { el.classList.remove('show'); setTimeout(function () { el.classList.add('show'); }, 200 + i * 200); }
+    });
+    var numEl = document.getElementById('counterNum');
+    if (numEl) {
+      var n = 0; numEl.textContent = '0';
+      var step = setInterval(function () { n++; numEl.textContent = n; if (n >= 23) clearInterval(step); }, 80);
+    }
+  }
+
+  document.getElementById('ctaBtn').addEventListener('click', function () {
+    try {
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({ type: 'propaftercare:cta' }, '*');
+      } else {
+        window.location.hash = '#demo';
+      }
+    } catch (e) { /* ignore */ }
+  });
+
+  runScene(0);
+</script>
+</body>
+</html>
