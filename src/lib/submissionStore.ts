@@ -2,7 +2,9 @@
 
 import type { DocumentId } from '@/types';
 
-const STORAGE_KEY = 'pac:submissions:v1';
+const STORAGE_PREFIX = 'pac:submissions';
+const LEGACY_KEY = 'pac:submissions:v1';
+const FALLBACK_BUYER_ID = 'julia-m';
 
 export type SubmissionStatus = 'draft' | 'submitted' | 'confirmed' | 'failed';
 
@@ -22,10 +24,38 @@ export interface Submission {
 
 type Store = Record<string, Submission>;
 
+function getActiveBuyerId(): string {
+  if (typeof document === 'undefined') return FALLBACK_BUYER_ID;
+  const match = document.cookie
+    .split('; ')
+    .find(c => c.startsWith('pac-active-buyer='));
+  return match ? decodeURIComponent(match.split('=')[1]) : FALLBACK_BUYER_ID;
+}
+
+function keyFor(buyerId: string): string {
+  return `${STORAGE_PREFIX}:${buyerId}:v1`;
+}
+
+function migrateLegacy() {
+  if (typeof window === 'undefined') return;
+  try {
+    const legacy = window.localStorage.getItem(LEGACY_KEY);
+    if (!legacy) return;
+    const target = keyFor(FALLBACK_BUYER_ID);
+    if (!window.localStorage.getItem(target)) {
+      window.localStorage.setItem(target, legacy);
+    }
+    window.localStorage.removeItem(LEGACY_KEY);
+  } catch {
+    // ignore
+  }
+}
+
 function read(): Store {
   if (typeof window === 'undefined') return {};
+  migrateLegacy();
   try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
+    const raw = window.localStorage.getItem(keyFor(getActiveBuyerId()));
     return raw ? (JSON.parse(raw) as Store) : {};
   } catch {
     return {};
@@ -35,7 +65,7 @@ function read(): Store {
 function write(store: Store) {
   if (typeof window === 'undefined') return;
   try {
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(store));
+    window.localStorage.setItem(keyFor(getActiveBuyerId()), JSON.stringify(store));
   } catch {
     // ignore
   }
@@ -139,7 +169,7 @@ export async function pushSubmissionToServer(
 export function clearSubmissions() {
   if (typeof window === 'undefined') return;
   try {
-    window.localStorage.removeItem(STORAGE_KEY);
+    window.localStorage.removeItem(keyFor(getActiveBuyerId()));
   } catch {
     // ignore
   }

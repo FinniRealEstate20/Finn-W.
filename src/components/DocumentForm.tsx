@@ -15,6 +15,7 @@ import {
   recordSubmission,
   type Submission
 } from '@/lib/submissionStore';
+import { buildSubmissionPdf, downloadPdf } from '@/lib/pdf';
 import type { FormEntry } from '@/types';
 
 interface Props {
@@ -71,57 +72,10 @@ function setValueOnProfile(profile: ProfileData, key: string, raw: string): Prof
   }
 }
 
-function buildPrintableHtml(args: {
-  title: string;
-  subtitle: string;
-  source: string;
-  fields: Array<{ label: string; value: string }>;
-  consequence?: string;
-  receiptId: string;
-}): string {
-  const rows = args.fields
-    .map(
-      f => `
-        <tr>
-          <th>${escapeHtml(f.label)}</th>
-          <td>${escapeHtml(f.value || '—')}</td>
-        </tr>`
-    )
-    .join('');
-  return `<!doctype html>
-<html lang="de">
-  <head>
-    <meta charset="utf-8" />
-    <title>${escapeHtml(args.title)}</title>
-    <style>
-      body { font-family: -apple-system, system-ui, Segoe UI, Roboto, sans-serif; color: #0f172a; max-width: 720px; margin: 32px auto; padding: 0 24px; }
-      h1 { font-size: 22px; margin: 0 0 4px; }
-      .sub { color: #475569; font-size: 13px; margin-bottom: 24px; }
-      .receipt { font-size: 11px; color: #64748b; margin-bottom: 16px; }
-      table { width: 100%; border-collapse: collapse; }
-      th, td { padding: 10px 12px; border-bottom: 1px solid #e2e8f0; text-align: left; font-size: 14px; vertical-align: top; }
-      th { width: 38%; font-weight: 600; color: #334155; background: #f8fafc; }
-      .footer { margin-top: 24px; font-size: 11px; color: #64748b; }
-      .warn { margin-top: 16px; padding: 10px 12px; background: #fef3c7; color: #78350f; border-radius: 6px; font-size: 12px; }
-      @media print { body { margin: 12mm; } }
-    </style>
-  </head>
-  <body>
-    <h1>${escapeHtml(args.title)}</h1>
-    <div class="sub">${escapeHtml(args.subtitle)}</div>
-    <div class="receipt">Quelle: ${escapeHtml(args.source)} · Beleg-ID: ${escapeHtml(args.receiptId)}</div>
-    <table>${rows}</table>
-    ${args.consequence ? `<div class="warn">${escapeHtml(args.consequence)}</div>` : ''}
-    <div class="footer">Erzeugt durch PropAfterCare · ${new Date().toLocaleString('de-DE')}</div>
-    <script>window.onload = () => setTimeout(() => window.print(), 200);</script>
-  </body>
-</html>`;
-}
-
-function escapeHtml(s: string): string {
-  return s.replace(/[&<>"']/g, c =>
-    ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!)
-  );
+function buyerName(profile: ProfileData | null): string | undefined {
+  if (!profile) return undefined;
+  const name = `${profile.firstName} ${profile.lastName}`.trim();
+  return name.length > 0 ? name : undefined;
 }
 
 export function DocumentForm({ form, fieldKeys, fieldLabels }: Props) {
@@ -198,19 +152,21 @@ export function DocumentForm({ form, fieldKeys, fieldLabels }: Props) {
     });
     setSubmission(placeholder);
     syncToServer(placeholder);
-    const html = buildPrintableHtml({
-      title: t(`items.${form.id}.name`),
-      subtitle: t(`items.${form.id}.hint`),
-      source: sourceLabel,
-      fields,
-      consequence: form.consequenceIfMissing,
-      receiptId: placeholder.receiptId
-    });
-    const win = window.open('', '_blank', 'noopener');
-    if (!win) return;
-    win.document.open();
-    win.document.write(html);
-    win.document.close();
+    try {
+      const blob = buildSubmissionPdf({
+        title: t(`items.${form.id}.name`),
+        subtitle: t(`items.${form.id}.hint`),
+        source: sourceLabel,
+        fields,
+        consequence: form.consequenceIfMissing,
+        submissionTarget: form.submissionTarget,
+        receiptId: placeholder.receiptId,
+        buyerName: buyerName(profile)
+      });
+      downloadPdf(blob, `${form.id}-${placeholder.receiptId}.pdf`);
+    } catch (err) {
+      console.error('PDF generation failed', err);
+    }
   }
 
   function submitInhouse() {

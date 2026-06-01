@@ -286,6 +286,44 @@
     "savedHint": "Änderungen werden automatisch gespeichert.",
     "cta": "Profil bearbeiten"
   },
+  "myForms": {
+    "title": "Meine Formulare",
+    "subtitle": "Alle bisher ausgefüllten und eingereichten Formulare an einem Ort. Du kannst sie ordnen, ein PDF erzeugen oder direkt versenden.",
+    "empty": "Du hast noch keine Formulare ausgefüllt.",
+    "browseLink": "Zum Formular-Hub →",
+    "navLink": "Meine Formulare",
+    "filters": {
+      "all": "Alle",
+      "draft": "Entwürfe",
+      "submitted": "Eingereicht",
+      "confirmed": "Erledigt"
+    },
+    "sort": {
+      "newest": "Neueste zuerst",
+      "oldest": "Älteste zuerst",
+      "category": "Kategorie",
+      "status": "Status"
+    },
+    "stats": {
+      "drafts": "Entwürfe",
+      "submitted": "Eingereicht",
+      "confirmed": "Erledigt",
+      "total": "Gesamt"
+    },
+    "actions": {
+      "open": "Öffnen",
+      "pdf": "PDF erzeugen",
+      "send": "Versenden",
+      "confirm": "Als erledigt markieren",
+      "mailto": "Per E-Mail",
+      "external": "Zum Portal",
+      "postal": "Postversand vorbereiten",
+      "inperson": "Vor-Ort-Termin"
+    },
+    "receiptLabel": "Beleg {id}",
+    "mailSubject": "{form} – Unterlagen zum Umzug",
+    "mailIntro": "Sehr geehrte Damen und Herren,\n\nanbei meine Daten zur Bearbeitung von „{form}\".\n\n"
+  },
   "chat": {
     "title": "Frag den Assistenten",
     "placeholder": "Was ist die Auflassungsvormerkung?",

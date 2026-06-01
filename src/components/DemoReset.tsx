@@ -2,15 +2,21 @@
 
 import { useState } from 'react';
 
-const LOCAL_KEYS = [
-  'pac:profile:v1',
-  'pac:submissions:v1',
-  'pac:milestones:v1',
-  'pac:activeBuyer:v1'
-];
-
 function clearCookie(name: string) {
   document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`;
+}
+
+function clearAllPacKeys() {
+  try {
+    const keys: string[] = [];
+    for (let i = 0; i < window.localStorage.length; i += 1) {
+      const key = window.localStorage.key(i);
+      if (key && key.startsWith('pac:')) keys.push(key);
+    }
+    for (const k of keys) window.localStorage.removeItem(k);
+  } catch {
+    // ignore
+  }
 }
 
 export function DemoReset() {
@@ -20,13 +26,7 @@ export function DemoReset() {
   async function reset() {
     setBusy(true);
     try {
-      for (const k of LOCAL_KEYS) {
-        try {
-          window.localStorage.removeItem(k);
-        } catch {
-          // ignore
-        }
-      }
+      clearAllPacKeys();
       clearCookie('pac-active-buyer');
       await fetch('/api/submissions', { method: 'DELETE' }).catch(() => null);
     } finally {
