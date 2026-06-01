@@ -66,6 +66,15 @@ export function persistSubmission(
   return record;
 }
 
-export function listSubmissions(limit = 50): SubmissionRecord[] {
-  return getStore().list.slice(0, limit);
+export function listSubmissions(opts?: { limit?: number; buyerId?: string }): SubmissionRecord[] {
+  const { limit = 50, buyerId } = opts ?? {};
+  const list = getStore().list;
+  const filtered = buyerId ? list.filter(r => r.buyer?.id === buyerId) : list;
+  return filtered.slice(0, limit);
+}
+
+export function clearAllSubmissions() {
+  const store = getStore();
+  store.list = [];
+  store.byClientReceipt.clear();
 }

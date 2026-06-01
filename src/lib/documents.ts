@@ -297,6 +297,18 @@ export function getForm(id: string): FormEntry | undefined {
   return formCatalog.find(f => f.id === id);
 }
 
+export function formForMilestone(
+  milestoneId: string,
+  propertyType: PropertyType
+): FormEntry | undefined {
+  const candidates = formCatalog.filter(f => f.triggerMilestone === milestoneId);
+  return (
+    candidates.find(f => f.forPropertyType === propertyType) ??
+    candidates.find(f => f.forPropertyType === 'all') ??
+    candidates[0]
+  );
+}
+
 export function formatDate(iso: string): string {
   try {
     return new Intl.DateTimeFormat('de-DE', {

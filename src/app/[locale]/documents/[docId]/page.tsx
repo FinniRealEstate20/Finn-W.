@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { mockBroker } from '@/lib/mockData';
+import { getActiveBuyer } from '@/lib/activeBuyer';
 import { getForm, formatDate } from '@/lib/documents';
 import { BrokerHeader } from '@/components/BrokerHeader';
 import { DocumentForm } from '@/components/DocumentForm';
@@ -31,12 +32,13 @@ export default async function DocumentDetailPage({
 
   const t = await getTranslations('documents');
   const tc = await getTranslations('common');
+  const buyer = await getActiveBuyer();
 
   const fieldKeys = form.prefillCopyFields ?? ['name', 'newAddress'];
 
   return (
     <main className="min-h-screen bg-slate-50">
-      <BrokerHeader broker={mockBroker} locale={locale} />
+      <BrokerHeader broker={mockBroker} locale={locale} activeBuyerId={buyer.id} />
       <div className="container-page py-10">
         <div className="mx-auto max-w-2xl">
           <Link

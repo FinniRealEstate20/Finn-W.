@@ -1,8 +1,10 @@
 'use client';
 
+import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/cn';
-import type { Milestone } from '@/types';
+import { formForMilestone } from '@/lib/documents';
+import type { Milestone, PropertyType } from '@/types';
 
 const STATUS_STYLES: Record<Milestone['status'], { dot: string; label: string }> = {
   open: { dot: 'bg-slate-300', label: 'Offen' },
@@ -12,30 +14,48 @@ const STATUS_STYLES: Record<Milestone['status'], { dot: string; label: string }>
 
 export function MilestoneCard({
   milestone,
-  onToggle
+  onToggle,
+  locale,
+  propertyType
 }: {
   milestone: Milestone;
   onToggle?: (id: string) => void;
+  locale?: string;
+  propertyType?: PropertyType;
 }) {
   const t = useTranslations('milestones');
   const style = STATUS_STYLES[milestone.status];
   const isDone = milestone.status === 'done';
   const interactive = Boolean(onToggle);
+  const linkedForm =
+    locale && propertyType ? formForMilestone(milestone.id, propertyType) : undefined;
 
-  const Wrapper: 'button' | 'article' = interactive ? 'button' : 'article';
+  const handleToggle = () => onToggle?.(milestone.id);
 
   return (
-    <Wrapper
-      onClick={interactive ? () => onToggle?.(milestone.id) : undefined}
+    <div
+      onClick={interactive ? handleToggle : undefined}
+      onKeyDown={
+        interactive
+          ? e => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                handleToggle();
+              }
+            }
+          : undefined
+      }
+      role={interactive ? 'button' : undefined}
+      tabIndex={interactive ? 0 : undefined}
+      aria-pressed={interactive ? isDone : undefined}
       className={cn(
         'flex w-full gap-4 rounded-2xl border p-5 text-left transition',
         isDone
           ? 'border-emerald-100 bg-emerald-50/50'
           : 'border-slate-200 bg-white',
-        interactive && 'hover:border-brand-300 hover:shadow-card focus:outline-none focus:ring-2 focus:ring-brand-300 focus:ring-offset-2'
+        interactive &&
+          'cursor-pointer hover:border-brand-300 hover:shadow-card focus:outline-none focus:ring-2 focus:ring-brand-300 focus:ring-offset-2'
       )}
-      type={interactive ? 'button' : undefined}
-      aria-pressed={interactive ? isDone : undefined}
     >
       <div className="flex-shrink-0">
         <div
@@ -81,7 +101,16 @@ export function MilestoneCard({
           )}
         </div>
         <p className="mt-1 text-sm text-ink-soft">{t(`${milestone.id}.body`)}</p>
+        {linkedForm && !isDone && (
+          <Link
+            href={`/${locale}/documents/${linkedForm.id}`}
+            onClick={e => e.stopPropagation()}
+            className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-brand-700 hover:text-brand-800"
+          >
+            Formular öffnen →
+          </Link>
+        )}
       </div>
-    </Wrapper>
+    </div>
   );
 }

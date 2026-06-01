@@ -1,6 +1,9 @@
 import Link from 'next/link';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
+
+export const dynamic = 'force-dynamic';
 import { mockBroker } from '@/lib/mockData';
+import { getActiveBuyer } from '@/lib/activeBuyer';
 import { BrokerHeader } from '@/components/BrokerHeader';
 import { ProfileEditor } from '@/components/ProfileEditor';
 
@@ -14,10 +17,11 @@ export default async function ProfilePage({
   const t = await getTranslations('profile');
   const td = await getTranslations('dashboard');
   const tc = await getTranslations('common');
+  const buyer = await getActiveBuyer();
 
   return (
     <main className="min-h-screen bg-slate-50">
-      <BrokerHeader broker={mockBroker} locale={locale} />
+      <BrokerHeader broker={mockBroker} locale={locale} activeBuyerId={buyer.id} />
       <div className="container-page py-10">
         <div className="mx-auto max-w-3xl">
           <Link

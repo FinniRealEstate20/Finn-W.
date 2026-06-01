@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import {
+  clearAllSubmissions,
   listSubmissions,
   persistSubmission,
   type SubmissionChannel,
@@ -82,7 +83,8 @@ export async function POST(request: Request) {
 export async function GET(request: Request) {
   const url = new URL(request.url);
   const limit = Math.min(Number(url.searchParams.get('limit') ?? 50) || 50, 200);
-  const items = listSubmissions(limit).map(r => ({
+  const buyerId = url.searchParams.get('buyerId') ?? undefined;
+  const items = listSubmissions({ limit, buyerId }).map(r => ({
     formId: r.formId,
     channel: r.channel,
     status: r.status,
@@ -93,4 +95,9 @@ export async function GET(request: Request) {
     buyer: r.buyer
   }));
   return NextResponse.json({ count: items.length, items });
+}
+
+export async function DELETE() {
+  clearAllSubmissions();
+  return NextResponse.json({ ok: true });
 }

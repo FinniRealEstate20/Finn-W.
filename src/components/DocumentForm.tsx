@@ -169,10 +169,19 @@ export function DocumentForm({ form, fieldKeys, fieldLabels }: Props) {
     }
   }
 
+  function readActiveBuyerId(): string | undefined {
+    const match = document.cookie
+      .split('; ')
+      .find(c => c.startsWith('pac-active-buyer='));
+    return match ? decodeURIComponent(match.split('=')[1]) : undefined;
+  }
+
   function syncToServer(record: Submission) {
-    void pushSubmissionToServer(record, profile ? { email: profile.email } : undefined).then(
-      synced => setSubmission(synced)
-    );
+    const buyerId = readActiveBuyerId();
+    void pushSubmissionToServer(record, {
+      id: buyerId,
+      email: profile?.email
+    }).then(synced => setSubmission(synced));
   }
 
   function openPrintable() {

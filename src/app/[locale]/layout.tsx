@@ -2,6 +2,7 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { isRtl, locales, type Locale } from '@/i18n/config';
+import { DemoReset } from '@/components/DemoReset';
 
 export function generateStaticParams() {
   return locales.map(locale => ({ locale }));
@@ -26,6 +27,7 @@ export default async function LocaleLayout({
       <body>
         <NextIntlClientProvider locale={locale} messages={messages}>
           {children}
+          <DemoReset />
         </NextIntlClientProvider>
       </body>
     </html>

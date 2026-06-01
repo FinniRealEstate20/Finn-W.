@@ -1,7 +1,10 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { mockBroker, getDefaultBuyer } from '@/lib/mockData';
+
+export const dynamic = 'force-dynamic';
+import { mockBroker } from '@/lib/mockData';
+import { getActiveBuyer } from '@/lib/activeBuyer';
 import { Logo } from '@/components/Logo';
 
 export default async function WelcomePage({
@@ -13,7 +16,7 @@ export default async function WelcomePage({
   setRequestLocale(locale);
   const t = await getTranslations('welcome');
   const tc = await getTranslations('common');
-  const buyer = getDefaultBuyer();
+  const buyer = await getActiveBuyer();
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-brand-50 to-white">

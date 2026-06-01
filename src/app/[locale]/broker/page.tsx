@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
+
+export const dynamic = 'force-dynamic';
 import { mockBroker, mockBuyers } from '@/lib/mockData';
 import { InteractiveBrokerList } from '@/components/InteractiveBrokerList';
 import { Logo } from '@/components/Logo';

@@ -10,7 +10,7 @@ import type { Buyer, Milestone, MilestoneStatus, Phase } from '@/types';
 
 const PHASES: Phase[] = [1, 2, 3, 4];
 
-export function InteractiveDashboard({ buyer }: { buyer: Buyer }) {
+export function InteractiveDashboard({ buyer, locale }: { buyer: Buyer; locale: string }) {
   const t = useTranslations('dashboard');
   const [milestones, setMilestones] = useState<Milestone[]>(buyer.milestones);
   const [hydrated, setHydrated] = useState(false);
@@ -107,6 +107,8 @@ export function InteractiveDashboard({ buyer }: { buyer: Buyer }) {
               phase={p}
               milestones={grouped[p]}
               onToggle={toggle}
+              locale={locale}
+              propertyType={buyer.propertyType}
             />
           ) : null
         )}

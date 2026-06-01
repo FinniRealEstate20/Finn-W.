@@ -1,5 +1,8 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { mockBroker, getDefaultBuyer } from '@/lib/mockData';
+
+export const dynamic = 'force-dynamic';
+import { mockBroker } from '@/lib/mockData';
+import { getActiveBuyer } from '@/lib/activeBuyer';
 import { formsFor, groupByCategory, documentCategories } from '@/lib/documents';
 import { BrokerHeader } from '@/components/BrokerHeader';
 import { DocumentItem } from '@/components/DocumentItem';
@@ -13,13 +16,13 @@ export default async function DocumentsPage({
   setRequestLocale(locale);
   const t = await getTranslations('documents');
   const tc = await getTranslations('common');
-  const buyer = getDefaultBuyer();
+  const buyer = await getActiveBuyer();
   const forms = formsFor(buyer.propertyType);
   const grouped = groupByCategory(forms);
 
   return (
     <main className="min-h-screen bg-slate-50">
-      <BrokerHeader broker={mockBroker} locale={locale} />
+      <BrokerHeader broker={mockBroker} locale={locale} activeBuyerId={buyer.id} />
       <div className="container-page py-10">
         <h1 className="text-3xl font-bold text-ink">{t('title')}</h1>
         <p className="mt-2 max-w-2xl text-ink-soft">{t('subtitle')}</p>

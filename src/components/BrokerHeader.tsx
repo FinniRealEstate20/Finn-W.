@@ -2,10 +2,25 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { Logo } from './Logo';
+import { BuyerSwitcher } from './BuyerSwitcher';
+import { mockBuyers } from '@/lib/mockData';
 import type { Broker } from '@/types';
 
-export function BrokerHeader({ broker, locale }: { broker: Broker; locale: string }) {
+export function BrokerHeader({
+  broker,
+  locale,
+  activeBuyerId
+}: {
+  broker: Broker;
+  locale: string;
+  activeBuyerId: string;
+}) {
   const t = useTranslations('common');
+  const switcherBuyers = mockBuyers.map(b => ({
+    id: b.id,
+    name: b.name,
+    propertyType: b.propertyType
+  }));
 
   return (
     <header className="border-b border-slate-200 bg-white">
@@ -27,9 +42,12 @@ export function BrokerHeader({ broker, locale }: { broker: Broker; locale: strin
             </div>
           </div>
         </Link>
-        <div className="hidden items-center gap-2 text-xs text-ink-muted sm:flex">
-          <span>{t('poweredByShort')}</span>
-          <Logo variant="mark" className="h-6 w-6" />
+        <div className="flex items-center gap-3">
+          <BuyerSwitcher buyers={switcherBuyers} activeId={activeBuyerId} />
+          <div className="hidden items-center gap-2 text-xs text-ink-muted sm:flex">
+            <span>{t('poweredByShort')}</span>
+            <Logo variant="mark" className="h-6 w-6" />
+          </div>
         </div>
       </div>
     </header>
