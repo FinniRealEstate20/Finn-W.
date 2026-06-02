@@ -54,10 +54,7 @@ export default async function LandingPage({
         </div>
 
         <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-          <Link href={`/${locale}/welcome`} className="btn-primary">
-            {t('hero.ctaPrimary')}
-          </Link>
-          <Link href={`/${locale}/dashboard`} className="btn-secondary">
+          <Link href={`/${locale}/dashboard`} className="btn-primary">
             {t('hero.ctaSecondary')}
           </Link>
         </div>
