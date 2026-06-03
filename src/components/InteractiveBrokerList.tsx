@@ -151,7 +151,7 @@ export function InteractiveBrokerList({
         />
         <StatCard
           label={t('dashboard.metrics.averageRating')}
-          value={`${broker.reviews.average} ★`}
+          value={`${broker.reviews.average} / 5`}
           accent="amber"
         />
       </div>

@@ -4,6 +4,13 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { mockBroker, topCurators } from '@/lib/mockData';
 import { StatCard } from '@/components/StatCard';
 import { Logo } from '@/components/Logo';
+import { CheckIcon } from '@/components/icons';
+
+const RANK_BADGE_STYLES: Record<number, string> = {
+  1: 'bg-amber-100 text-amber-800 ring-1 ring-amber-300',
+  2: 'bg-slate-200 text-slate-800 ring-1 ring-slate-300',
+  3: 'bg-orange-100 text-orange-800 ring-1 ring-orange-300'
+};
 
 export default async function BrokerCuratorsPage({
   params
@@ -95,7 +102,7 @@ export default async function BrokerCuratorsPage({
                     r.reached ? 'bg-emerald-500 text-white' : 'bg-slate-100 text-ink-muted'
                   }`}
                 >
-                  {r.reached ? '✓' : r.tier}
+                  {r.reached ? <CheckIcon className="h-4 w-4" strokeWidth={3} /> : r.tier}
                 </div>
                 <div className="text-sm text-ink-soft">{r.label}</div>
               </div>
@@ -122,8 +129,14 @@ export default async function BrokerCuratorsPage({
                   const isYou = c.name === mockBroker.name;
                   return (
                     <tr key={c.rank} className={isYou ? 'bg-brand-50' : ''}>
-                      <td className="px-4 py-3 text-ink-soft">
-                        {c.rank === 1 ? '🥇' : c.rank === 2 ? '🥈' : c.rank === 3 ? '🥉' : c.rank}
+                      <td className="px-4 py-3">
+                        {RANK_BADGE_STYLES[c.rank] ? (
+                          <span className={`inline-flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold ${RANK_BADGE_STYLES[c.rank]}`}>
+                            {c.rank}
+                          </span>
+                        ) : (
+                          <span className="text-ink-soft">{c.rank}</span>
+                        )}
                       </td>
                       <td className="px-4 py-3">
                         <div className="font-medium text-ink">

@@ -77,7 +77,7 @@ export default async function BrokerReputationPage({
           />
           <StatCard
             label={t('reputation.metrics.averageStars')}
-            value={`${mockBroker.reviews.average} ★`}
+            value={`${mockBroker.reviews.average} / 5`}
             accent="amber"
           />
           <StatCard

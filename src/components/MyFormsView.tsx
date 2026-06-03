@@ -13,6 +13,7 @@ import {
 } from '@/lib/submissionStore';
 import { buildSubmissionPdf, downloadPdf } from '@/lib/pdf';
 import type { DocumentId, FormEntry } from '@/types';
+import { CheckIcon } from './icons';
 
 type StatusFilter = 'all' | SubmissionStatus;
 type SortKey = 'newest' | 'oldest' | 'category' | 'status';
@@ -309,9 +310,10 @@ export function MyFormsView({ locale }: { locale: string }) {
                     <button
                       type="button"
                       onClick={() => confirm(row.submission.formId)}
-                      className="rounded-md bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-700 ring-1 ring-emerald-200 hover:bg-emerald-100"
+                      aria-label="Als erledigt markieren"
+                      className="inline-flex items-center justify-center rounded-md bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-700 ring-1 ring-emerald-200 hover:bg-emerald-100"
                     >
-                      ✓
+                      <CheckIcon className="h-4 w-4" strokeWidth={3} />
                     </button>
                   )}
                 </div>

@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
+import { AlertTriangleIcon, InfoIcon } from './icons';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -158,16 +159,20 @@ export function ChatInterface({ propertyType }: { propertyType?: string }) {
       </form>
 
       {mode === 'demo' && (
-        <p className="mt-3 rounded-xl bg-slate-100 px-4 py-2 text-[11px] text-ink-muted">
-          ℹ️ Demo-Modus: vorbereitete Antworten zu typischen Fragen. Für volle KI:
-          <code className="mx-1 rounded bg-white px-1 py-0.5 font-mono">ANTHROPIC_API_KEY</code>
-          in <code className="rounded bg-white px-1 py-0.5 font-mono">.env.local</code> setzen.
+        <p className="mt-3 flex items-start gap-2 rounded-xl bg-slate-100 px-4 py-2 text-[11px] text-ink-muted">
+          <InfoIcon className="mt-0.5 h-3.5 w-3.5 flex-shrink-0" />
+          <span>
+            Demo-Modus: vorbereitete Antworten zu typischen Fragen. Für volle KI:
+            <code className="mx-1 rounded bg-white px-1 py-0.5 font-mono">ANTHROPIC_API_KEY</code>
+            in <code className="rounded bg-white px-1 py-0.5 font-mono">.env.local</code> setzen.
+          </span>
         </p>
       )}
 
       {mode === 'fallback' && (
-        <p className="mt-3 rounded-xl bg-amber-50 px-4 py-2 text-[11px] text-amber-900">
-          ⚠️ Verbindung zur KI gerade nicht möglich – Fallback-Antwort wird gezeigt.
+        <p className="mt-3 flex items-start gap-2 rounded-xl bg-amber-50 px-4 py-2 text-[11px] text-amber-900">
+          <AlertTriangleIcon className="mt-0.5 h-3.5 w-3.5 flex-shrink-0" />
+          <span>Verbindung zur KI gerade nicht möglich – Fallback-Antwort wird gezeigt.</span>
         </p>
       )}
     </>

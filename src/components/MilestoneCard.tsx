@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/cn';
 import { formForMilestone } from '@/lib/documents';
 import type { Milestone, PropertyType } from '@/types';
+import { ClockIcon } from './icons';
 
 const STATUS_STYLES: Record<Milestone['status'], { dot: string; label: string }> = {
   open: { dot: 'bg-slate-300', label: 'Offen' },
@@ -96,7 +97,8 @@ export function MilestoneCard({
           </span>
           {milestone.isCriticalDeadline && !isDone && (
             <span className="inline-flex items-center gap-1 rounded-full bg-red-50 px-2 py-0.5 text-[11px] font-medium text-red-700">
-              ⏰ Frist
+              <ClockIcon className="h-3 w-3" />
+              Frist
             </span>
           )}
         </div>

@@ -7,6 +7,7 @@ import { PhaseSection } from './PhaseSection';
 import { loadStatuses, resetBuyer, saveStatus } from '@/lib/milestoneStore';
 import { milestonesByPhase, progressFor } from '@/lib/milestones';
 import type { Buyer, Milestone, MilestoneStatus, Phase } from '@/types';
+import { ClockIcon, InfoIcon } from './icons';
 
 const PHASES: Phase[] = [1, 2, 3, 4];
 
@@ -72,7 +73,9 @@ export function InteractiveDashboard({ buyer, locale }: { buyer: Buyer; locale: 
       {/* Critical-Deadline Banner */}
       {criticalOpen && (
         <div className="mb-6 flex items-start gap-3 rounded-2xl border border-red-200 bg-red-50 p-4">
-          <div className="text-2xl">⏰</div>
+          <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-red-100 text-red-700">
+            <ClockIcon className="h-4 w-4" />
+          </div>
           <div className="flex-1">
             <div className="text-sm font-semibold text-red-900">
               {t('criticalBanner', { days: criticalOpen.dueInDays ?? 14 })}
@@ -86,8 +89,9 @@ export function InteractiveDashboard({ buyer, locale }: { buyer: Buyer; locale: 
 
       {/* Hinweis-Karte und Reset-Button */}
       <div className="mb-6 flex items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3 text-xs text-ink-muted">
-        <span>
-          💡 <strong>Demo-Modus:</strong> Klicke auf die Meilensteine, um sie als erledigt zu markieren. Dein Stand wird im Browser gespeichert.
+        <span className="inline-flex items-start gap-2">
+          <InfoIcon className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-brand-600" />
+          <span><strong>Demo-Modus:</strong> Klicke auf die Meilensteine, um sie als erledigt zu markieren. Dein Stand wird im Browser gespeichert.</span>
         </span>
         <button
           type="button"

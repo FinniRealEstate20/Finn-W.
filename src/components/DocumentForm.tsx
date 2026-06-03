@@ -17,6 +17,7 @@ import {
 } from '@/lib/submissionStore';
 import { buildSubmissionPdf, downloadPdf } from '@/lib/pdf';
 import type { FormEntry } from '@/types';
+import { CheckIcon, LandmarkIcon } from './icons';
 
 interface Props {
   form: FormEntry;
@@ -236,9 +237,10 @@ export function DocumentForm({ form, fieldKeys, fieldLabels }: Props) {
           }`}
         >
           <div>
-            <div className="font-semibold">
+            <div className="inline-flex items-center gap-1.5 font-semibold">
+              {submission.status === 'confirmed' && <CheckIcon className="h-4 w-4" strokeWidth={3} />}
               {submission.status === 'confirmed'
-                ? 'Erledigt ✓'
+                ? 'Erledigt'
                 : submission.status === 'draft'
                   ? 'Entwurf gespeichert'
                   : 'Eingereicht'}
@@ -341,7 +343,8 @@ export function DocumentForm({ form, fieldKeys, fieldLabels }: Props) {
       {form.sourceType === 'communal_pdf' && (
         <section className="card mt-8">
           <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-amber-50 px-3 py-1.5 text-xs font-medium text-amber-800">
-            🏛️ Offizielles Behörden-Formular
+            <LandmarkIcon className="h-3.5 w-3.5" />
+            Offizielles Behörden-Formular
           </div>
           <p className="text-sm text-ink-soft">
             Wir füllen das offizielle PDF der Behörde mit deinen Profildaten aus. Du prüfst und reichst es selbst ein.

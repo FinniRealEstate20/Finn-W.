@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { RotateIcon } from './icons';
 
 function clearCookie(name: string) {
   document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`;
@@ -59,10 +60,11 @@ export function DemoReset() {
         <button
           type="button"
           onClick={() => setOpen(true)}
-          className="rounded-full bg-white px-3 py-2 text-xs font-medium text-ink-soft shadow-lg ring-1 ring-slate-200 hover:bg-slate-50"
+          className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-2 text-xs font-medium text-ink-soft shadow-lg ring-1 ring-slate-200 hover:bg-slate-50"
           title="Demo zurücksetzen"
         >
-          🔄 Demo-Reset
+          <RotateIcon className="h-3.5 w-3.5" />
+          Demo-Reset
         </button>
       )}
     </div>

@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { ProgressBar } from './ProgressBar';
 import { loadProfile, profileCompleteness } from '@/lib/profileStore';
+import { UserIcon } from './icons';
 
 export function ProfileCompletenessCard({ locale }: { locale: string }) {
   const t = useTranslations('dashboard');
@@ -20,7 +21,7 @@ export function ProfileCompletenessCard({ locale }: { locale: string }) {
     <section className="mb-6 flex flex-col items-start justify-between gap-3 rounded-2xl border border-brand-200 bg-brand-50 p-5 sm:flex-row sm:items-center">
       <div className="flex items-start gap-3">
         <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-brand-600">
-          👤
+          <UserIcon className="h-5 w-5" />
         </div>
         <div>
           <div className="text-sm font-semibold text-ink">

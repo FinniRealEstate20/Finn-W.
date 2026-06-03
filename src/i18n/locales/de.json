@@ -18,7 +18,7 @@
       "body": "Das eigentliche Problem ist, dass du nach dem Notartermin aus dem Leben deines Kunden verschwindest. Damit verlierst du Bewertungen, Empfehlungen und Folgegeschäft. PropAfterCare hält dich präsent – automatisch.",
       "stat1Value": "+10",
       "stat1Label": "neue Google-Bewertungen pro Jahr (25 Deals × 40% Conversion)",
-      "stat2Value": "4,9 ★",
+      "stat2Value": "4,9 / 5",
       "stat2Label": "Ø-Sterne im Paderborner Pilot",
       "stat3Value": "<15 Min",
       "stat3Label": "Setup pro Käufer – vollautomatisch via CRM-Trigger"
@@ -232,7 +232,7 @@
     "copyBox": {
       "title": "Diese Daten brauchst du gleich – Klick zum Kopieren:",
       "copy": "Kopieren",
-      "copied": "Kopiert ✓"
+      "copied": "Kopiert"
     },
     "submission": {
       "in_person": "Persönlich vor Ort",
@@ -375,7 +375,7 @@
       "pitch": "Bei 25 Deals/Jahr in Paderborn und 40% Conversion: 10 neue Google-Bewertungen jährlich – ohne einen Anruf. Nach 2 Jahren stehst du an der Spitze deines lokalen Marktes.",
       "triggerTitle": "Wie der Bewertungs-Trigger funktioniert",
       "triggerSteps": [
-        "Käufer hakt 'Eingezogen ✓' im Dashboard ab",
+        "Käufer hakt 'Eingezogen' im Dashboard ab",
         "System wartet 7 Tage (Einzugschaos abklingen lassen)",
         "Prüft: ≥5 Meilensteine erledigt UND KI-Chat ≥1× genutzt",
         "Persönliche E-Mail im Namen des Maklers mit Direktlink zu Google",

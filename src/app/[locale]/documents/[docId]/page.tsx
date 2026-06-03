@@ -6,6 +6,7 @@ import { getActiveBuyer } from '@/lib/activeBuyer';
 import { getForm, formatDate } from '@/lib/documents';
 import { BrokerHeader } from '@/components/BrokerHeader';
 import { DocumentForm } from '@/components/DocumentForm';
+import { AlertTriangleIcon } from '@/components/icons';
 import type { DocumentId } from '@/types';
 
 const PROFILE_FIELD_LABELS: Record<string, string> = {
@@ -108,8 +109,9 @@ export default async function DocumentDetailPage({
               <div className="mt-1 text-xs text-ink-muted">{form.submissionTarget}</div>
             )}
             {form.consequenceIfMissing && (
-              <div className="mt-3 rounded-lg bg-red-50 px-3 py-2 text-xs text-red-800">
-                ⚠️ {form.consequenceIfMissing}
+              <div className="mt-3 flex items-start gap-2 rounded-lg bg-red-50 px-3 py-2 text-xs text-red-800">
+                <AlertTriangleIcon className="mt-0.5 h-3.5 w-3.5 flex-shrink-0" />
+                <span>{form.consequenceIfMissing}</span>
               </div>
             )}
           </div>
