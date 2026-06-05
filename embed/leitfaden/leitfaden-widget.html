@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Leitfaden: Ihr Weg zum erfolgreichen Immobilienverkauf</title>
+<!--
+  Interaktiver Verkaufs-Leitfaden – eigenständiges Widget (keine externen Abhängigkeiten).
+  Einbinden per <iframe> (siehe embed-snippet.html) ODER Inhalt direkt ins CMS kopieren.
+
+  Anpassen ohne Programmierkenntnisse:
+    1) CONFIG-Objekt unten (Kontakt, CTA-Ziel, Farben)
+    2) PHASES-Array unten (Texte/Stichpunkte des Maklers)
+-->
+<style>
+  /* Alle Klassen sind mit .pac-lf- praefixiert, damit nichts mit dem Website-CSS kollidiert. */
+  .pac-lf {
+    /* --- White-Label-Theming: hier Farben an die Makler-Website anpassen --- */
+    --pac-accent: #1f5f8b;       /* Hauptfarbe (Buttons, aktive Schritte) */
+    --pac-accent-dark: #16456a;
+    --pac-accent-soft: #eaf2f8;
+    --pac-bg: #ffffff;
+    --pac-surface: #f7f9fb;
+    --pac-border: #e3e8ee;
+    --pac-text: #1c2530;
+    --pac-muted: #5a6775;
+    --pac-success: #2e7d57;
+    --pac-radius: 16px;
+    --pac-shadow: 0 1px 2px rgba(16,32,48,.04), 0 8px 24px rgba(16,32,48,.06);
+
+    box-sizing: border-box;
+    color: var(--pac-text);
+    background: var(--pac-bg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.55;
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 28px 20px 36px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .pac-lf *, .pac-lf *::before, .pac-lf *::after { box-sizing: border-box; }
+
+  /* ---------- Kopfbereich ---------- */
+  .pac-lf__head { text-align: center; margin-bottom: 22px; }
+  .pac-lf__eyebrow {
+    display: inline-block; font-size: 12px; letter-spacing: .12em; text-transform: uppercase;
+    font-weight: 700; color: var(--pac-accent); background: var(--pac-accent-soft);
+    padding: 6px 12px; border-radius: 999px; margin-bottom: 14px;
+  }
+  .pac-lf__title { font-size: clamp(22px, 4vw, 30px); line-height: 1.2; margin: 0 0 8px; font-weight: 800; }
+  .pac-lf__subtitle { font-size: clamp(15px, 2.4vw, 17px); color: var(--pac-muted); margin: 0 auto; max-width: 620px; }
+
+  /* ---------- Fortschritts-Tracker ---------- */
+  .pac-lf__tracker {
+    background: var(--pac-surface); border: 1px solid var(--pac-border);
+    border-radius: var(--pac-radius); padding: 16px 18px; margin: 22px 0 10px;
+  }
+  .pac-lf__tracker-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .pac-lf__tracker-label { font-weight: 700; font-size: 14px; }
+  .pac-lf__tracker-hint { font-size: 13px; color: var(--pac-muted); }
+  .pac-lf__tracker-hint b { color: var(--pac-accent-dark); }
+  .pac-lf__bar { position: relative; height: 8px; border-radius: 999px; background: #dde4ec; margin-top: 14px; overflow: hidden; }
+  .pac-lf__bar-fill { position: absolute; inset: 0 auto 0 0; width: 0%; background: linear-gradient(90deg, var(--pac-accent), var(--pac-accent-dark)); border-radius: 999px; transition: width .4s cubic-bezier(.4,0,.2,1); }
+  .pac-lf__dots { display: flex; justify-content: space-between; margin-top: 12px; gap: 4px; }
+  .pac-lf__dot {
+    appearance: none; border: 0; background: transparent; padding: 4px 2px 0; cursor: pointer; flex: 1;
+    display: flex; flex-direction: column; align-items: center; gap: 6px; color: var(--pac-muted); font: inherit;
+  }
+  .pac-lf__dot-mark {
+    width: 16px; height: 16px; border-radius: 50%; background: #cdd6e0; border: 2px solid #cdd6e0;
+    transition: transform .2s, background .2s, border-color .2s;
+  }
+  .pac-lf__dot[aria-pressed="true"] .pac-lf__dot-mark { background: var(--pac-accent); border-color: var(--pac-accent); transform: scale(1.25); }
+  .pac-lf__dot.is-done .pac-lf__dot-mark { background: var(--pac-success); border-color: var(--pac-success); }
+  .pac-lf__dot-num { font-size: 11px; font-weight: 700; }
+  .pac-lf__dot:hover .pac-lf__dot-mark { border-color: var(--pac-accent); }
+  .pac-lf__dot:focus-visible { outline: 2px solid var(--pac-accent); outline-offset: 2px; border-radius: 8px; }
+
+  /* ---------- Werkzeugleiste ---------- */
+  .pac-lf__tools { display: flex; justify-content: flex-end; margin: 14px 0 6px; }
+  .pac-lf__toggle-all {
+    appearance: none; background: transparent; border: 1px solid var(--pac-border); color: var(--pac-accent-dark);
+    font: inherit; font-size: 13px; font-weight: 600; padding: 7px 12px; border-radius: 10px; cursor: pointer;
+  }
+  .pac-lf__toggle-all:hover { background: var(--pac-accent-soft); border-color: var(--pac-accent); }
+  .pac-lf__toggle-all:focus-visible { outline: 2px solid var(--pac-accent); outline-offset: 2px; }
+
+  /* ---------- Timeline / Phasen ---------- */
+  .pac-lf__steps { list-style: none; margin: 6px 0 0; padding: 0; position: relative; }
+  .pac-lf__steps::before {
+    content: ""; position: absolute; left: 27px; top: 18px; bottom: 18px; width: 2px;
+    background: var(--pac-border); z-index: 0;
+  }
+  .pac-lf__step { position: relative; margin: 0 0 12px; z-index: 1; }
+  .pac-lf__card {
+    border: 1px solid var(--pac-border); border-radius: var(--pac-radius); background: var(--pac-bg);
+    box-shadow: var(--pac-shadow); overflow: hidden; transition: border-color .2s, box-shadow .2s;
+  }
+  .pac-lf__step.is-current .pac-lf__card { border-color: var(--pac-accent); box-shadow: 0 0 0 3px var(--pac-accent-soft), var(--pac-shadow); }
+  .pac-lf__summary {
+    display: flex; align-items: center; gap: 14px; width: 100%; text-align: left;
+    background: transparent; border: 0; font: inherit; color: inherit; cursor: pointer; padding: 16px 16px 16px 14px;
+  }
+  .pac-lf__summary:focus-visible { outline: 2px solid var(--pac-accent); outline-offset: -2px; }
+  .pac-lf__badge {
+    flex: 0 0 auto; width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center;
+    background: var(--pac-accent-soft); color: var(--pac-accent-dark); position: relative;
+  }
+  .pac-lf__badge svg { width: 22px; height: 22px; }
+  .pac-lf__step.is-done .pac-lf__badge { background: #e4f3eb; color: var(--pac-success); }
+  .pac-lf__badge-num {
+    position: absolute; top: -7px; left: -7px; width: 20px; height: 20px; border-radius: 50%;
+    background: var(--pac-accent); color: #fff; font-size: 11px; font-weight: 800; display: grid; place-items: center;
+    border: 2px solid var(--pac-bg);
+  }
+  .pac-lf__step.is-done .pac-lf__badge-num { background: var(--pac-success); }
+  .pac-lf__heads { flex: 1 1 auto; min-width: 0; }
+  .pac-lf__step-title { font-weight: 700; font-size: 16px; margin: 0; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .pac-lf__duration { font-size: 11px; font-weight: 700; color: var(--pac-muted); background: var(--pac-surface); border: 1px solid var(--pac-border); padding: 2px 8px; border-radius: 999px; }
+  .pac-lf__step-lead { margin: 3px 0 0; font-size: 14px; color: var(--pac-muted); }
+  .pac-lf__chevron { flex: 0 0 auto; color: var(--pac-muted); transition: transform .25s; }
+  .pac-lf__summary[aria-expanded="true"] .pac-lf__chevron { transform: rotate(180deg); }
+  .pac-lf__panel { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .28s ease; }
+  .pac-lf__panel.is-open { grid-template-rows: 1fr; }
+  .pac-lf__panel-inner { overflow: hidden; }
+  .pac-lf__panel-pad { padding: 0 18px 18px 70px; }
+  .pac-lf__list { margin: 4px 0 0; padding: 0; list-style: none; }
+  .pac-lf__list li { position: relative; padding: 6px 0 6px 26px; font-size: 14.5px; border-top: 1px solid var(--pac-border); }
+  .pac-lf__list li:first-child { border-top: 0; }
+  .pac-lf__list li::before {
+    content: ""; position: absolute; left: 2px; top: 12px; width: 14px; height: 14px; border-radius: 50%;
+    background: var(--pac-accent-soft);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231f5f8b' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E");
+    background-size: 10px; background-position: center; background-repeat: no-repeat;
+  }
+  .pac-lf__step-cta { margin-top: 14px; }
+  .pac-lf__mark-done {
+    appearance: none; background: transparent; border: 1px solid var(--pac-border); color: var(--pac-accent-dark);
+    font: inherit; font-size: 13px; font-weight: 600; padding: 7px 12px; border-radius: 10px; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 7px;
+  }
+  .pac-lf__mark-done:hover { background: var(--pac-accent-soft); border-color: var(--pac-accent); }
+  .pac-lf__step.is-done .pac-lf__mark-done { color: var(--pac-success); border-color: #bfe3cd; background: #eef8f2; }
+  .pac-lf__mark-done:focus-visible { outline: 2px solid var(--pac-accent); outline-offset: 2px; }
+
+  /* ---------- CTA ---------- */
+  .pac-lf__cta {
+    margin-top: 26px; text-align: center; background: linear-gradient(160deg, var(--pac-accent), var(--pac-accent-dark));
+    color: #fff; border-radius: var(--pac-radius); padding: 30px 22px;
+  }
+  .pac-lf__cta h3 { margin: 0 0 8px; font-size: clamp(19px, 3vw, 23px); }
+  .pac-lf__cta p { margin: 0 auto 18px; max-width: 480px; opacity: .92; font-size: 15px; }
+  .pac-lf__cta-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .pac-lf__btn {
+    display: inline-flex; align-items: center; gap: 9px; font: inherit; font-weight: 700; font-size: 15px;
+    padding: 13px 22px; border-radius: 12px; cursor: pointer; text-decoration: none; border: 2px solid transparent;
+    transition: transform .12s, box-shadow .2s, background .2s;
+  }
+  .pac-lf__btn svg { width: 18px; height: 18px; }
+  .pac-lf__btn--primary { background: #fff; color: var(--pac-accent-dark); }
+  .pac-lf__btn--primary:hover { transform: translateY(-1px); box-shadow: 0 10px 24px rgba(0,0,0,.18); }
+  .pac-lf__btn--ghost { background: transparent; color: #fff; border-color: rgba(255,255,255,.55); }
+  .pac-lf__btn--ghost:hover { background: rgba(255,255,255,.12); }
+  .pac-lf__btn:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+
+  .pac-lf__foot { text-align: center; font-size: 12px; color: var(--pac-muted); margin-top: 18px; }
+  .pac-lf__reset {
+    appearance: none; background: none; border: 0; color: var(--pac-muted); font: inherit; font-size: 12px;
+    text-decoration: underline; cursor: pointer; padding: 0;
+  }
+
+  @media (max-width: 560px) {
+    .pac-lf__panel-pad { padding: 0 16px 16px 16px; }
+    .pac-lf__steps::before { display: none; }
+    .pac-lf__dot-num { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .pac-lf *, .pac-lf *::before, .pac-lf *::after { transition: none !important; }
+  }
+</style>
+</head>
+<body style="margin:0;background:#fff;">
+
+  <div class="pac-lf" id="pac-lf-root" role="region" aria-label="Leitfaden Immobilienverkauf"></div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* =======================================================================
+     1) CONFIG  –  hier Kontakt, CTA-Ziel und Marke des Maklers eintragen.
+     ======================================================================= */
+  var CONFIG = {
+    eyebrow: "Ihr Verkaufs-Leitfaden",
+    title: "In 8 Schritten sicher zum erfolgreichen Verkauf",
+    subtitle: "Wir begleiten Sie durch jede Phase – von der Bewertung bis zur Übergabe. Klicken Sie sich durch und markieren Sie, wo Sie gerade stehen.",
+    cta: {
+      heading: "Kostenlose & unverbindliche Wertermittlung",
+      text: "Sie überlegen zu verkaufen? Starten Sie mit einer professionellen Einschätzung Ihrer Immobilie – kostenlos und ohne Verpflichtung.",
+      primaryLabel: "Wertermittlung anfordern",
+      primaryHref: "mailto:info@owl-immobilien.de?subject=Anfrage%20Wertermittlung",
+      secondaryLabel: "Anrufen",
+      secondaryHref: "tel:+490000000000"
+    },
+    footer: "Persönliche Beratung für Ostwestfalen-Lippe.",
+    storageKey: "pac-lf-progress-v1"
+  };
+
+  /* =======================================================================
+     2) PHASES  –  der Leitfaden als Daten. Texte/Stichpunkte frei editierbar.
+        icon-Schlüssel siehe ICONS unten.
+     ======================================================================= */
+  var PHASES = [
+    {
+      icon: "chart",
+      title: "Wertermittlung & Beratung",
+      duration: "ca. 1 Woche",
+      lead: "Realistischer Marktpreis als Fundament für einen schnellen, erfolgreichen Verkauf.",
+      points: [
+        "Professionelle, marktgerechte Bewertung Ihrer Immobilie",
+        "Persönliches Erstgespräch und Klärung Ihrer Ziele",
+        "Empfehlung zu Verkaufsstrategie und Zeitpunkt"
+      ]
+    },
+    {
+      icon: "folder",
+      title: "Unterlagen & Vorbereitung",
+      duration: "1–2 Wochen",
+      lead: "Vollständige Unterlagen schaffen Vertrauen und beschleunigen den Verkauf.",
+      points: [
+        "Prüfung und professionelle Aufbereitung aller notwendigen Verkaufsunterlagen",
+        "Beschaffung fehlender Dokumente (z. B. Grundriss, Energieausweis)",
+        "Alles an einem Ort – sauber für Interessenten und Notar vorbereitet"
+      ]
+    },
+    {
+      icon: "camera",
+      title: "Exposé & Inszenierung",
+      duration: "ca. 1 Woche",
+      lead: "Ihre Immobilie im besten Licht – damit der erste Eindruck überzeugt.",
+      points: [
+        "Hochwertige Fotos und ansprechendes, aussagekräftiges Exposé",
+        "Auf Wunsch Home Staging und 360°-Rundgänge",
+        "Klare, ehrliche Objektbeschreibung mit allen relevanten Daten"
+      ]
+    },
+    {
+      icon: "megaphone",
+      title: "Zielgerichtete Vermarktung",
+      duration: "laufend",
+      lead: "Maximale Reichweite bei genau den richtigen Interessenten.",
+      points: [
+        "Platzierung auf der eigenen Website und den führenden Immobilienportalen",
+        "Werbung in regionalen und überregionalen Tages- und Wochenzeitungen",
+        "Direktzugang zu vorgemerkten Kaufinteressenten aus unserem Netzwerk"
+      ]
+    },
+    {
+      icon: "key",
+      title: "Besichtigungen",
+      duration: "laufend",
+      lead: "Abgestimmt auf Ihren Alltag – ohne Stress für Sie.",
+      points: [
+        "Mit Ihnen abgestimmte Besichtigungstermine mit Interessenten",
+        "Persönliche Betreuung der Interessenten vor Ort",
+        "Regelmäßige Information über alle Vermarktungsaktivitäten"
+      ]
+    },
+    {
+      icon: "handshake",
+      title: "Verhandlung & Bonität",
+      duration: "1–2 Wochen",
+      lead: "Den bestmöglichen Preis erzielen – mit zahlungssicheren Käufern.",
+      points: [
+        "Zielorientierte Verkaufsverhandlungen nach Ihren Vorgaben",
+        "Prüfung der Bonität der Kaufinteressenten",
+        "Vollständige Kommunikation und Koordination übernehmen wir"
+      ]
+    },
+    {
+      icon: "doc",
+      title: "Notartermin",
+      duration: "2–4 Wochen",
+      lead: "Rechtssicher zum Abschluss – verständlich begleitet.",
+      points: [
+        "Erstellung des Notarspiegels mit allen relevanten Daten",
+        "Vertragsentwurf durch den beauftragten Notar",
+        "Erläuterung der Formulierungen und Klauseln, Begleitung zum Vertragsabschluss"
+      ]
+    },
+    {
+      icon: "home",
+      title: "Übergabe",
+      duration: "Tag X",
+      lead: "Der gute Abschluss: geordnete Übergabe an den neuen Eigentümer.",
+      points: [
+        "Gemeinsame Objektübergabe und Schlüsselübergabe",
+        "Übergabeprotokoll mit Zählerständen",
+        "Auch danach für Sie und den Käufer erreichbar"
+      ]
+    }
+  ];
+
+  /* ---------- Inline-SVG-Icons (keine externen Schriftarten/Bibliotheken) ---------- */
+  var ICONS = {
+    chart:    '<path d="M3 3v18h18"/><rect x="7" y="12" width="3" height="6" rx="1"/><rect x="12" y="8" width="3" height="10" rx="1"/><rect x="17" y="5" width="3" height="13" rx="1"/>',
+    folder:   '<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',
+    camera:   '<path d="M3 8a2 2 0 0 1 2-2h2l1.5-2h7L17 6h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><circle cx="12" cy="12.5" r="3.2"/>',
+    megaphone:'<path d="M3 11v2a1 1 0 0 0 1 1h2l8 5V5L6 10H4a1 1 0 0 0-1 1z"/><path d="M18 9a4 4 0 0 1 0 6"/>',
+    key:      '<circle cx="8" cy="12" r="4"/><path d="M11.5 11.5 21 11l-2 2 2 2-3 .5"/>',
+    handshake:'<path d="m11 17 2 2a1.5 1.5 0 0 0 2-2"/><path d="m13 15 2.5 2.5a1.5 1.5 0 0 0 2-2L13 11l-2 1.5a2 2 0 0 1-2.5-3L11 6h4l5 3"/><path d="M4 8h3l3 3"/>',
+    doc:      '<path d="M7 3h7l5 5v13a0 0 0 0 1 0 0H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 16h4"/>',
+    home:     '<path d="m3 11 9-7 9 7"/><path d="M5 10v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-9"/><path d="M9 20v-6h6v6"/>',
+    check:    '<polyline points="20 6 9 17 4 12"/>',
+    chevron:  '<polyline points="6 9 12 15 18 9"/>',
+    phone:    '<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/>',
+    mail:     '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>'
+  };
+
+  function svg(name, extraAttr) {
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" ' +
+           'stroke-linecap="round" stroke-linejoin="round" ' + (extraAttr || "") + '>' +
+           (ICONS[name] || ICONS.check) + '</svg>';
+  }
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c];
+    });
+  }
+
+  /* ---------- Zustand (im Browser gespeichert, optional) ---------- */
+  var state = { done: {}, current: -1 };
+  try {
+    var saved = JSON.parse(window.localStorage.getItem(CONFIG.storageKey) || "{}");
+    if (saved && typeof saved === "object") { state.done = saved.done || {}; state.current = (saved.current != null ? saved.current : -1); }
+  } catch (e) {}
+  function persist() {
+    try { window.localStorage.setItem(CONFIG.storageKey, JSON.stringify(state)); } catch (e) {}
+  }
+
+  var root = document.getElementById("pac-lf-root");
+
+  /* ---------- Aufbau ---------- */
+  function render() {
+    var html = "";
+    html += '<div class="pac-lf__head">';
+    html +=   '<span class="pac-lf__eyebrow">' + esc(CONFIG.eyebrow) + '</span>';
+    html +=   '<h2 class="pac-lf__title">' + esc(CONFIG.title) + '</h2>';
+    html +=   '<p class="pac-lf__subtitle">' + esc(CONFIG.subtitle) + '</p>';
+    html += '</div>';
+
+    // Tracker
+    html += '<div class="pac-lf__tracker">';
+    html +=   '<div class="pac-lf__tracker-top">';
+    html +=     '<span class="pac-lf__tracker-label">Wo stehen Sie gerade?</span>';
+    html +=     '<span class="pac-lf__tracker-hint" id="pac-lf-hint"></span>';
+    html +=   '</div>';
+    html +=   '<div class="pac-lf__bar"><div class="pac-lf__bar-fill" id="pac-lf-fill"></div></div>';
+    html +=   '<div class="pac-lf__dots" role="group" aria-label="Phase auswählen">';
+    PHASES.forEach(function (p, i) {
+      html += '<button type="button" class="pac-lf__dot" data-dot="' + i + '" aria-pressed="false" ' +
+              'aria-label="Phase ' + (i + 1) + ': ' + esc(p.title) + '">' +
+              '<span class="pac-lf__dot-mark"></span><span class="pac-lf__dot-num">' + (i + 1) + '</span></button>';
+    });
+    html +=   '</div>';
+    html += '</div>';
+
+    // Werkzeugleiste
+    html += '<div class="pac-lf__tools">';
+    html +=   '<button type="button" class="pac-lf__toggle-all" id="pac-lf-toggle">Alle aufklappen</button>';
+    html += '</div>';
+
+    // Phasen
+    html += '<ol class="pac-lf__steps">';
+    PHASES.forEach(function (p, i) {
+      var panelId = "pac-lf-panel-" + i;
+      var btnId = "pac-lf-btn-" + i;
+      html += '<li class="pac-lf__step" data-step="' + i + '">';
+      html +=   '<div class="pac-lf__card">';
+      html +=     '<button type="button" class="pac-lf__summary" id="' + btnId + '" aria-expanded="false" aria-controls="' + panelId + '">';
+      html +=       '<span class="pac-lf__badge">' + svg(p.icon) + '<span class="pac-lf__badge-num">' + (i + 1) + '</span></span>';
+      html +=       '<span class="pac-lf__heads">';
+      html +=         '<span class="pac-lf__step-title">' + esc(p.title) + ' <span class="pac-lf__duration">' + esc(p.duration) + '</span></span>';
+      html +=         '<span class="pac-lf__step-lead">' + esc(p.lead) + '</span>';
+      html +=       '</span>';
+      html +=       '<span class="pac-lf__chevron">' + svg("chevron") + '</span>';
+      html +=     '</button>';
+      html +=     '<div class="pac-lf__panel" id="' + panelId + '" role="region" aria-labelledby="' + btnId + '"><div class="pac-lf__panel-inner"><div class="pac-lf__panel-pad">';
+      html +=       '<ul class="pac-lf__list">';
+      p.points.forEach(function (pt) { html += '<li>' + esc(pt) + '</li>'; });
+      html +=       '</ul>';
+      html +=       '<div class="pac-lf__step-cta"><button type="button" class="pac-lf__mark-done" data-done="' + i + '">' +
+                    svg("check") + '<span class="pac-lf__mark-done-label">Als erledigt markieren</span></button></div>';
+      html +=     '</div></div></div>';
+      html +=   '</div>';
+      html += '</li>';
+    });
+    html += '</ol>';
+
+    // CTA
+    html += '<div class="pac-lf__cta">';
+    html +=   '<h3>' + esc(CONFIG.cta.heading) + '</h3>';
+    html +=   '<p>' + esc(CONFIG.cta.text) + '</p>';
+    html +=   '<div class="pac-lf__cta-row">';
+    html +=     '<a class="pac-lf__btn pac-lf__btn--primary" href="' + esc(CONFIG.cta.primaryHref) + '">' + svg("mail") + esc(CONFIG.cta.primaryLabel) + '</a>';
+    if (CONFIG.cta.secondaryLabel) {
+      html +=   '<a class="pac-lf__btn pac-lf__btn--ghost" href="' + esc(CONFIG.cta.secondaryHref) + '">' + svg("phone") + esc(CONFIG.cta.secondaryLabel) + '</a>';
+    }
+    html +=   '</div>';
+    html += '</div>';
+
+    html += '<p class="pac-lf__foot">' + esc(CONFIG.footer) + ' · <button type="button" class="pac-lf__reset" id="pac-lf-reset">Fortschritt zurücksetzen</button></p>';
+
+    root.innerHTML = html;
+    wire();
+    refresh();
+  }
+
+  /* ---------- Interaktion ---------- */
+  function wire() {
+    // Akkordeon
+    Array.prototype.forEach.call(root.querySelectorAll(".pac-lf__summary"), function (btn) {
+      btn.addEventListener("click", function () { togglePanel(btn); });
+    });
+    // Tracker-Punkte
+    Array.prototype.forEach.call(root.querySelectorAll(".pac-lf__dot"), function (dot) {
+      dot.addEventListener("click", function () { setCurrent(parseInt(dot.getAttribute("data-dot"), 10)); });
+    });
+    // Erledigt-Markierung
+    Array.prototype.forEach.call(root.querySelectorAll(".pac-lf__mark-done"), function (b) {
+      b.addEventListener("click", function () { toggleDone(parseInt(b.getAttribute("data-done"), 10)); });
+    });
+    document.getElementById("pac-lf-toggle").addEventListener("click", toggleAll);
+    document.getElementById("pac-lf-reset").addEventListener("click", resetAll);
+  }
+
+  function togglePanel(btn) {
+    var open = btn.getAttribute("aria-expanded") === "true";
+    btn.setAttribute("aria-expanded", String(!open));
+    var panel = document.getElementById(btn.getAttribute("aria-controls"));
+    panel.classList.toggle("is-open", !open);
+    syncToggleAllLabel();
+    measure();
+  }
+  function toggleAll() {
+    var btns = root.querySelectorAll(".pac-lf__summary");
+    var anyClosed = Array.prototype.some.call(btns, function (b) { return b.getAttribute("aria-expanded") !== "true"; });
+    Array.prototype.forEach.call(btns, function (b) {
+      b.setAttribute("aria-expanded", String(anyClosed));
+      document.getElementById(b.getAttribute("aria-controls")).classList.toggle("is-open", anyClosed);
+    });
+    syncToggleAllLabel();
+    measure();
+  }
+  function syncToggleAllLabel() {
+    var btns = root.querySelectorAll(".pac-lf__summary");
+    var anyClosed = Array.prototype.some.call(btns, function (b) { return b.getAttribute("aria-expanded") !== "true"; });
+    document.getElementById("pac-lf-toggle").textContent = anyClosed ? "Alle aufklappen" : "Alle einklappen";
+  }
+
+  function setCurrent(i) {
+    state.current = (state.current === i ? -1 : i);
+    persist(); refresh();
+  }
+  function toggleDone(i) {
+    state.done[i] = !state.done[i];
+    // Aktuelle Phase mitführen: auf die nächste offene Phase setzen
+    if (state.done[i] && (state.current === i || state.current === -1)) {
+      var next = -1;
+      for (var k = 0; k < PHASES.length; k++) { if (!state.done[k]) { next = k; break; } }
+      state.current = next;
+    }
+    persist(); refresh();
+  }
+  function resetAll() {
+    state = { done: {}, current: -1 };
+    persist(); refresh();
+  }
+
+  function refresh() {
+    var doneCount = 0;
+    PHASES.forEach(function (p, i) {
+      var li = root.querySelector('.pac-lf__step[data-step="' + i + '"]');
+      var isDone = !!state.done[i];
+      if (isDone) doneCount++;
+      li.classList.toggle("is-done", isDone);
+      li.classList.toggle("is-current", state.current === i);
+      var dot = root.querySelector('.pac-lf__dot[data-dot="' + i + '"]');
+      dot.setAttribute("aria-pressed", String(state.current === i));
+      dot.classList.toggle("is-done", isDone);
+      var lbl = li.querySelector(".pac-lf__mark-done-label");
+      if (lbl) lbl.textContent = isDone ? "Erledigt ✓" : "Als erledigt markieren";
+    });
+
+    var pct = Math.round((doneCount / PHASES.length) * 100);
+    document.getElementById("pac-lf-fill").style.width = pct + "%";
+
+    var hint = document.getElementById("pac-lf-hint");
+    if (doneCount === PHASES.length) {
+      hint.innerHTML = "Alle Schritte erledigt – <b>Glückwunsch zum Verkauf!</b>";
+    } else if (state.current >= 0) {
+      var nextTitle = PHASES[state.current].title;
+      hint.innerHTML = doneCount + "/" + PHASES.length + " erledigt · Nächster Schritt: <b>" + esc(nextTitle) + "</b>";
+    } else if (doneCount > 0) {
+      hint.innerHTML = "<b>" + doneCount + "/" + PHASES.length + "</b> Schritte erledigt";
+    } else {
+      hint.innerHTML = "Tippen Sie auf einen Punkt, um Ihre Phase zu markieren";
+    }
+    measure();
+  }
+
+  /* ---------- iFrame-Auto-Resize (an die Host-Seite melden) ---------- */
+  var lastH = 0;
+  function measure() {
+    // doppelt messen nach Layout-Übergang
+    requestAnimationFrame(function () {
+      var h = Math.ceil(document.body.scrollHeight);
+      if (h !== lastH && window.parent !== window) {
+        lastH = h;
+        window.parent.postMessage({ type: "pac-leitfaden-height", height: h }, "*");
+      }
+    });
+  }
+  window.addEventListener("resize", measure);
+  // bei Akkordeon-Animationsende erneut messen
+  document.addEventListener("transitionend", function (e) {
+    if (e.propertyName === "grid-template-rows") measure();
+  });
+
+  render();
+  // Sicherheitsnetz: nach kurzer Zeit nochmal messen (Schriftarten geladen etc.)
+  setTimeout(measure, 250);
+  setTimeout(measure, 1000);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!--
+  ===========================================================================
+  EINBETT-SNIPPET  ·  Interaktiver Verkaufs-Leitfaden
+  ===========================================================================
+  So bauen Sie das Widget auf der Makler-Website ein:
+
+  1) Datei "leitfaden-widget.html" auf einen erreichbaren Pfad hochladen,
+     z. B.  https://www.owl-immobilien.de/widgets/leitfaden-widget.html
+  2) Den Block unten an die gewünschte Stelle der Seite kopieren
+     (CMS: "HTML-Element" / "Custom HTML" / "Code-Block").
+  3) Bei Bedarf die data-src-URL anpassen.
+
+  Vorteile dieser iFrame-Variante:
+   - Kollidiert NICHT mit dem CSS/JS der bestehenden Website
+   - Passt seine Höhe automatisch an (kein Scrollbalken im iFrame)
+   - Voll responsiv
+  ===========================================================================
+-->
+<div class="pac-leitfaden-embed">
+  <iframe
+    title="Leitfaden: Ihr Weg zum erfolgreichen Immobilienverkauf"
+    data-src="/widgets/leitfaden-widget.html"
+    src="/widgets/leitfaden-widget.html"
+    loading="lazy"
+    scrolling="no"
+    style="width:100%;border:0;display:block;height:1200px;overflow:hidden;"
+  ></iframe>
+</div>
+
+<script>
+/* Auto-Resize: lauscht auf die Höhenmeldung des Widgets und passt den iFrame an. */
+(function () {
+  function findFrame() {
+    var wraps = document.querySelectorAll(".pac-leitfaden-embed iframe");
+    return wraps.length ? wraps[wraps.length - 1] : null;
+  }
+  var frame = findFrame();
+  window.addEventListener("message", function (e) {
+    if (!e.data || e.data.type !== "pac-leitfaden-height") return;
+    var f = findFrame();
+    if (f && e.data.height) {
+      f.style.height = e.data.height + "px";
+    }
+  });
+})();
+</script>
