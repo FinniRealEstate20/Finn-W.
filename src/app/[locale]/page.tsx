@@ -13,12 +13,6 @@ export default async function LandingPage({
   const t = await getTranslations('marketing');
 
   const features = t.raw('features.items') as Array<{ title: string; body: string }>;
-  const tiers = t.raw('pricing.tiers') as Array<{
-    name: string;
-    price: string;
-    deals: string;
-    audience: string;
-  }>;
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-white via-brand-50/30 to-white">
@@ -164,34 +158,20 @@ export default async function LandingPage({
         </div>
       </section>
 
-      {/* Pricing */}
+      {/* Pricing — Preis auf Anfrage */}
       <section id="pricing" className="container-page py-16">
-        <div className="mx-auto max-w-2xl text-center">
-          <h2 className="text-3xl font-bold text-ink">{t('pricing.title')}</h2>
-          <p className="mt-2 text-ink-soft">{t('pricing.subtitle')}</p>
+        <div className="card mx-auto max-w-2xl text-center">
+          <span className="chip mx-auto">{t('pricing.chip')}</span>
+          <h2 className="mt-4 text-3xl font-bold text-ink">{t('pricing.title')}</h2>
+          <p className="mt-3 text-ink-soft">{t('pricing.body')}</p>
+          <a
+            href={`mailto:${t('pricing.contactEmail')}?subject=${encodeURIComponent(t('pricing.mailSubject'))}`}
+            className="btn-primary mt-6 inline-block"
+          >
+            {t('pricing.cta')}
+          </a>
+          <p className="mt-4 text-xs text-ink-muted">{t('pricing.trust')}</p>
         </div>
-        <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-3">
-          {tiers.map((tier, i) => (
-            <article
-              key={tier.name}
-              className={i === 1 ? 'card ring-2 ring-brand-500' : 'card'}
-            >
-              {i === 1 && (
-                <span className="chip mb-3">Beliebt</span>
-              )}
-              <h3 className="text-lg font-semibold text-ink">{tier.name}</h3>
-              <div className="mt-2 flex items-baseline gap-1">
-                <span className="text-3xl font-bold text-ink">{tier.price}</span>
-                <span className="text-sm text-ink-muted">/ Monat</span>
-              </div>
-              <p className="mt-3 text-sm text-ink-soft">{tier.deals}</p>
-              <p className="text-sm text-ink-muted">{tier.audience}</p>
-            </article>
-          ))}
-        </div>
-        <p className="mt-8 text-center text-sm font-medium text-brand-700">
-          {t('pricing.cta')}
-        </p>
       </section>
 
       {/* Footer */}

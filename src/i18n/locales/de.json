@@ -62,14 +62,13 @@
       "signoff": "Finn L. Wenzel · Founder, PropAfterCare"
     },
     "pricing": {
-      "title": "Faires Preismodell",
-      "subtitle": "Jährliche Zahlung: 20% Rabatt.",
-      "tiers": [
-        { "name": "Starter", "price": "49 €", "deals": "bis 12 Deals / Jahr", "audience": "Einzelmakler" },
-        { "name": "Pro", "price": "129 €", "deals": "bis 40 Deals / Jahr", "audience": "Kleines Büro" },
-        { "name": "Agency", "price": "299 €", "deals": "unbegrenzt", "audience": "5–15 Mitarbeiter" }
-      ],
-      "cta": "Pilotpreis: 0 € für die ersten 6 Monate"
+      "chip": "Pilot-Phase",
+      "title": "Preis auf Anfrage",
+      "body": "Während des Pilots in Paderborn passen wir Konditionen individuell an dein Dealvolumen und deinen Team-Setup an. Schreib uns kurz – wir melden uns innerhalb von 24 Stunden mit einem fairen Angebot.",
+      "cta": "Angebot anfordern",
+      "trust": "Pilotmarkt Paderborn · Antwort innerhalb von 24 Stunden",
+      "contactEmail": "finn.luca.wenzel@gmx.de",
+      "mailSubject": "PropAfterCare – Preisanfrage"
     },
     "footer": {
       "tagline": "Post-Closing Gap geschlossen.",
