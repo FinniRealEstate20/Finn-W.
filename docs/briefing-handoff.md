@@ -1,7 +1,7 @@
 # Hand-off Briefing PropAfterCare
 
 > **Zweck dieser Datei:** Lückenloser Einstieg für eine neue Claude-Code-Session. Alles was du brauchst, um den Code-Stand, die Architektur und alle Workflows in 10 Minuten zu verstehen.
-> **Datum:** Juni 2026 · **Stand:** Commit `60dc90e` auf Branch `claude/propaftercare-mvp-MVJBG`
+> **Datum:** Juni 2026 · **Stand:** Smart-Pre-Fill auf Branch `claude/propaftercare-mvp-MVJBG`
 
 ---
 
@@ -111,6 +111,9 @@ Alle Routen liegen unter `[locale]`; Middleware (`src/middleware.ts`) redirected
 | `/api/active-buyer` | POST | Setzt Cookie `pac-active-buyer` (30 Tage). Validiert gegen `mockBuyers`. |
 | `/api/lookup/address` | GET | Nominatim-Proxy (OpenStreetMap) für Adress-Autocomplete. Timeout 3.5 s, fällt sonst auf Mock zurück. Caching 30 s. |
 | `/api/lookup/place` | GET | OpenPLZ-Proxy für PLZ/Ort-Lookup. Caching 60 s. |
+| `/api/recipes/token` | POST | Erzeugt 15-Min-HMAC-Token aus aktivem Buyer-Cookie für das Bookmarklet. |
+| `/api/recipes/match` | GET | Liefert `PortalRecipe` + zugehörigen Profile-Snapshot gegen Token. CORS offen (Bookmarklet ruft cross-origin). |
+| `/api/portal-mapper` | POST | Anthropic-`claude-haiku-4-5` schlägt CSS-Selektor für ein DOM-Snippet vor (Fallback, wenn Recipe-Selektoren scheitern). Rate-Limit 5/min/Buyer, Snippet-Cap 8 KB. |
 
 **Wichtig:** Alle API-Routen sind `runtime: 'nodejs'`, `dynamic: 'force-dynamic'`.
 
@@ -259,6 +262,28 @@ FormEntry      { id, category, sourceType, officialSource, status,
 ### Workflow 7 – Reputations-Trigger (KONZEPT, nicht implementiert)
 Bedingungen alle drei: Eingezogen ≥ 7 Tage · ≥ 5 Milestones done · `aiChatUsed=true`. Aktuell nur als Doku, kein Cron-Job/Trigger.
 
+### Workflow 8 – Smart Pre-Fill (Bookmarklet + KI-Selektor-Mapper)
+Ziel: Behörden- und Versorger-Portale automatisch mit Profildaten ausfüllen, ohne §5 RDG/StBerG zu berühren. Kunde drückt selbst Absenden.
+
+1. Käufer öffnet `/de/documents/wohnsitz-paderborn` → `external_link`-Branch zeigt grünen **"Smart Pre-Fill verfügbar"**-Banner (sofern `smartFillStatus(docId) === 'available'`).
+2. Setup einmalig: Käufer öffnet `/bookmarklet-installer.html` → zieht den **"PropAfterCare Smart Fill"**-Button in die Lesezeichen-Leiste. Der Installer lädt `public/bookmarklet.js` und encoded das JS als `javascript:`-URI mit `__PAC_API_BASE__` = `location.origin`.
+3. Käufer klickt "Smart Pre-Fill aktivieren" → `POST /api/recipes/token` erzeugt HMAC-SHA256-Token (15 Min TTL, signed mit `RECIPE_TOKEN_SECRET`). Das Portal wird in neuem Tab geöffnet, Token im URL-Fragment (`#pac-token=…`).
+4. Im Portal: Klick auf Bookmark → Bookmarklet liest Token aus Hash (cached in `localStorage`), ruft `GET /api/recipes/match?host=<location.hostname>&token=…` → kriegt `PortalRecipe` + `profile`-Snapshot.
+5. Bookmarklet iteriert `recipe.fields`, sucht für jedes Feld den ersten passenden CSS-Selektor (`document.querySelector`), setzt `input.value` via native Setter + dispatch `input`+`change` (React-/Vue-kompatibel). **Submit-Buttons werden NIE getriggert** (Allowlist `INPUT|SELECT|TEXTAREA`).
+6. Wenn ein Selektor fehlschlägt: Bookmarklet sendet ein 8-KB-Snippet des umgebenden DOM an `POST /api/portal-mapper`. Claude Haiku schlägt einen Selektor vor, Bookmarklet wendet ihn sofort an. Vorschlag landet in `globalThis.__pacRecipeProposals` (Mitkurations-Queue, GET-Endpunkt verfügbar).
+7. Toast rechts oben: "✓ X Felder ausgefüllt (Y per KI ergänzt). Bitte prüfen und absenden." Käufer drückt selbst den Submit-Button des Portals.
+8. Zurück in PropAfterCare: Submission steht auf `submitted` (über `recordSubmission` beim Token-Klick). Käufer drückt "Als erledigt markieren" → `confirmed`.
+
+**ELSTER/Grundsteuer explizit ausgeschlossen** (`SMART_FILL_EXCLUDED`): Banner zeigt stattdessen "Hier brauchst du deinen Steuerberater" mit Verweis ans Partnernetzwerk. §5 StBerG ist eindeutig.
+
+**Aktuelles Recipe-Inventar (`src/lib/portalRecipes.ts`):** wohnsitz-paderborn (mein-digiport.de), kfz-paderborn (paderborn.kfz-zulassung-nw.de), strom-westfalenweser (westfalenweser.com), gez (rundfunkbeitrag.de), post (deutschepost.de/nachsendeservice), hausrat (check24.de/hausratversicherung). Erweiterung über den Mitkurations-Loop (Briefing v1.1 §5.6).
+
+**Stolpersteine:**
+- CSP `script-src 'self'` blockiert `javascript:`-URIs auf manchen Portalen → Recipe-Flag `requiresExtensionFallback` und Fallback auf Copy-Box.
+- Mobile Browser: keine Bookmark-Leiste → Smart-Fill als "Desktop-Empfehlung" gelabelt.
+- Recipe-Drift: monatlicher Synthetic-Health-Check geplant (nicht in diesem PR).
+- Token-Ablauf: Bookmarklet zeigt "Token abgelaufen — zurück zur App".
+
 ---
 
 ## 9. Was fehlt (Backend-Lücken)
@@ -274,7 +299,10 @@ Bedingungen alle drei: Eingezogen ≥ 7 Tage · ≥ 5 Milestones done · `aiChat
 | Mitkurations-Workflow | UI-Hooks existieren, Persist fehlt |
 | Echte PDF-Spiegelung der Kommunal-Formulare | Aktuell nur Receipts-PDF (kein Field-Mapping in Original-PDFs) |
 | E-Mail-Versand (Welcome, Reminder, Review-Request) | Kein Mailer eingebunden |
-| Mehrsprachigkeit | i18n-Layer steht, nur `de.json` befüllt (411 Zeilen) |
+| Mehrsprachigkeit | i18n-Layer steht, nur `de.json` befüllt |
+| Smart-Fill: Browser-Extension (Chrome Web Store) | Bookmarklet ist Phase 1; Extension Phase 2 (Q4 2026) für CSP-blockierte Portale |
+| Smart-Fill: Recipe-Health-Check-Cron | Monatlicher synthetischer Test pro Recipe noch nicht implementiert |
+| Smart-Fill: Mitkurations-UI im Cockpit | `__pacRecipeProposals`-Queue existiert serverseitig, aber `/de/broker/curators` zeigt sie noch nicht |
 
 ---
 

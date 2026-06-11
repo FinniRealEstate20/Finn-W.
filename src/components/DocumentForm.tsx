@@ -3,11 +3,12 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import {
-  formatAddress,
   loadProfile,
   saveProfile,
   type ProfileData
 } from '@/lib/profileStore';
+import { valueFromProfile, setValueOnProfile } from '@/lib/portalMapping';
+import { smartFillStatus } from '@/lib/portalRecipes';
 import {
   confirmSubmission,
   getSubmission,
@@ -25,54 +26,6 @@ interface Props {
   fieldLabels: Record<string, string>;
 }
 
-function valueFromProfile(profile: ProfileData, key: string): string {
-  switch (key) {
-    case 'name':
-      return `${profile.firstName} ${profile.lastName}`.trim();
-    case 'birthDate':
-      return profile.birthDate;
-    case 'newAddress':
-      return formatAddress(profile.newAddress);
-    case 'oldAddress':
-      return formatAddress(profile.oldAddress);
-    case 'iban':
-      return profile.iban;
-    case 'steuerId':
-      return profile.steuerId;
-    case 'meterReading':
-      return profile.meterReadingElectricity || profile.meterReadingGas || '—';
-    case 'email':
-      return profile.email;
-    case 'phone':
-      return profile.phone;
-    default:
-      return '';
-  }
-}
-
-function setValueOnProfile(profile: ProfileData, key: string, raw: string): ProfileData {
-  switch (key) {
-    case 'name': {
-      const [first = '', ...rest] = raw.split(' ');
-      return { ...profile, firstName: first, lastName: rest.join(' ') };
-    }
-    case 'birthDate':
-      return { ...profile, birthDate: raw };
-    case 'iban':
-      return { ...profile, iban: raw };
-    case 'steuerId':
-      return { ...profile, steuerId: raw };
-    case 'email':
-      return { ...profile, email: raw };
-    case 'phone':
-      return { ...profile, phone: raw };
-    case 'meterReading':
-      return { ...profile, meterReadingElectricity: raw };
-    default:
-      return profile;
-  }
-}
-
 function buyerName(profile: ProfileData | null): string | undefined {
   if (!profile) return undefined;
   const name = `${profile.firstName} ${profile.lastName}`.trim();
@@ -86,6 +39,9 @@ export function DocumentForm({ form, fieldKeys, fieldLabels }: Props) {
   const [values, setValues] = useState<Record<string, string>>({});
   const [submission, setSubmission] = useState<Submission | null>(null);
   const [copied, setCopied] = useState<string | null>(null);
+  const [smartFillToken, setSmartFillToken] = useState<string | null>(null);
+  const [smartFillError, setSmartFillError] = useState<string | null>(null);
+  const smartFill = useMemo(() => smartFillStatus(form.id), [form.id]);
 
   useEffect(() => {
     const p = loadProfile();
@@ -197,6 +153,34 @@ export function DocumentForm({ form, fieldKeys, fieldLabels }: Props) {
     }
   }
 
+  async function activateSmartFill() {
+    setSmartFillError(null);
+    try {
+      const res = await fetch('/api/recipes/token', { method: 'POST' });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = (await res.json()) as { token?: string };
+      if (!data.token) throw new Error('no_token');
+      setSmartFillToken(data.token);
+      if (form.externalUrl) {
+        const url = new URL(form.externalUrl);
+        url.hash = `${url.hash ? `${url.hash}&` : ''}pac-token=${encodeURIComponent(data.token)}`;
+        window.open(url.toString(), '_blank', 'noopener,noreferrer');
+      }
+      const next = recordSubmission({
+        formId: form.id,
+        channel: 'external_link',
+        data: values,
+        source: form.officialSource,
+        status: 'submitted'
+      });
+      setSubmission(next);
+      syncToServer(next);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'unknown';
+      setSmartFillError(message);
+    }
+  }
+
   function markConfirmed() {
     const next = confirmSubmission(form.id);
     if (next) {
@@ -272,37 +256,121 @@ export function DocumentForm({ form, fieldKeys, fieldLabels }: Props) {
       )}
 
       {form.sourceType === 'external_link' && (
-        <section className="card mt-8">
-          <h2 className="text-sm font-semibold text-ink">{t('copyBox.title')}</h2>
-          <p className="mt-1 text-xs text-ink-muted">
-            Du wirst gleich zum offiziellen Portal weitergeleitet ({sourceLabel}). Hier deine Daten zum Kopieren:
-          </p>
-          <div className="mt-4 space-y-2">
-            {fields.map(f => (
-              <div
-                key={f.key}
-                className="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2"
-              >
-                <div className="min-w-0">
-                  <div className="text-[11px] uppercase tracking-wide text-ink-muted">{f.label}</div>
-                  <div className="truncate text-sm font-medium text-ink">{f.value || '—'}</div>
+        <>
+          {smartFill === 'available' && (
+            <section className="card mt-8 border-emerald-200 bg-gradient-to-br from-emerald-50 to-white">
+              <div className="flex items-start gap-3">
+                <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700">
+                  <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => copyField(f.label, f.value)}
-                  className="ml-3 rounded-md bg-white px-3 py-1 text-xs font-semibold text-brand-700 ring-1 ring-slate-200 hover:bg-brand-50"
-                >
-                  {copied === f.label ? t('copyBox.copied') : t('copyBox.copy')}
-                </button>
+                <div className="min-w-0 flex-1">
+                  <h2 className="text-sm font-semibold text-emerald-900">
+                    Smart Pre-Fill verfügbar
+                  </h2>
+                  <p className="mt-1 text-sm text-emerald-800">
+                    Wir können deine Profildaten direkt in das offizielle Portal eintragen. Du prüfst alles und drückst selbst Absenden — wir senden nie für dich.
+                  </p>
+                  <ol className="mt-3 space-y-1 text-xs text-emerald-900/80">
+                    <li>1. Einmalig das Bookmarklet einrichten →{' '}
+                      <a
+                        href="/bookmarklet-installer.html"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-semibold underline"
+                      >
+                        Setup öffnen
+                      </a>
+                    </li>
+                    <li>2. Unten „Smart Pre-Fill aktivieren&quot; klicken — Portal öffnet sich mit Token</li>
+                    <li>3. Im Portal das PropAfterCare-Bookmark anklicken</li>
+                  </ol>
+                  <button
+                    type="button"
+                    onClick={activateSmartFill}
+                    className="btn-primary mt-4"
+                  >
+                    Smart Pre-Fill aktivieren &amp; Portal öffnen ↗
+                  </button>
+                  {smartFillToken && (
+                    <p className="mt-2 text-xs text-emerald-700">
+                      ✓ Token erzeugt (15 Min gültig). Portal sollte sich in einem neuen Tab geöffnet haben.
+                    </p>
+                  )}
+                  {smartFillError && (
+                    <p className="mt-2 text-xs text-rose-700">
+                      Fehler beim Token-Holen: {smartFillError}
+                    </p>
+                  )}
+                </div>
               </div>
-            ))}
-          </div>
-          {form.externalUrl && (
-            <button type="button" onClick={openExternal} className="btn-primary mt-6 w-full">
-              {t('actions.external')} ↗
-            </button>
+            </section>
           )}
-        </section>
+
+          {smartFill === 'excluded' && (
+            <section className="card mt-8 border-amber-200 bg-amber-50">
+              <div className="flex items-start gap-3">
+                <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-800">
+                  <LandmarkIcon className="h-5 w-5" />
+                </div>
+                <div>
+                  <h2 className="text-sm font-semibold text-amber-900">
+                    Hier brauchst du deinen Steuerberater
+                  </h2>
+                  <p className="mt-1 text-sm text-amber-900">
+                    ELSTER nutzt Software-Zertifikate und das Steuerberatungsgesetz (§5 StBerG) erlaubt uns hier kein Pre-Fill. Wir verweisen dich an unser Partnernetzwerk: zwei Paderborner Kanzleien mit Immobilien-Schwerpunkt.
+                  </p>
+                  {form.externalUrl && (
+                    <button type="button" onClick={openExternal} className="btn-secondary mt-4">
+                      Trotzdem zu ELSTER ↗
+                    </button>
+                  )}
+                </div>
+              </div>
+            </section>
+          )}
+
+          <section className="card mt-8">
+            <h2 className="text-sm font-semibold text-ink">{t('copyBox.title')}</h2>
+            <p className="mt-1 text-xs text-ink-muted">
+              {smartFill === 'available'
+                ? `Backup: Falls Smart Pre-Fill nicht greift, hier deine Daten zum manuellen Kopieren (${sourceLabel}).`
+                : `Du wirst gleich zum offiziellen Portal weitergeleitet (${sourceLabel}). Hier deine Daten zum Kopieren:`}
+            </p>
+            <div className="mt-4 space-y-2">
+              {fields.map(f => (
+                <div
+                  key={f.key}
+                  className="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2"
+                >
+                  <div className="min-w-0">
+                    <div className="text-[11px] uppercase tracking-wide text-ink-muted">{f.label}</div>
+                    <div className="truncate text-sm font-medium text-ink">{f.value || '—'}</div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => copyField(f.label, f.value)}
+                    className="ml-3 rounded-md bg-white px-3 py-1 text-xs font-semibold text-brand-700 ring-1 ring-slate-200 hover:bg-brand-50"
+                  >
+                    {copied === f.label ? t('copyBox.copied') : t('copyBox.copy')}
+                  </button>
+                </div>
+              ))}
+            </div>
+            {form.externalUrl && smartFill !== 'available' && smartFill !== 'excluded' && (
+              <button type="button" onClick={openExternal} className="btn-primary mt-6 w-full">
+                {t('actions.external')} ↗
+              </button>
+            )}
+          </section>
+
+          {submission && submission.status === 'submitted' && (
+            <div className="mt-6 rounded-xl bg-slate-50 px-4 py-3 text-xs text-ink-soft ring-1 ring-slate-200">
+              <strong>Nach dem Absenden im Portal:</strong> Komm zurück hierher und klick oben &bdquo;Als erledigt markieren&ldquo;. So bleibt deine Übersicht in <em>Meine Formulare</em> aktuell.
+            </div>
+          )}
+        </>
       )}
 
       {form.sourceType === 'inhouse' && (
