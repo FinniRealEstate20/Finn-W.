@@ -70,6 +70,7 @@ export async function GET(request: Request) {
       recipe: safeRecipe,
       profile: snapshot,
       issuedFor: payload.buyerId,
+      clientReceiptId: payload.clientReceiptId ?? null,
       expiresAt: new Date(payload.exp * 1000).toISOString()
     },
     {

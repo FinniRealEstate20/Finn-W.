@@ -111,8 +111,9 @@ Alle Routen liegen unter `[locale]`; Middleware (`src/middleware.ts`) redirected
 | `/api/active-buyer` | POST | Setzt Cookie `pac-active-buyer` (30 Tage). Validiert gegen `mockBuyers`. |
 | `/api/lookup/address` | GET | Nominatim-Proxy (OpenStreetMap) für Adress-Autocomplete. Timeout 3.5 s, fällt sonst auf Mock zurück. Caching 30 s. |
 | `/api/lookup/place` | GET | OpenPLZ-Proxy für PLZ/Ort-Lookup. Caching 60 s. |
-| `/api/recipes/token` | POST | Erzeugt 15-Min-HMAC-Token aus aktivem Buyer-Cookie für das Bookmarklet. |
-| `/api/recipes/match` | GET | Liefert `PortalRecipe` + zugehörigen Profile-Snapshot gegen Token. CORS offen (Bookmarklet ruft cross-origin). |
+| `/api/recipes/token` | POST | Erzeugt 15-Min-HMAC-Token aus aktivem Buyer-Cookie für das Bookmarklet. Body `{ clientReceiptId }` bindet die Quittung an eine konkrete Submission. |
+| `/api/recipes/match` | GET | Liefert `PortalRecipe` + zugehörigen Profile-Snapshot + `clientReceiptId` gegen Token. CORS offen (Bookmarklet ruft cross-origin). |
+| `/api/submissions/fill-receipt` | POST | Bookmarklet hängt nach dem Fill eine `FillAuditEntry[]`-Liste + Summary an die Submission. Sensible Felder (IBAN, Steuer-ID) werden serverseitig auf `head ••• tail` maskiert. CORS offen. |
 | `/api/portal-mapper` | POST | Anthropic-`claude-haiku-4-5` schlägt CSS-Selektor für ein DOM-Snippet vor (Fallback, wenn Recipe-Selektoren scheitern). Rate-Limit 5/min/Buyer, Snippet-Cap 8 KB. |
 
 **Wichtig:** Alle API-Routen sind `runtime: 'nodejs'`, `dynamic: 'force-dynamic'`.
@@ -267,12 +268,13 @@ Ziel: Behörden- und Versorger-Portale automatisch mit Profildaten ausfüllen, o
 
 1. Käufer öffnet `/de/documents/wohnsitz-paderborn` → `external_link`-Branch zeigt grünen **"Smart Pre-Fill verfügbar"**-Banner (sofern `smartFillStatus(docId) === 'available'`).
 2. Setup einmalig: Käufer öffnet `/bookmarklet-installer.html` → zieht den **"PropAfterCare Smart Fill"**-Button in die Lesezeichen-Leiste. Der Installer lädt `public/bookmarklet.js` und encoded das JS als `javascript:`-URI mit `__PAC_API_BASE__` = `location.origin`.
-3. Käufer klickt "Smart Pre-Fill aktivieren" → `POST /api/recipes/token` erzeugt HMAC-SHA256-Token (15 Min TTL, signed mit `RECIPE_TOKEN_SECRET`). Das Portal wird in neuem Tab geöffnet, Token im URL-Fragment (`#pac-token=…`).
-4. Im Portal: Klick auf Bookmark → Bookmarklet liest Token aus Hash (cached in `localStorage`), ruft `GET /api/recipes/match?host=<location.hostname>&token=…` → kriegt `PortalRecipe` + `profile`-Snapshot.
+3. Käufer klickt "Smart Pre-Fill aktivieren" → `recordSubmission` legt erst die `clientReceiptId` an, dann `POST /api/recipes/token { clientReceiptId }` erzeugt HMAC-SHA256-Token (15 Min TTL, signed mit `RECIPE_TOKEN_SECRET`), das beides im Payload trägt. Das Portal wird in neuem Tab geöffnet, Token im URL-Fragment (`#pac-token=…`).
+4. Im Portal: Klick auf Bookmark → Bookmarklet liest Token aus Hash (cached in `localStorage`), ruft `GET /api/recipes/match?host=<location.hostname>&token=…` → kriegt `PortalRecipe` + `profile`-Snapshot + `clientReceiptId`.
 5. Bookmarklet iteriert `recipe.fields`, sucht für jedes Feld den ersten passenden CSS-Selektor (`document.querySelector`), setzt `input.value` via native Setter + dispatch `input`+`change` (React-/Vue-kompatibel). **Submit-Buttons werden NIE getriggert** (Allowlist `INPUT|SELECT|TEXTAREA`).
 6. Wenn ein Selektor fehlschlägt: Bookmarklet sendet ein 8-KB-Snippet des umgebenden DOM an `POST /api/portal-mapper`. Claude Haiku schlägt einen Selektor vor, Bookmarklet wendet ihn sofort an. Vorschlag landet in `globalThis.__pacRecipeProposals` (Mitkurations-Queue, GET-Endpunkt verfügbar).
-7. Toast rechts oben: "✓ X Felder ausgefüllt (Y per KI ergänzt). Bitte prüfen und absenden." Käufer drückt selbst den Submit-Button des Portals.
-8. Zurück in PropAfterCare: Submission steht auf `submitted` (über `recordSubmission` beim Token-Klick). Käufer drückt "Als erledigt markieren" → `confirmed`.
+7. **Live-Sidepanel** (`renderSidepanel`) erscheint rechts: zeigt jeden Eintrag mit Label, Wert (IBAN/Steuer-ID maskiert), Selektor, Quelle (Recipe / KI / Manuell). Klick auf Zeile scrollt zum echten Portal-Feld und blinkt 2 Sek grün (`flashOutline`). `highlightSubmitButton` legt einen pulsierenden grünen Ring um den Absenden-Knopf — Käufer drückt selbst.
+8. Direkt danach POSTet das Bookmarklet `fillAudit` + `summary` an `/api/submissions/fill-receipt` (per Token authentifiziert). Server-Side `sanitizeFillAudit` clipt Längen, `redactValue` maskiert sensible Felder, `attachFillReceipt` hängt sie an die existierende Submission. Sidepanel-Footer bestätigt "Quittung gespeichert ✓".
+9. Zurück in PropAfterCare: Submission steht auf `submitted` (über `recordSubmission` beim Token-Klick). Käufer öffnet `/de/my-forms` → `fetchServerSubmissions` zieht die Quittung in den localStorage; pro Submission gibt's einen `<details>`-Aufklapp **Smart-Fill-Quittung ansehen** mit Tabelle Feld/Wert/Quelle. PDF (`buildSubmissionPdf`) druckt eine zusätzliche Sektion mit allen Audit-Einträgen. Käufer drückt "Als erledigt markieren" → `confirmed`.
 
 **ELSTER/Grundsteuer explizit ausgeschlossen** (`SMART_FILL_EXCLUDED`): Banner zeigt stattdessen "Hier brauchst du deinen Steuerberater" mit Verweis ans Partnernetzwerk. §5 StBerG ist eindeutig.
 
@@ -285,6 +287,8 @@ Ziel: Behörden- und Versorger-Portale automatisch mit Profildaten ausfüllen, o
 - Mobile Browser: keine Bookmark-Leiste → Smart-Fill als "Desktop-Empfehlung" gelabelt.
 - Recipe-Drift: monatlicher Synthetic-Health-Check geplant (nicht in diesem PR).
 - Token-Ablauf: Bookmarklet zeigt "Token abgelaufen — zurück zur App".
+- Submit-Heuristik (`findSubmitButton`): trifft `button[type=submit]` direkt, sonst Text-Match auf "Absenden|Senden|Übermitteln|Anmelden|Speichern|Weiter". Mehrstufige Wizards ohne klassischen Submit → Sidepanel-Footer fällt auf "drück den Knopf selbst — meistens unten" zurück.
+- **Privacy:** Audit-Werte landen ausschließlich beim Käufer (`/de/my-forms` + PDF). Makler-Cockpit sieht weiterhin nur Status, nicht die ausgefüllten Werte. Server-Store hält die Werte in-memory; bei Phase-2-Migration auf Supabase müssen `fillAudit.value`-Spalten verschlüsselt gespeichert werden (kein Klartext-IBAN in Postgres).
 
 ---
 

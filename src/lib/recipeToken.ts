@@ -2,6 +2,7 @@ import { createHmac, timingSafeEqual } from 'node:crypto';
 
 const TOKEN_TTL_SECONDS = 15 * 60;
 const DEFAULT_SECRET = 'pac-dev-only-secret-do-not-use-in-prod';
+const MAX_RECEIPT_ID_LEN = 64;
 
 function getSecret(): string {
   return process.env.RECIPE_TOKEN_SECRET || DEFAULT_SECRET;
@@ -20,17 +21,21 @@ function fromBase64Url(input: string): Buffer {
 
 export interface RecipeTokenPayload {
   buyerId: string;
+  clientReceiptId?: string;
   iat: number;
   exp: number;
 }
 
-export function signRecipeToken(buyerId: string): string {
+export function signRecipeToken(buyerId: string, clientReceiptId?: string): string {
   const now = Math.floor(Date.now() / 1000);
   const payload: RecipeTokenPayload = {
     buyerId,
     iat: now,
     exp: now + TOKEN_TTL_SECONDS
   };
+  if (clientReceiptId) {
+    payload.clientReceiptId = clientReceiptId.slice(0, MAX_RECEIPT_ID_LEN);
+  }
   const payloadEncoded = base64Url(JSON.stringify(payload));
   const sig = createHmac('sha256', getSecret()).update(payloadEncoded).digest();
   return `${payloadEncoded}.${base64Url(sig)}`;

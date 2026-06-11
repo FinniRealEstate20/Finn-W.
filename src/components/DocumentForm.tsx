@@ -156,7 +156,18 @@ export function DocumentForm({ form, fieldKeys, fieldLabels }: Props) {
   async function activateSmartFill() {
     setSmartFillError(null);
     try {
-      const res = await fetch('/api/recipes/token', { method: 'POST' });
+      const placeholder = recordSubmission({
+        formId: form.id,
+        channel: 'external_link',
+        data: values,
+        source: form.officialSource,
+        status: 'submitted'
+      });
+      const res = await fetch('/api/recipes/token', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ clientReceiptId: placeholder.receiptId })
+      });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = (await res.json()) as { token?: string };
       if (!data.token) throw new Error('no_token');
@@ -166,15 +177,8 @@ export function DocumentForm({ form, fieldKeys, fieldLabels }: Props) {
         url.hash = `${url.hash ? `${url.hash}&` : ''}pac-token=${encodeURIComponent(data.token)}`;
         window.open(url.toString(), '_blank', 'noopener,noreferrer');
       }
-      const next = recordSubmission({
-        formId: form.id,
-        channel: 'external_link',
-        data: values,
-        source: form.officialSource,
-        status: 'submitted'
-      });
-      setSubmission(next);
-      syncToServer(next);
+      setSubmission(placeholder);
+      syncToServer(placeholder);
     } catch (err) {
       const message = err instanceof Error ? err.message : 'unknown';
       setSmartFillError(message);
@@ -285,6 +289,7 @@ export function DocumentForm({ form, fieldKeys, fieldLabels }: Props) {
                     </li>
                     <li>2. Unten „Smart Pre-Fill aktivieren&quot; klicken — Portal öffnet sich mit Token</li>
                     <li>3. Im Portal das PropAfterCare-Bookmark anklicken</li>
+                    <li>4. Sidepanel zeigt live alle Werte — du drückst Absenden, dann liegt die Quittung unter <strong>Meine Formulare</strong></li>
                   </ol>
                   <button
                     type="button"
