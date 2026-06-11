@@ -1,6 +1,11 @@
 import { NextResponse } from 'next/server';
 import Anthropic from '@anthropic-ai/sdk';
 import { verifyRecipeToken } from '@/lib/recipeToken';
+import {
+  listProposals,
+  recordProposal,
+  setProposalStatus
+} from '@/lib/recipeProposals/server';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -41,23 +46,6 @@ function checkRateLimit(buyerId: string): boolean {
   if (bucket.count >= RATE_LIMIT_PER_MIN) return false;
   bucket.count += 1;
   return true;
-}
-
-interface RecipeProposal {
-  proposedAt: string;
-  buyerId: string;
-  docId: string;
-  profileKey: string;
-  label: string;
-  selector: string;
-  attemptedSelectors: string[];
-}
-
-function recordProposal(proposal: RecipeProposal) {
-  const g = globalThis as unknown as { __pacRecipeProposals?: RecipeProposal[] };
-  if (!g.__pacRecipeProposals) g.__pacRecipeProposals = [];
-  g.__pacRecipeProposals.unshift(proposal);
-  if (g.__pacRecipeProposals.length > 200) g.__pacRecipeProposals.length = 200;
 }
 
 interface MapperBody {
@@ -161,7 +149,30 @@ Antworte ausschließlich mit dem CSS-Selektor oder mit "null".`;
   }
 }
 
-export function GET() {
-  const g = globalThis as unknown as { __pacRecipeProposals?: RecipeProposal[] };
-  return NextResponse.json({ proposals: (g.__pacRecipeProposals ?? []).slice(0, 50) });
+export function GET(request: Request) {
+  const url = new URL(request.url);
+  const status = url.searchParams.get('status') as 'new' | 'accepted' | 'dismissed' | null;
+  return NextResponse.json({
+    proposals: listProposals({ limit: 50, status: status ?? undefined })
+  });
+}
+
+interface PatchBody {
+  id?: string;
+  status?: 'accepted' | 'dismissed';
+}
+
+export async function PATCH(request: Request) {
+  const body = (await request.json().catch(() => null)) as PatchBody | null;
+  if (!body || !body.id || !body.status) {
+    return NextResponse.json({ error: 'missing_fields' }, { status: 400 });
+  }
+  if (body.status !== 'accepted' && body.status !== 'dismissed') {
+    return NextResponse.json({ error: 'invalid_status' }, { status: 400 });
+  }
+  const updated = setProposalStatus(body.id, body.status);
+  if (!updated) {
+    return NextResponse.json({ error: 'not_found' }, { status: 404 });
+  }
+  return NextResponse.json({ proposal: updated });
 }

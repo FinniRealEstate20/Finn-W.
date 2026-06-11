@@ -123,19 +123,74 @@ export const portalRecipes: readonly PortalRecipe[] = [
       { profileKey: 'birthDate', label: 'Geburtsdatum', selectors: ['input[type="date"]', 'input[name*="geburt" i]'], transform: 'iso-date', optional: true }
     ],
     reviewedAt: '2026-06-11'
+  },
+  {
+    docId: 'gas',
+    portalName: 'Westfalen Weser Energie (Gas)',
+    matchHost: 'westfalenweser.com',
+    matchPath: 'gas',
+    fields: [
+      { profileKey: 'firstName', label: 'Vorname', selectors: ['input[name*="vorname" i]', 'input[name*="firstname" i]'] },
+      { profileKey: 'lastName', label: 'Nachname', selectors: ['input[name*="nachname" i]', 'input[name*="lastname" i]'] },
+      { profileKey: 'email', label: 'E-Mail', selectors: ['input[type="email"]'] },
+      { profileKey: 'phone', label: 'Telefon', selectors: ['input[type="tel"]', 'input[name*="telefon" i]'], optional: true },
+      { profileKey: 'newStreet', label: 'Straße', selectors: ['input[name*="strasse" i]'] },
+      { profileKey: 'newHouseNumber', label: 'Hausnummer', selectors: ['input[name*="hausnummer" i]'] },
+      { profileKey: 'newPostalCode', label: 'PLZ', selectors: ['input[name*="plz" i]'] },
+      { profileKey: 'newCity', label: 'Ort', selectors: ['input[name*="ort" i]'] },
+      { profileKey: 'iban', label: 'IBAN', selectors: ['input[name*="iban" i]'], transform: 'iban-no-spaces', optional: true },
+      { profileKey: 'meterReadingGas', label: 'Gas-Zählerstand', selectors: ['input[name*="zaehler" i]', 'input[name*="meter" i]'], optional: true }
+    ],
+    reviewedAt: '2026-06-11'
+  },
+  {
+    docId: 'internet',
+    portalName: 'Verivox DSL-Vergleich',
+    matchHost: 'verivox.de',
+    matchPath: 'dsl',
+    fields: [
+      { profileKey: 'newPostalCode', label: 'PLZ', selectors: ['input[name*="plz" i]', 'input[name*="zip" i]', 'input[id*="postal" i]'] },
+      { profileKey: 'newCity', label: 'Ort', selectors: ['input[name*="ort" i]', 'input[name*="city" i]'], optional: true },
+      { profileKey: 'newStreet', label: 'Straße', selectors: ['input[name*="strasse" i]', 'input[name*="street" i]'], optional: true },
+      { profileKey: 'newHouseNumber', label: 'Hausnummer', selectors: ['input[name*="hausnummer" i]', 'input[name*="number" i]'], optional: true },
+      { profileKey: 'firstName', label: 'Vorname', selectors: ['input[name*="vorname" i]', 'input[name*="firstname" i]'], optional: true },
+      { profileKey: 'lastName', label: 'Nachname', selectors: ['input[name*="nachname" i]', 'input[name*="lastname" i]'], optional: true },
+      { profileKey: 'email', label: 'E-Mail', selectors: ['input[type="email"]'], optional: true }
+    ],
+    reviewedAt: '2026-06-11',
+    note: 'Verivox lädt Felder dynamisch je nach Eingabe – PLZ ist der wichtigste Anker. KI-Mapper greift erfahrungsgemäß für Folgefelder.'
+  },
+  {
+    docId: 'vermieterhaftpflicht',
+    portalName: 'Check24 Vermieter-Haftpflicht',
+    matchHost: 'check24.de',
+    matchPath: 'vermieter-haftpflicht',
+    fields: [
+      { profileKey: 'newPostalCode', label: 'PLZ Objekt', selectors: ['input[name*="plz" i]', 'input[id*="zip" i]'] },
+      { profileKey: 'newCity', label: 'Ort Objekt', selectors: ['input[name*="ort" i]', 'input[id*="city" i]'] },
+      { profileKey: 'newStreet', label: 'Straße Objekt', selectors: ['input[name*="strasse" i]'], optional: true },
+      { profileKey: 'newHouseNumber', label: 'Hausnummer Objekt', selectors: ['input[name*="hausnummer" i]'], optional: true },
+      { profileKey: 'firstName', label: 'Vorname', selectors: ['input[name*="vorname" i]'], optional: true },
+      { profileKey: 'lastName', label: 'Nachname', selectors: ['input[name*="nachname" i]'], optional: true },
+      { profileKey: 'birthDate', label: 'Geburtsdatum', selectors: ['input[type="date"]', 'input[name*="geburt" i]'], transform: 'iso-date', optional: true },
+      { profileKey: 'email', label: 'E-Mail', selectors: ['input[type="email"]'], optional: true }
+    ],
+    reviewedAt: '2026-06-11'
   }
 ];
 
 export function findRecipeForHost(host: string, path?: string): PortalRecipe | undefined {
   const normalizedHost = host.replace(/^www\./, '').toLowerCase();
-  return portalRecipes.find(r => {
+  const normalizedPath = (path ?? '').toLowerCase();
+  const candidates = portalRecipes.filter(r => {
     const recipeHost = r.matchHost.replace(/^www\./, '').toLowerCase();
-    const hostMatches =
-      normalizedHost === recipeHost || normalizedHost.endsWith(`.${recipeHost}`);
-    if (!hostMatches) return false;
-    if (!r.matchPath) return true;
-    return (path ?? '').toLowerCase().includes(r.matchPath.toLowerCase());
+    return normalizedHost === recipeHost || normalizedHost.endsWith(`.${recipeHost}`);
   });
+  const withPath = candidates.find(
+    r => r.matchPath && normalizedPath.includes(r.matchPath.toLowerCase())
+  );
+  if (withPath) return withPath;
+  return candidates.find(r => !r.matchPath);
 }
 
 export function findRecipeForDoc(docId: string): PortalRecipe | undefined {

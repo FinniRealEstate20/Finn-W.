@@ -2,9 +2,13 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { mockBroker, topCurators } from '@/lib/mockData';
+import { listProposals } from '@/lib/recipeProposals/server';
 import { StatCard } from '@/components/StatCard';
 import { Logo } from '@/components/Logo';
+import { RecipeProposalsCard } from '@/components/RecipeProposalsCard';
 import { CheckIcon } from '@/components/icons';
+
+export const dynamic = 'force-dynamic';
 
 const RANK_BADGE_STYLES: Record<number, string> = {
   1: 'bg-amber-100 text-amber-800 ring-1 ring-amber-300',
@@ -20,6 +24,7 @@ export default async function BrokerCuratorsPage({
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations('broker');
+  const initialProposals = listProposals({ limit: 50 });
 
   return (
     <main className="min-h-screen bg-slate-50">
@@ -109,6 +114,9 @@ export default async function BrokerCuratorsPage({
             ))}
           </div>
         </section>
+
+        {/* KI-Vorschläge aus dem Smart-Pre-Fill-Mapper */}
+        <RecipeProposalsCard initial={initialProposals} />
 
         {/* Bestenliste */}
         <section className="mt-10">

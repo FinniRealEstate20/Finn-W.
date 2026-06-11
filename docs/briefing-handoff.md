@@ -276,7 +276,9 @@ Ziel: Behörden- und Versorger-Portale automatisch mit Profildaten ausfüllen, o
 
 **ELSTER/Grundsteuer explizit ausgeschlossen** (`SMART_FILL_EXCLUDED`): Banner zeigt stattdessen "Hier brauchst du deinen Steuerberater" mit Verweis ans Partnernetzwerk. §5 StBerG ist eindeutig.
 
-**Aktuelles Recipe-Inventar (`src/lib/portalRecipes.ts`):** wohnsitz-paderborn (mein-digiport.de), kfz-paderborn (paderborn.kfz-zulassung-nw.de), strom-westfalenweser (westfalenweser.com), gez (rundfunkbeitrag.de), post (deutschepost.de/nachsendeservice), hausrat (check24.de/hausratversicherung). Erweiterung über den Mitkurations-Loop (Briefing v1.1 §5.6).
+**Aktuelles Recipe-Inventar (`src/lib/portalRecipes.ts`, 9 Stück):** wohnsitz-paderborn (mein-digiport.de), kfz-paderborn (paderborn.kfz-zulassung-nw.de), strom-westfalenweser (westfalenweser.com), gas (westfalenweser.com/gas — path-spezifisch), internet (verivox.de/dsl), gez (rundfunkbeitrag.de), post (deutschepost.de/nachsendeservice), hausrat (check24.de/hausratversicherung), vermieterhaftpflicht (check24.de/vermieter-haftpflicht). Erweiterung über den Mitkurations-Loop (Briefing v1.1 §5.6). `findRecipeForHost()` priorisiert Recipes mit `matchPath` vor solchen ohne — so kann ein Portal mehrere Recipes je nach Unterpfad bedienen (z.B. Westfalen Weser für Strom UND Gas).
+
+**Mitkurations-UI im Cockpit (`/de/broker/curators`):** Der `RecipeProposalsCard` zeigt alle KI-Vorschläge aus dem Mapper. Filter „Neu" vs. „Alle", Auto-Refresh alle 12 Sekunden gegen `GET /api/portal-mapper`. Pro Vorschlag: Doc-ID-Tag, Feld-Label, vorgeschlagener Selektor, vorher erfolglose Selektoren, Zeitstempel. Buttons „Übernehmen" / „Verwerfen" rufen `PATCH /api/portal-mapper` mit `{id, status}`. Übernommene Vorschläge zählen für das 3/6/9-Mitkurations-Punktesystem.
 
 **Stolpersteine:**
 - CSP `script-src 'self'` blockiert `javascript:`-URIs auf manchen Portalen → Recipe-Flag `requiresExtensionFallback` und Fallback auf Copy-Box.
@@ -302,7 +304,7 @@ Ziel: Behörden- und Versorger-Portale automatisch mit Profildaten ausfüllen, o
 | Mehrsprachigkeit | i18n-Layer steht, nur `de.json` befüllt |
 | Smart-Fill: Browser-Extension (Chrome Web Store) | Bookmarklet ist Phase 1; Extension Phase 2 (Q4 2026) für CSP-blockierte Portale |
 | Smart-Fill: Recipe-Health-Check-Cron | Monatlicher synthetischer Test pro Recipe noch nicht implementiert |
-| Smart-Fill: Mitkurations-UI im Cockpit | `__pacRecipeProposals`-Queue existiert serverseitig, aber `/de/broker/curators` zeigt sie noch nicht |
+| Smart-Fill: Punkte-Vergabe bei Übernahme | Beim PATCH `status=accepted` zählt der Mitkurator-Punkt heute nur als UI-Hinweis; echte Punktezuweisung an `mockBroker.curatorPoints` fehlt |
 
 ---
 
