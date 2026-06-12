@@ -3,186 +3,397 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>PropAfterCare Smart Fill — einrichten</title>
-  <meta name="description" content="Behörden- und Versorger-Portale automatisch mit deinen Profildaten ausfüllen — in einem Klick." />
+  <title>PropAfterCare · Auto-Ausfüllen einrichten</title>
+  <meta name="description" content="Behörden- und Versorger-Portale automatisch mit deinen Daten ausfüllen lassen — Einrichtung in 30 Sekunden." />
   <style>
     *,*::before,*::after { box-sizing: border-box; }
     html,body { margin:0; padding:0; }
     body {
-      font: 16px/1.6 -apple-system,BlinkMacSystemFont,'Segoe UI',Inter,sans-serif;
+      font: 16px/1.55 -apple-system,BlinkMacSystemFont,'Segoe UI',Inter,sans-serif;
       color: #0b1d2e;
-      background: linear-gradient(180deg,#fff 0%,#f0f7ff 40%,#fff 100%);
+      background: linear-gradient(180deg,#f0f7ff 0%,#fff 30%,#fff 100%);
       min-height: 100vh;
     }
-    .wrap { max-width: 760px; margin: 0 auto; padding: 48px 24px 80px; }
-    header { text-align: center; margin-bottom: 48px; }
-    .chip {
-      display: inline-block; padding: 6px 12px; border-radius: 999px;
-      background: #e0eefe; color: #06549e; font-size: 12px; font-weight: 600;
-      letter-spacing: 0.04em; text-transform: uppercase;
+    .wrap { max-width: 720px; margin: 0 auto; padding: 32px 20px 80px; }
+
+    /* === Header === */
+    .topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; }
+    .brand { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; font-size: 14px; color: #0b1d2e; }
+    .brand-dot { width: 22px; height: 22px; border-radius: 6px; background: linear-gradient(135deg,#1086e6,#0469c4); display: grid; place-items: center; color: #fff; font-size: 12px; }
+    .progress { display: flex; gap: 6px; align-items: center; font-size: 12px; color: #64748b; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: #cbd5e1; }
+    .dot.done { background: #10b981; }
+    .dot.active { background: #0469c4; }
+
+    /* === Hero === */
+    .hero { text-align: center; margin-bottom: 32px; }
+    .hero h1 { font-size: 32px; line-height: 1.15; margin: 8px 0 10px; letter-spacing: -0.02em; }
+    .hero p { font-size: 17px; color: #475569; margin: 0 auto; max-width: 50ch; }
+    .hero .badge {
+      display: inline-block; padding: 4px 12px; border-radius: 999px;
+      background: #ecfdf5; color: #065f46; font-size: 11px; font-weight: 700;
+      letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 4px;
     }
-    h1 { font-size: 40px; line-height: 1.1; margin: 18px 0 12px; letter-spacing: -0.02em; }
-    h1 + p { font-size: 18px; color: #334155; margin: 0 auto; max-width: 56ch; }
+
+    /* === Cards === */
     .card {
-      background: #fff; border: 1px solid #e2e8f0; border-radius: 18px;
-      padding: 28px 28px; box-shadow: 0 1px 2px rgba(15,23,42,.04), 0 8px 28px rgba(15,23,42,.06);
-      margin-bottom: 20px;
+      background: #fff; border: 1px solid #e2e8f0; border-radius: 16px;
+      padding: 24px; box-shadow: 0 1px 2px rgba(15,23,42,.04), 0 6px 20px rgba(15,23,42,.05);
+      margin-bottom: 16px;
     }
-    .step {
-      display: flex; gap: 18px; align-items: flex-start;
+    .card h2 {
+      display: flex; align-items: center; gap: 10px;
+      margin: 0 0 6px; font-size: 17px;
     }
-    .step-num {
-      flex: 0 0 36px; height: 36px; border-radius: 10px;
-      background: #0469c4; color: #fff; display: grid; place-items: center;
-      font-weight: 700; font-size: 15px;
+    .card h2 .num {
+      display: grid; place-items: center;
+      width: 28px; height: 28px; border-radius: 8px;
+      background: #e0eefe; color: #0469c4; font-weight: 700; font-size: 14px;
     }
-    .step h2 { margin: 0 0 6px; font-size: 19px; }
-    .step p { margin: 0; color: #475569; }
-    .bm-link {
-      display: inline-flex; align-items: center; gap: 10px;
-      padding: 14px 22px; background: linear-gradient(180deg,#1086e6,#0469c4);
-      color: #fff !important; text-decoration: none; border-radius: 12px;
-      font-weight: 700; font-size: 16px;
-      box-shadow: 0 1px 0 rgba(255,255,255,.2) inset, 0 6px 16px rgba(4,105,196,.35);
+    .card h2 .num.done { background: #d1fae5; color: #047857; }
+    .card .body { color: #475569; font-size: 14px; }
+
+    /* === Keyboard hints === */
+    .kbd {
+      display: inline-flex; gap: 4px; margin-top: 8px; flex-wrap: wrap;
+    }
+    .kbd kbd {
+      display: inline-block; padding: 4px 10px;
+      background: #f8fafc; border: 1px solid #cbd5e1; border-bottom-width: 2px;
+      border-radius: 6px; font-family: 'SF Mono',Menlo,monospace; font-size: 12px;
+      color: #0b1d2e;
+    }
+    .browser-pick {
+      margin-top: 10px; font-size: 12px; color: #64748b;
+    }
+    .browser-pick a { color: #0469c4; text-decoration: none; margin-left: 8px; cursor: pointer; }
+    .browser-pick a:hover { text-decoration: underline; }
+
+    /* === Drag target === */
+    .drag-zone {
+      position: relative;
+      margin: 14px 0 6px;
+      padding: 28px 24px;
+      background: linear-gradient(180deg,#f0f9ff,#fff);
+      border: 2px dashed #93c5fd; border-radius: 14px;
+      text-align: center;
+      transition: background .2s ease, border-color .2s ease;
+    }
+    .drag-zone.ok { background: linear-gradient(180deg,#ecfdf5,#fff); border-color: #6ee7b7; }
+    .bm-button {
+      display: inline-flex; align-items: center; gap: 12px;
+      padding: 18px 32px;
+      background: linear-gradient(180deg,#1086e6,#0469c4); color: #fff !important;
+      text-decoration: none; border-radius: 14px;
+      font-weight: 700; font-size: 18px;
+      box-shadow: 0 1px 0 rgba(255,255,255,.2) inset, 0 8px 24px rgba(4,105,196,.4);
       cursor: grab; user-select: none;
       transition: transform .15s ease;
+      animation: pac-bm-bounce 2.4s ease-in-out infinite;
     }
-    .bm-link:active { cursor: grabbing; transform: scale(0.98); }
-    .bm-link::before {
-      content:''; width:18px; height:18px; flex:0 0 18px;
+    .bm-button:active { cursor: grabbing; transform: scale(0.97); animation: none; }
+    .bm-button::before {
+      content:''; width:22px; height:22px; flex:0 0 22px;
       background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><path d='M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z'/></svg>") center/contain no-repeat;
     }
-    .dragline {
-      margin-top: 18px; padding: 14px 16px; background: #fffbeb;
-      border: 1px dashed #f59e0b; border-radius: 10px; color: #92400e;
-      font-size: 14px;
+    @keyframes pac-bm-bounce {
+      0%,100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
     }
-    code, .mono { font-family: 'SF Mono',Menlo,Consolas,monospace; font-size: 13px; }
-    .pill {
-      display: inline-block; padding: 2px 8px; border-radius: 6px;
-      background: #f1f5f9; color: #0b1d2e; font-family: 'SF Mono',Menlo,monospace; font-size: 12px;
+    .drag-hint {
+      margin-top: 14px;
+      font-size: 13px; color: #475569;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
     }
-    .footer-note {
-      margin-top: 36px; text-align: center; font-size: 13px; color: #64748b;
+    .drag-hint .arrow {
+      animation: pac-arrow 1.8s ease-in-out infinite;
+      display: inline-block;
     }
-    .footer-note a { color: #0469c4; }
-    .status {
-      margin-top: 12px; font-size: 13px; color: #475569;
+    @keyframes pac-arrow {
+      0%,100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
     }
-    .status.ok { color: #047857; }
-    .status.err { color: #b91c1c; }
-    .grid2 { display: grid; gap: 12px; }
-    @media (min-width: 640px) { .grid2 { grid-template-columns: 1fr 1fr; } }
-    details { margin-top: 16px; }
-    summary { cursor: pointer; color: #06549e; font-weight: 600; }
-    .why {
-      margin-top: 18px; padding: 14px 16px; background: #f0f7ff;
-      border-left: 3px solid #0469c4; border-radius: 8px;
-      color: #0e3c6c; font-size: 14px;
+    .fallback {
+      margin-top: 14px; padding: 12px 14px;
+      background: #fffbeb; border: 1px solid #fde68a; border-radius: 10px;
+      color: #92400e; font-size: 13px;
     }
+    .fallback summary { cursor: pointer; font-weight: 600; }
+    .fallback p { margin: 6px 0 0; }
+
+    /* === Test === */
+    .test-card { background: #fafbff; border-color: #e0eefe; }
+    .test-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      margin-top: 10px;
+      padding: 12px 18px; background: #fff; border: 1px solid #cbd5e1; border-radius: 10px;
+      font-weight: 600; font-size: 14px; color: #0b1d2e; cursor: pointer;
+      transition: border-color .15s ease, background .15s ease;
+    }
+    .test-btn:hover { border-color: #0469c4; background: #f0f7ff; }
+    .test-status { margin-top: 10px; font-size: 13px; }
+    .test-status.ok { color: #047857; }
+
+    /* === Status banner === */
+    .ready-banner {
+      margin-top: 24px;
+      padding: 18px 20px;
+      background: linear-gradient(135deg,#ecfdf5,#d1fae5);
+      border: 1px solid #6ee7b7; border-radius: 14px;
+      display: none;
+    }
+    .ready-banner.visible { display: block; }
+    .ready-banner h3 { margin: 0 0 6px; color: #065f46; font-size: 16px; }
+    .ready-banner p { margin: 0 0 12px; color: #047857; font-size: 14px; }
+    .ready-banner a {
+      display: inline-block; padding: 10px 18px;
+      background: #047857; color: #fff !important; text-decoration: none;
+      border-radius: 10px; font-weight: 600; font-size: 14px;
+    }
+
+    /* === FAQ === */
+    .faq { margin-top: 24px; }
+    .faq details {
+      background: #fff; border: 1px solid #e2e8f0; border-radius: 12px;
+      padding: 14px 18px; margin-bottom: 8px;
+    }
+    .faq summary {
+      cursor: pointer; font-weight: 600; color: #0b1d2e; list-style: none;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .faq summary::-webkit-details-marker { display: none; }
+    .faq summary::after { content: '+'; color: #94a3b8; font-size: 18px; }
+    .faq details[open] summary::after { content: '−'; }
+    .faq details p { margin: 10px 0 0; font-size: 14px; color: #475569; }
+
+    .footer { margin-top: 32px; text-align: center; font-size: 12px; color: #94a3b8; }
+    .footer a { color: #0469c4; }
+
+    .browser-hidden { display: none; }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <header>
-      <span class="chip">Smart Pre-Fill · Beta</span>
-      <h1>Ein Bookmark, das deine Behördenformulare ausfüllt.</h1>
-      <p>Du legst es einmal in die Lesezeichen-Leiste. Auf jedem hinterlegten Portal (Wohnsitz Paderborn, i-Kfz, Westfalen Weser, GEZ, Post, Check24) füllt es deine Profildaten in Sekunden ein. Du prüfst, drückst Absenden. Wir senden nie für dich.</p>
-    </header>
 
-    <section class="card">
-      <div class="step">
-        <div class="step-num">1</div>
-        <div>
-          <h2>Lesezeichen-Leiste einblenden</h2>
-          <p>In Chrome/Edge/Brave: <span class="pill">Strg + Umschalt + B</span> &nbsp;·&nbsp; macOS: <span class="pill">⌘ + Umschalt + B</span> &nbsp;·&nbsp; Firefox: Menü → Lesezeichen → Lesezeichen-Symbolleiste anzeigen.</p>
-        </div>
-      </div>
-    </section>
-
-    <section class="card">
-      <div class="step">
-        <div class="step-num">2</div>
-        <div>
-          <h2>Diesen Button in die Leiste ziehen</h2>
-          <p>Halte den Button mit der Maus fest und ziehe ihn auf die Lesezeichen-Leiste. Er heißt dann <em>PropAfterCare Smart Fill</em>.</p>
-          <div style="margin-top:16px">
-            <a id="bm" class="bm-link" href="javascript:void(0)" draggable="true">PropAfterCare Smart Fill</a>
-          </div>
-          <div class="dragline">Falls das Ziehen nicht klappt: Rechtsklick auf den Button → „Link als Lesezeichen hinzufügen" oder „Lesezeichen für diesen Link hinzufügen".</div>
-          <div class="status" id="bm-status">Bookmarklet wird vorbereitet…</div>
-        </div>
-      </div>
-    </section>
-
-    <section class="card">
-      <div class="step">
-        <div class="step-num">3</div>
-        <div>
-          <h2>Zurück in PropAfterCare „Smart Pre-Fill aktivieren" drücken</h2>
-          <p>Auf jeder Formular-Detailseite (z. B. <span class="pill">/de/documents/wohnsitz-paderborn</span>) findest du einen Aktivieren-Button. Der erzeugt einen 15-Minuten-Token und öffnet das Portal in einem neuen Tab.</p>
-        </div>
-      </div>
-    </section>
-
-    <section class="card">
-      <div class="step">
-        <div class="step-num">4</div>
-        <div>
-          <h2>Im Portal: dein Bookmark anklicken</h2>
-          <p>Sobald das offizielle Portal geladen ist, klickst du in der Lesezeichen-Leiste auf <em>PropAfterCare Smart Fill</em>. Du siehst rechts oben einen Hinweis, wie viele Felder ausgefüllt wurden. Werte prüfen → selbst absenden.</p>
-        </div>
-      </div>
-    </section>
-
-    <div class="why">
-      <strong>Warum kein Auto-Versand?</strong> Wir füllen nur aus — abschicken machst immer du. Das hält uns auf der sicheren Seite des Rechtsdienstleistungsgesetzes und gibt dir die Kontrolle über jedes Detail vor dem Absenden.
+    <div class="topbar">
+      <span class="brand"><span class="brand-dot">P</span> PropAfterCare</span>
+      <span class="progress">
+        <span class="dot active" id="dot-1"></span>
+        <span class="dot" id="dot-2"></span>
+        <span class="dot" id="dot-3"></span>
+        <span style="margin-left:6px" id="progress-label">Schritt 1 von 3</span>
+      </span>
     </div>
 
-    <details>
-      <summary>Was, wenn ein Feld nicht gefüllt wird?</summary>
-      <p>Manche Portale ändern ihr HTML ohne Ankündigung. Unser KI-Helfer versucht in dem Fall, den passenden Selektor on-the-fly zu finden. Klappt auch das nicht, zeigt der Hinweis rechts oben, welche Felder du selbst nachtragen musst. Dein Makler bekommt automatisch einen Mitkurations-Vorschlag, damit das Recipe aktualisiert wird.</p>
-    </details>
+    <div class="hero">
+      <span class="badge">Einmalig · 30 Sekunden</span>
+      <h1>Auto-Ausfüllen einrichten</h1>
+      <p>Wir setzen ein kleines Hilfs-Lesezeichen in deinen Browser. Danach füllen sich Wohnsitz-, Strom- und Versicherungs-Formulare in einem Klick — du prüfst und schickst selbst ab.</p>
+    </div>
 
-    <details>
-      <summary>Welche Portale werden heute unterstützt?</summary>
-      <ul>
-        <li>Wohnsitz-Anmeldung Paderborn (mein-digiport.de)</li>
-        <li>KFZ-Ummeldung Kreis Paderborn (paderborn.kfz-zulassung-nw.de)</li>
-        <li>Strom — Westfalen Weser Energie (westfalenweser.com)</li>
-        <li>Rundfunkbeitrag/GEZ (rundfunkbeitrag.de)</li>
-        <li>Deutsche Post Nachsendeservice (deutschepost.de)</li>
-        <li>Check24 Hausratversicherung (check24.de)</li>
-      </ul>
-      <p>ELSTER / Grundsteuer ist bewusst <em>nicht</em> dabei — das gehört in die Hand eines Steuerberaters (§5 StBerG).</p>
-    </details>
+    <!-- === Schritt 1: Lesezeichen-Leiste === -->
+    <div class="card" id="card-1">
+      <h2><span class="num" id="num-1">1</span> Lesezeichen-Leiste anzeigen</h2>
+      <div class="body">
+        <p style="margin:0 0 4px">Drück diese Tastenkombination, damit die Leiste oben sichtbar wird:</p>
+        <div class="kbd" id="kbd-chrome"><kbd>Strg</kbd><kbd>Umschalt</kbd><kbd>B</kbd></div>
+        <div class="kbd browser-hidden" id="kbd-mac"><kbd>⌘</kbd><kbd>Umschalt</kbd><kbd>B</kbd></div>
+        <div class="kbd browser-hidden" id="kbd-firefox"><kbd>Strg</kbd><kbd>Umschalt</kbd><kbd>B</kbd></div>
+        <div class="browser-pick">
+          Anderer Browser?
+          <a data-browser="chrome">Chrome / Edge</a>
+          <a data-browser="mac">Mac / Safari</a>
+          <a data-browser="firefox">Firefox</a>
+        </div>
+        <p style="margin:14px 0 0; font-size:13px; color:#475569">Erledigt? Weiter zu Schritt 2.</p>
+      </div>
+    </div>
 
-    <p class="footer-note">
-      PropAfterCare · Smart Pre-Fill berührt §5 RDG nicht: Du bleibst Akteur, der Submit-Button wird nie automatisch gedrückt.<br />
-      Fragen? <a href="mailto:finn.luca.wenzel@gmx.de">finn.luca.wenzel@gmx.de</a>
+    <!-- === Schritt 2: Drag-Target === -->
+    <div class="card" id="card-2">
+      <h2><span class="num" id="num-2">2</span> Dieses Lesezeichen in die Leiste ziehen</h2>
+      <div class="body">
+        <p style="margin:0">Klick den blauen Button mit der Maus an, halt fest und zieh ihn nach oben in die Lesezeichen-Leiste. Loslassen, fertig.</p>
+        <div class="drag-zone" id="drag-zone">
+          <a id="bm" class="bm-button" href="javascript:void(0)" draggable="true">PropAfterCare Auto-Fill</a>
+          <div class="drag-hint">
+            <span class="arrow">↑</span>
+            <span>Diesen Button nach oben in die Lesezeichen-Leiste ziehen</span>
+            <span class="arrow">↑</span>
+          </div>
+        </div>
+        <details class="fallback">
+          <summary>Ziehen klappt nicht?</summary>
+          <p><strong>Alternative:</strong> Mit rechter Maustaste auf den Button klicken → „Lesezeichen für diesen Link hinzufügen" (Firefox) bzw. „Link als Lesezeichen hinzufügen" (Chrome).</p>
+        </details>
+        <p id="bm-status" style="margin-top:10px; font-size:12px; color:#64748b">Helfer wird geladen…</p>
+      </div>
+    </div>
+
+    <!-- === Schritt 3: Test === -->
+    <div class="card test-card" id="card-3">
+      <h2><span class="num" id="num-3">3</span> Test-Lauf (optional, empfohlen)</h2>
+      <div class="body">
+        <p style="margin:0">Wir öffnen eine Demo-Anmeldeseite. Klick dort dein neues Lesezeichen — wenn die Felder sich füllen, ist alles eingerichtet.</p>
+        <button type="button" class="test-btn" id="test-btn">
+          <span>↗</span> Demo-Anmeldeseite öffnen
+        </button>
+        <button type="button" class="test-btn" id="confirm-btn" style="margin-left:8px">
+          ✓ Test geklappt — fertig
+        </button>
+        <p class="test-status" id="test-status"></p>
+      </div>
+    </div>
+
+    <!-- === Ready === -->
+    <div class="ready-banner" id="ready-banner">
+      <h3>✓ Auto-Fill ist eingerichtet</h3>
+      <p>Du kannst diesen Tab schließen. Geh zurück zu deinen Formularen — wir füllen sie ab jetzt automatisch aus.</p>
+      <a href="/de/documents">Zu meinen Formularen →</a>
+    </div>
+
+    <!-- === FAQ === -->
+    <div class="faq">
+      <details>
+        <summary>Was tun wenn ein Feld nicht ausgefüllt wird?</summary>
+        <p>Manche Portale ändern ihr Formular ohne Ankündigung. Unser KI-Helfer probiert dann, das richtige Feld zu finden. Klappt das auch nicht, siehst du im Hilfs-Sidepanel welche Werte du selbst nachtragen musst. Dein Makler bekommt automatisch eine Nachricht, damit wir die Vorlage aktualisieren.</p>
+      </details>
+      <details>
+        <summary>Welche Portale werden heute unterstützt?</summary>
+        <p>Wohnsitz-Anmeldung Paderborn · KFZ-Ummeldung Kreis Paderborn · Westfalen Weser Energie (Strom &amp; Gas) · GEZ/Rundfunkbeitrag · Deutsche Post Nachsendeservice · Check24 Hausratversicherung · Verivox DSL.</p>
+      </details>
+      <details>
+        <summary>Warum schickt PropAfterCare die Formulare nicht selbst ab?</summary>
+        <p>Wir füllen aus — du drückst Absenden. Das ist rechtlich klar (§5 Rechtsdienstleistungsgesetz) und gibt dir Kontrolle über jedes Detail. Du siehst alle Werte vor dem Klick.</p>
+      </details>
+      <details>
+        <summary>Was speichert der Helfer?</summary>
+        <p>Auf deinem Rechner: nur ein 15-Minuten-Token für die Verbindung zu PropAfterCare. Auf unserem Server: eine Quittung („welcher Wert wurde wohin eingetragen") — sensible Daten wie IBAN sind dabei maskiert. Werte siehst nur du, nicht dein Makler.</p>
+      </details>
+    </div>
+
+    <p class="footer">
+      PropAfterCare · Fragen? <a href="mailto:finn.luca.wenzel@gmx.de">finn.luca.wenzel@gmx.de</a>
     </p>
   </div>
 
   <script>
-    (async function () {
+    (function () {
+      const STORAGE_KEY = 'pac:smart-fill:setup-done';
       const status = document.getElementById('bm-status');
       const link = document.getElementById('bm');
-      try {
-        const res = await fetch('/bookmarklet.js', { cache: 'no-store' });
-        if (!res.ok) throw new Error('HTTP ' + res.status);
-        const code = await res.text();
-        const apiBase = location.origin;
-        const wrapped =
-          '(function(){window.__PAC_API_BASE__=' + JSON.stringify(apiBase) + ';' +
-          code + '})();';
-        const href = 'javascript:' + encodeURIComponent(wrapped);
-        link.setAttribute('href', href);
-        status.textContent = 'Bereit. Größe: ' + Math.round(href.length / 1024) + ' KB.';
-        status.classList.add('ok');
-      } catch (err) {
-        status.textContent = 'Konnte Bookmarklet nicht laden: ' + err.message;
-        status.classList.add('err');
+      const dragZone = document.getElementById('drag-zone');
+      const testBtn = document.getElementById('test-btn');
+      const confirmBtn = document.getElementById('confirm-btn');
+      const testStatus = document.getElementById('test-status');
+      const readyBanner = document.getElementById('ready-banner');
+      const dots = [
+        document.getElementById('dot-1'),
+        document.getElementById('dot-2'),
+        document.getElementById('dot-3')
+      ];
+      const nums = [
+        document.getElementById('num-1'),
+        document.getElementById('num-2'),
+        document.getElementById('num-3')
+      ];
+      const label = document.getElementById('progress-label');
+
+      function setStep(n) {
+        for (let i = 0; i < 3; i++) {
+          dots[i].classList.remove('active', 'done');
+          nums[i].classList.remove('done');
+          if (i < n - 1) {
+            dots[i].classList.add('done');
+            nums[i].classList.add('done');
+            nums[i].textContent = '✓';
+          } else if (i === n - 1) {
+            dots[i].classList.add('active');
+            nums[i].textContent = String(i + 1);
+          } else {
+            nums[i].textContent = String(i + 1);
+          }
+        }
+        label.textContent = n > 3 ? 'Eingerichtet' : 'Schritt ' + n + ' von 3';
+        if (n > 3) {
+          readyBanner.classList.add('visible');
+          try { localStorage.setItem(STORAGE_KEY, new Date().toISOString()); } catch (_) {}
+        }
       }
+
+      // Browser detection for keyboard hints
+      function showKbd(which) {
+        ['kbd-chrome', 'kbd-mac', 'kbd-firefox'].forEach(function (id) {
+          document.getElementById(id).classList.add('browser-hidden');
+        });
+        document.getElementById('kbd-' + which).classList.remove('browser-hidden');
+      }
+      const ua = navigator.userAgent.toLowerCase();
+      const isMac = /mac|iphone|ipad/.test(ua);
+      const isFirefox = /firefox/.test(ua);
+      if (isMac) showKbd('mac');
+      else if (isFirefox) showKbd('firefox');
+      else showKbd('chrome');
+
+      document.querySelectorAll('[data-browser]').forEach(function (a) {
+        a.addEventListener('click', function (e) {
+          e.preventDefault();
+          showKbd(a.getAttribute('data-browser'));
+        });
+      });
+
+      // Bookmarklet build
+      (async function loadBm() {
+        try {
+          const res = await fetch('/bookmarklet.js', { cache: 'no-store' });
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          const code = await res.text();
+          const apiBase = location.origin;
+          const wrapped =
+            '(function(){window.__PAC_API_BASE__=' + JSON.stringify(apiBase) + ';' +
+            code + '})();';
+          const href = 'javascript:' + encodeURIComponent(wrapped);
+          link.setAttribute('href', href);
+          status.textContent = '✓ Helfer bereit (' + Math.round(href.length / 1024) + ' KB).';
+          status.style.color = '#047857';
+        } catch (err) {
+          status.textContent = '✗ Konnte Helfer nicht laden: ' + err.message;
+          status.style.color = '#b91c1c';
+        }
+      })();
+
+      // Drag detection
+      link.addEventListener('dragstart', function () {
+        setStep(2);
+      });
+      link.addEventListener('dragend', function () {
+        dragZone.classList.add('ok');
+        setStep(3);
+      });
+
+      // Test button
+      testBtn.addEventListener('click', function () {
+        const w = window.open('/test-fixtures/mein-digiport.html', '_blank', 'noopener');
+        if (!w) {
+          testStatus.textContent = 'Demo-Tab konnte nicht geöffnet werden — bitte Popup-Blocker prüfen.';
+          testStatus.style.color = '#b91c1c';
+        } else {
+          testStatus.textContent = 'Demo-Tab ist offen. Klick dort dein neues Lesezeichen — die Felder sollten sich füllen.';
+          testStatus.classList.add('ok');
+        }
+      });
+      confirmBtn.addEventListener('click', function () {
+        setStep(4);
+        testStatus.textContent = '✓ Eingerichtet. Du kannst diesen Tab schließen.';
+        testStatus.classList.add('ok');
+      });
+
+      // Already set up?
+      try {
+        if (localStorage.getItem(STORAGE_KEY)) {
+          setStep(4);
+        }
+      } catch (_) {}
     })();
   </script>
 </body>

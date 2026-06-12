@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/cn';
 import { formatDate } from '@/lib/documents';
+import { smartFillStatus } from '@/lib/portalRecipes';
 import { getSubmission, type SubmissionStatus } from '@/lib/submissionStore';
 import type { FormEntry } from '@/types';
 import {
@@ -50,9 +51,16 @@ export function DocumentItem({
 }) {
   const t = useTranslations('documents');
   const [status, setStatus] = useState<SubmissionStatus | null>(null);
+  const [setupDone, setSetupDone] = useState(false);
+  const smartFill = smartFillStatus(form.id);
 
   useEffect(() => {
     setStatus(getSubmission(form.id)?.status ?? null);
+    try {
+      setSetupDone(!!window.localStorage.getItem('pac:smart-fill:setup-done'));
+    } catch {
+      // ignore
+    }
   }, [form.id]);
 
   return (
@@ -82,6 +90,18 @@ export function DocumentItem({
               >
                 {STATUS_BADGE[status].withCheck && <CheckIcon className="h-3 w-3" />}
                 {STATUS_BADGE[status].label}
+              </span>
+            )}
+            {smartFill === 'available' && !status && (
+              <span
+                className={cn(
+                  'inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium ring-1',
+                  setupDone
+                    ? 'bg-emerald-50 text-emerald-700 ring-emerald-100'
+                    : 'bg-sky-50 text-sky-700 ring-sky-100'
+                )}
+              >
+                ⚡ {setupDone ? 'Auto-Fill bereit' : 'Auto-Fill nach Setup'}
               </span>
             )}
           </div>

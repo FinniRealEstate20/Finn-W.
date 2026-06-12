@@ -239,6 +239,25 @@
     list.style.cssText = 'flex:1;overflow-y:auto;padding:6px 0;';
     if (audit.length === 0) {
       list.innerHTML = '<div style="padding:24px 16px;text-align:center;color:#64748b;font-size:12px;">Keine Felder ausgefüllt.</div>';
+    } else if (summary.filled === 0 && summary.total > 0) {
+      const help = document.createElement('div');
+      help.style.cssText = 'padding:16px;background:#fffbeb;border-bottom:1px solid #fde68a;color:#92400e;font-size:12px;line-height:1.5;';
+      help.innerHTML =
+        '<strong>Wir haben kein Eingabe-Formular auf dieser Seite gefunden.</strong>' +
+        '<br/><br/>Du bist wahrscheinlich noch nicht auf der eigentlichen Anmelde-Seite. Such auf der Seite nach Begriffen wie <em>„Online anmelden"</em>, <em>„Tarif wählen"</em> oder <em>„Umzug melden"</em> und klick erneut auf dein PropAfterCare-Lesezeichen, sobald das Formular da ist.';
+      list.appendChild(help);
+      audit.forEach((entry, idx) => {
+        const badge = sourceBadge(entry.source);
+        const row = document.createElement('div');
+        row.setAttribute('data-pac-entry', String(idx));
+        row.style.cssText = 'padding:8px 16px;border-bottom:1px solid #f1f5f9;font-size:11px;color:#64748b;';
+        row.innerHTML =
+          '<div style="display:flex;align-items:center;gap:6px;">' +
+            '<span style="flex:1;">' + escapeHtml(entry.label) + '</span>' +
+            '<span style="font-size:9px;padding:1px 6px;border-radius:6px;background:' + badge.bg + ';color:' + badge.fg + ';font-weight:600;">' + badge.label + '</span>' +
+          '</div>';
+        list.appendChild(row);
+      });
     } else {
       audit.forEach((entry, idx) => {
         const badge = sourceBadge(entry.source);
@@ -430,12 +449,12 @@
       url.searchParams.set('token', token);
       const res = await fetch(url.toString(), { mode: 'cors' });
       if (res.status === 401) {
-        toast('PropAfterCare Smart Fill\nDein Smart-Fill-Token ist abgelaufen. Komm zurück zur App und klick erneut "Smart Pre-Fill aktivieren".', 'warn');
+        toast('PropAfterCare Auto-Fill\nDein Zugang ist abgelaufen (15 Min Sicherheits-Limit). Geh zurück zu PropAfterCare und klick erneut „Jetzt ausfüllen lassen".', 'warn');
         try { localStorage.removeItem(TOKEN_KEY); } catch (_) {}
         return;
       }
       if (res.status === 404) {
-        toast('PropAfterCare Smart Fill\nFür diese Seite (' + location.hostname + ') ist noch kein Recipe hinterlegt. Wir nehmen es als Mitkurations-Vorschlag auf.', 'warn');
+        toast('PropAfterCare Auto-Fill\nWir haben für „' + location.hostname + '" noch keine Vorlage. Dein Makler bekommt automatisch eine Nachricht — bis dahin trag die Daten manuell ein (PropAfterCare-Tab hat eine Kopier-Funktion).', 'warn');
         return;
       }
       if (!res.ok) {

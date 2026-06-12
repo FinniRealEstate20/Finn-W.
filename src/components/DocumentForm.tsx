@@ -41,6 +41,7 @@ export function DocumentForm({ form, fieldKeys, fieldLabels }: Props) {
   const [copied, setCopied] = useState<string | null>(null);
   const [smartFillToken, setSmartFillToken] = useState<string | null>(null);
   const [smartFillError, setSmartFillError] = useState<string | null>(null);
+  const [setupDone, setSetupDone] = useState(false);
   const smartFill = useMemo(() => smartFillStatus(form.id), [form.id]);
 
   useEffect(() => {
@@ -50,6 +51,11 @@ export function DocumentForm({ form, fieldKeys, fieldLabels }: Props) {
     for (const k of fieldKeys) initial[k] = valueFromProfile(p, k);
     setValues(initial);
     setSubmission(getSubmission(form.id) ?? null);
+    try {
+      setSetupDone(!!window.localStorage.getItem('pac:smart-fill:setup-done'));
+    } catch {
+      // ignore
+    }
     setHydrated(true);
   }, [form.id, fieldKeys]);
 
@@ -261,53 +267,95 @@ export function DocumentForm({ form, fieldKeys, fieldLabels }: Props) {
 
       {form.sourceType === 'external_link' && (
         <>
-          {smartFill === 'available' && (
-            <section className="card mt-8 border-emerald-200 bg-gradient-to-br from-emerald-50 to-white">
+          {smartFill === 'available' && setupDone && (
+            <section className="card mt-8 border-emerald-200 bg-gradient-to-br from-emerald-50 via-white to-white">
+              <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div className="min-w-0">
+                  <div className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-emerald-800">
+                    <svg className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                    Auto-Fill bereit
+                  </div>
+                  <h2 className="mt-2 text-lg font-semibold text-ink">{t(`items.${form.id}.name`)}</h2>
+                  <p className="mt-1 text-sm text-ink-soft">
+                    Wir öffnen das offizielle Portal und füllen deine Daten direkt ein. Du prüfst, drückst Absenden — wir senden nie für dich.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={activateSmartFill}
+                  className="btn-primary w-full whitespace-nowrap text-base sm:w-auto"
+                >
+                  Jetzt ausfüllen lassen →
+                </button>
+              </div>
+              {smartFillToken && (
+                <p className="mt-3 text-xs text-emerald-700">
+                  ✓ Portal sollte sich in einem neuen Tab geöffnet haben. Klick dort dein <strong>PropAfterCare Auto-Fill</strong>-Lesezeichen.
+                </p>
+              )}
+              {smartFillError && (
+                <p className="mt-3 text-xs text-rose-700">
+                  Etwas hat nicht geklappt ({smartFillError}). Versuch es nochmal oder nutze unten die Kopier-Variante.
+                </p>
+              )}
+              <details className="mt-4 text-xs text-ink-muted">
+                <summary className="cursor-pointer font-semibold text-ink-soft">Wie genau läuft das ab?</summary>
+                <ol className="mt-2 space-y-1 pl-1">
+                  <li>1. Du klickst „Jetzt ausfüllen lassen&quot; — wir öffnen das Portal in einem neuen Tab.</li>
+                  <li>2. Im Portal klickst du dein <strong>PropAfterCare Auto-Fill</strong>-Lesezeichen oben in der Leiste.</li>
+                  <li>3. Ein Sidepanel rechts zeigt dir live, welche Werte wo eingetragen wurden.</li>
+                  <li>4. Du prüfst alles, drückst Absenden — die Quittung findest du danach in <strong>Meine Formulare</strong>.</li>
+                </ol>
+              </details>
+            </section>
+          )}
+
+          {smartFill === 'available' && !setupDone && (
+            <section className="card mt-8 border-sky-200 bg-gradient-to-br from-sky-50 via-white to-white">
               <div className="flex items-start gap-3">
-                <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700">
-                  <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-sky-100 text-sky-700">
+                  <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
                   </svg>
                 </div>
                 <div className="min-w-0 flex-1">
-                  <h2 className="text-sm font-semibold text-emerald-900">
-                    Smart Pre-Fill verfügbar
-                  </h2>
-                  <p className="mt-1 text-sm text-emerald-800">
-                    Wir können deine Profildaten direkt in das offizielle Portal eintragen. Du prüfst alles und drückst selbst Absenden — wir senden nie für dich.
+                  <h2 className="text-base font-semibold text-ink">Auto-Fill für dieses Formular</h2>
+                  <p className="mt-1 text-sm text-ink-soft">
+                    Statt jedes Feld zu tippen, füllt PropAfterCare das offizielle Portal in Sekunden für dich aus. Einmalig 30 Sekunden einrichten — danach läuft alles automatisch.
                   </p>
-                  <ol className="mt-3 space-y-1 text-xs text-emerald-900/80">
-                    <li>1. Einmalig das Bookmarklet einrichten →{' '}
-                      <a
-                        href="/bookmarklet-installer.html"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="font-semibold underline"
-                      >
-                        Setup öffnen
-                      </a>
-                    </li>
-                    <li>2. Unten „Smart Pre-Fill aktivieren&quot; klicken — Portal öffnet sich mit Token</li>
-                    <li>3. Im Portal das PropAfterCare-Bookmark anklicken</li>
-                    <li>4. Sidepanel zeigt live alle Werte — du drückst Absenden, dann liegt die Quittung unter <strong>Meine Formulare</strong></li>
-                  </ol>
+                  <div className="mt-4 flex flex-col gap-2 sm:flex-row">
+                    <a
+                      href="/bookmarklet-installer.html"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn-primary text-center"
+                    >
+                      In 30 Sekunden einrichten →
+                    </a>
+                    <button
+                      type="button"
+                      onClick={openExternal}
+                      className="rounded-md bg-white px-4 py-2 text-sm font-semibold text-ink-soft ring-1 ring-slate-200 hover:bg-slate-50"
+                    >
+                      Lieber manuell zum Portal
+                    </button>
+                  </div>
                   <button
                     type="button"
-                    onClick={activateSmartFill}
-                    className="btn-primary mt-4"
+                    onClick={() => {
+                      try {
+                        window.localStorage.setItem('pac:smart-fill:setup-done', new Date().toISOString());
+                        setSetupDone(true);
+                      } catch {
+                        // ignore
+                      }
+                    }}
+                    className="mt-3 text-xs text-sky-700 underline hover:text-sky-900"
                   >
-                    Smart Pre-Fill aktivieren &amp; Portal öffnen ↗
+                    Bereits eingerichtet? Hier markieren
                   </button>
-                  {smartFillToken && (
-                    <p className="mt-2 text-xs text-emerald-700">
-                      ✓ Token erzeugt (15 Min gültig). Portal sollte sich in einem neuen Tab geöffnet haben.
-                    </p>
-                  )}
-                  {smartFillError && (
-                    <p className="mt-2 text-xs text-rose-700">
-                      Fehler beim Token-Holen: {smartFillError}
-                    </p>
-                  )}
                 </div>
               </div>
             </section>
