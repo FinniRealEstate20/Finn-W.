@@ -2,8 +2,10 @@ import Link from 'next/link';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 export const dynamic = 'force-dynamic';
-import { mockBroker } from '@/lib/mockData';
 import { getActiveBuyer } from '@/lib/activeBuyer';
+import { getSession } from '@/lib/auth/getUser';
+import { getBrokerForOrg } from '@/lib/data/brokers';
+import { mockBroker } from '@/lib/mockData';
 import { BrokerHeader } from '@/components/BrokerHeader';
 import { InteractiveDashboard } from '@/components/InteractiveDashboard';
 import { OnboardingGate } from '@/components/OnboardingGate';
@@ -20,14 +22,23 @@ export default async function DashboardPage({
   const tc = await getTranslations('common');
   const tm = await getTranslations('myForms');
   const buyer = await getActiveBuyer();
+  const session = await getSession();
+  const isRealBuyer = session?.role === 'buyer' && !!session.orgId;
+  const broker = isRealBuyer
+    ? (await getBrokerForOrg(session.orgId!)) ?? mockBroker
+    : mockBroker;
 
   return (
     <main className="min-h-screen bg-slate-50">
-      <BrokerHeader broker={mockBroker} locale={locale} activeBuyerId={buyer.id} />
+      <BrokerHeader broker={broker} locale={locale} activeBuyerId={buyer.id} />
       <OnboardingGate locale={locale} />
 
       <div className="container-page py-10">
-        <InteractiveDashboard buyer={buyer} locale={locale} />
+        <InteractiveDashboard
+          buyer={buyer}
+          locale={locale}
+          enableServerSync={isRealBuyer}
+        />
 
         <ProfileCompletenessCard locale={locale} />
 

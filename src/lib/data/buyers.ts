@@ -4,6 +4,7 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import type { Buyer, PropertyType } from '@/types';
 
 import { formatStoredAddress, type StoredAddress } from './address';
+import { ensureMilestonesFor, getMilestonesFor } from './milestones';
 
 interface BuyerRow {
   user_id: string;
@@ -55,7 +56,13 @@ export async function getSessionBuyer(): Promise<Buyer | null> {
     .select(SELECT)
     .eq('user_id', session.userId)
     .maybeSingle<BuyerRow>();
-  return data ? rowToBuyer(data) : null;
+  if (!data) return null;
+
+  const buyer = rowToBuyer(data);
+  const propertyType = data.property_type ?? 'ownUse';
+  await ensureMilestonesFor(buyer.id, propertyType);
+  buyer.milestones = await getMilestonesFor(buyer.id, propertyType);
+  return buyer;
 }
 
 /**

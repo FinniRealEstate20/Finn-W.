@@ -1,10 +1,16 @@
 import { NextResponse } from 'next/server';
+
+import { getSession } from '@/lib/auth/getUser';
+import {
+  listDbSubmissions,
+  persistDbSubmission,
+} from '@/lib/data/submissions';
 import {
   clearAllSubmissions,
   listSubmissions,
   persistSubmission,
   type SubmissionChannel,
-  type SubmissionStatus
+  type SubmissionStatus,
 } from '@/lib/submissions/server';
 
 export const runtime = 'nodejs';
@@ -49,34 +55,61 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'missing_fields' }, { status: 400 });
   }
 
+  const data = sanitizeData(body.data);
+  const source = typeof body.source === 'string' ? body.source.slice(0, 200) : undefined;
+  const submittedAt =
+    typeof body.submittedAt === 'string' ? body.submittedAt : new Date().toISOString();
+
+  const session = await getSession();
+
+  // Signed-in buyer: persist to DB under their user_id. We ignore the
+  // body.buyer field — the session is the source of truth.
+  if (session?.role === 'buyer') {
+    const record = await persistDbSubmission({
+      formId,
+      channel,
+      status,
+      clientReceiptId,
+      source,
+      data,
+      buyerId: session.userId,
+      submittedAt,
+    });
+    return NextResponse.json({
+      ok: true,
+      serverReceiptId: record.serverReceiptId,
+      persistedAt: record.persistedAt,
+      status: record.status,
+    });
+  }
+
+  // Demo / unauthenticated path: keep the in-memory store so the
+  // marketing landing flow still works.
   const record = persistSubmission({
     formId,
     channel,
     status,
     clientReceiptId,
-    source: typeof body.source === 'string' ? body.source.slice(0, 200) : undefined,
-    data: sanitizeData(body.data),
+    source,
+    data,
     buyer:
       body.buyer && typeof body.buyer === 'object'
         ? {
             id: typeof body.buyer.id === 'string' ? body.buyer.id.slice(0, 64) : undefined,
             email:
-              typeof body.buyer.email === 'string' ? body.buyer.email.slice(0, 120) : undefined
+              typeof body.buyer.email === 'string'
+                ? body.buyer.email.slice(0, 120)
+                : undefined,
           }
         : undefined,
-    submittedAt:
-      typeof body.submittedAt === 'string' ? body.submittedAt : new Date().toISOString()
+    submittedAt,
   });
-
-  console.log(
-    `[submissions] ${record.formId} ${record.channel} ${record.status} ${record.serverReceiptId}`
-  );
 
   return NextResponse.json({
     ok: true,
     serverReceiptId: record.serverReceiptId,
     persistedAt: record.persistedAt,
-    status: record.status
+    status: record.status,
   });
 }
 
@@ -84,6 +117,16 @@ export async function GET(request: Request) {
   const url = new URL(request.url);
   const limit = Math.min(Number(url.searchParams.get('limit') ?? 50) || 50, 200);
   const buyerId = url.searchParams.get('buyerId') ?? undefined;
+  const session = await getSession();
+
+  if (session?.role === 'buyer' || session?.role === 'broker') {
+    const items = await listDbSubmissions({
+      limit,
+      buyerId: session.role === 'buyer' ? session.userId : buyerId,
+    });
+    return NextResponse.json({ count: items.length, items });
+  }
+
   const items = listSubmissions({ limit, buyerId }).map(r => ({
     formId: r.formId,
     channel: r.channel,
@@ -95,12 +138,13 @@ export async function GET(request: Request) {
     buyer: r.buyer,
     fillAudit: r.fillAudit,
     fillSummary: r.fillSummary,
-    fillReceiptAt: r.fillReceiptAt
+    fillReceiptAt: r.fillReceiptAt,
   }));
   return NextResponse.json({ count: items.length, items });
 }
 
 export async function DELETE() {
+  // Only clears the in-memory store; DB rows are immutable from this endpoint.
   clearAllSubmissions();
   return NextResponse.json({ ok: true });
 }

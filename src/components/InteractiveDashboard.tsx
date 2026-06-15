@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { ProgressBar } from './ProgressBar';
 import { PhaseSection } from './PhaseSection';
+import { saveMilestoneAction } from '@/lib/milestones/saveAction';
 import { loadStatuses, resetBuyer, saveStatus } from '@/lib/milestoneStore';
 import { milestonesByPhase, progressFor } from '@/lib/milestones';
 import type { Buyer, Milestone, MilestoneStatus, Phase } from '@/types';
@@ -11,7 +12,15 @@ import { ClockIcon, InfoIcon } from './icons';
 
 const PHASES: Phase[] = [1, 2, 3, 4];
 
-export function InteractiveDashboard({ buyer, locale }: { buyer: Buyer; locale: string }) {
+export function InteractiveDashboard({
+  buyer,
+  locale,
+  enableServerSync = false,
+}: {
+  buyer: Buyer;
+  locale: string;
+  enableServerSync?: boolean;
+}) {
   const t = useTranslations('dashboard');
   const [milestones, setMilestones] = useState<Milestone[]>(buyer.milestones);
   const [hydrated, setHydrated] = useState(false);
@@ -32,6 +41,7 @@ export function InteractiveDashboard({ buyer, locale }: { buyer: Buyer; locale: 
         if (m.id !== id) return m;
         const nextStatus: MilestoneStatus = m.status === 'done' ? 'open' : 'done';
         saveStatus(buyer.id, m.id, nextStatus);
+        if (enableServerSync) void saveMilestoneAction(m.id, nextStatus);
         return { ...m, status: nextStatus };
       })
     );
