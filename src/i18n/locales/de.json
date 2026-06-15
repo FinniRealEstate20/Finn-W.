@@ -456,5 +456,37 @@
       },
       "leaderboardTitle": "Top 5 Mitkuratoren OWL (dieses Quartal)"
     }
+  },
+  "auth": {
+    "login": {
+      "title": "Anmelden",
+      "subtitle": "Wir senden dir einen einmaligen Anmelde-Link per E-Mail. Kein Passwort nötig.",
+      "emailLabel": "E-Mail",
+      "submit": "Anmelde-Link senden",
+      "sending": "Sende …",
+      "noAccount": "Noch kein Konto?",
+      "signupCta": "Als Makler registrieren",
+      "banner": {
+        "loggedOut": "Du wurdest abgemeldet.",
+        "expired": "Der Anmelde-Link ist abgelaufen. Bitte neuen Link anfordern.",
+        "invalid": "Der Anmelde-Link ist nicht mehr gültig.",
+        "bootstrap": "Konto konnte nicht eingerichtet werden. Bitte erneut versuchen oder Support kontaktieren.",
+        "generic": "Anmeldung fehlgeschlagen."
+      }
+    },
+    "signupBroker": {
+      "title": "Als Makler starten",
+      "subtitle": "14 Tage kostenlos testen. Keine Kreditkarte nötig.",
+      "fullNameLabel": "Vor- und Nachname",
+      "companyLabel": "Maklerbüro (optional)",
+      "companyPlaceholder": "z. B. Wenzel Immobilien",
+      "emailLabel": "Geschäftliche E-Mail",
+      "submit": "Konto anlegen",
+      "sending": "Sende …",
+      "alreadyHaveAccount": "Schon registriert?",
+      "loginCta": "Hier anmelden",
+      "trustNote": "DSGVO-konform · EU-Hosting · jederzeit kündbar",
+      "completedNotice": "E-Mail bestätigt – aber wir brauchen noch deinen Namen, um dein Konto fertig einzurichten."
+    }
   }
 }

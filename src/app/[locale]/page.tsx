@@ -27,7 +27,7 @@ export default async function LandingPage({
             <a href="#pricing" className="hover:text-ink">{t('nav.pricing')}</a>
             <a href="#demo" className="hover:text-ink">{t('nav.demo')}</a>
           </div>
-          <Link href={`/${locale}/broker`} className="btn-secondary py-2 text-xs">
+          <Link href={`/${locale}/login`} className="btn-secondary py-2 text-xs">
             {t('nav.login')}
           </Link>
         </div>
