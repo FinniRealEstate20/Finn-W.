@@ -3,8 +3,10 @@ import Image from 'next/image';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 export const dynamic = 'force-dynamic';
-import { mockBroker } from '@/lib/mockData';
 import { getActiveBuyer } from '@/lib/activeBuyer';
+import { getSession } from '@/lib/auth/getUser';
+import { getBrokerForOrg } from '@/lib/data/brokers';
+import { mockBroker } from '@/lib/mockData';
 import { Logo } from '@/components/Logo';
 
 export default async function WelcomePage({
@@ -18,6 +20,12 @@ export default async function WelcomePage({
   const tc = await getTranslations('common');
   const buyer = await getActiveBuyer();
 
+  const session = await getSession();
+  const broker =
+    session?.role === 'buyer' && session.orgId
+      ? (await getBrokerForOrg(session.orgId)) ?? mockBroker
+      : mockBroker;
+
   return (
     <main className="min-h-screen bg-gradient-to-b from-brand-50 to-white">
       <div className="container-page flex min-h-screen items-center justify-center py-16">
@@ -25,8 +33,8 @@ export default async function WelcomePage({
           <div className="card text-center">
             <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-brand-100">
               <Image
-                src={mockBroker.photoUrl}
-                alt={mockBroker.name}
+                src={broker.photoUrl}
+                alt={broker.name}
                 width={80}
                 height={80}
                 className="rounded-full"
@@ -37,7 +45,7 @@ export default async function WelcomePage({
             </h1>
             <p className="mt-4 text-ink-soft">{t('subtitle')}</p>
             <p className="mt-4 text-sm text-ink-muted">
-              {t('brokerLine', { broker: mockBroker.name })}
+              {t('brokerLine', { broker: broker.company || broker.name })}
             </p>
             <div className="mt-8">
               <Link href={`/${locale}/onboarding`} className="btn-primary w-full">
