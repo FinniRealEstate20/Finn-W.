@@ -487,6 +487,53 @@
       "loginCta": "Hier anmelden",
       "trustNote": "DSGVO-konform · EU-Hosting · jederzeit kündbar",
       "completedNotice": "E-Mail bestätigt – aber wir brauchen noch deinen Namen, um dein Konto fertig einzurichten."
+    },
+    "signupBuyer": {
+      "title": "Willkommen bei PropAfterCare",
+      "invitedByNamed": "Du wurdest von {broker} eingeladen. Wir helfen dir durch die ersten Wochen in deinem neuen Zuhause.",
+      "invitedGeneric": "Wir helfen dir durch die ersten Wochen in deinem neuen Zuhause.",
+      "missingCode": "Es fehlt ein Einladungscode. Bitte verwende den Link, den dein Makler dir geschickt hat.",
+      "invalidCode": "Der Einladungscode ist unbekannt. Bitte prüfe, ob du den vollständigen Link verwendest.",
+      "exhaustedCode": "Der Einladungscode ist abgelaufen oder bereits verwendet. Bitte beim Makler nachfragen.",
+      "fullNameLabel": "Dein Name",
+      "emailLabel": "Deine E-Mail",
+      "submit": "Magic Link senden",
+      "sending": "Sende …",
+      "trustNote": "DSGVO-konform · EU-Hosting · keine Werbe-Mails"
+    }
+  },
+  "broker": {
+    "invitations": {
+      "title": "Käufer-Einladungen",
+      "subtitle": "Erstelle einen Code für jeden Käufer und sende ihm den Link.",
+      "backToDashboard": "Zurück zum Dashboard",
+      "listTitle": "Bestehende Einladungen",
+      "empty": "Noch keine Einladung erstellt.",
+      "create": {
+        "title": "Neue Einladung",
+        "subtitle": "Ein Code = ein Käufer. Wir erinnern uns am Label, wer wer war.",
+        "labelLabel": "Label (optional)",
+        "labelPlaceholder": "z. B. Familie Müller · Hauptstr. 12",
+        "submit": "Code erstellen",
+        "sending": "Erstelle …",
+        "successHeading": "Code erstellt",
+        "copy": "Link kopieren",
+        "copied": "Kopiert ✓",
+        "shareHint": "Sende diesen Link per WhatsApp oder E-Mail an deinen Käufer."
+      },
+      "row": {
+        "noLabel": "kein Label",
+        "copyLink": "Link kopieren",
+        "copied": "Kopiert ✓",
+        "delete": "Löschen",
+        "deleting": "Lösche …",
+        "confirmDelete": "Einladung wirklich löschen?"
+      },
+      "status": {
+        "open": "offen",
+        "used": "eingelöst",
+        "expired": "abgelaufen"
+      }
     }
   }
 }

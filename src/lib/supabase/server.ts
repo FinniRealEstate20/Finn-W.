@@ -1,8 +1,6 @@
 import { cookies } from 'next/headers';
 import { type CookieOptions, createServerClient } from '@supabase/ssr';
 
-import type { Database } from '@/types/database';
-
 /**
  * Server-side Supabase client. Reads/writes the session cookies, so every
  * request runs as the authenticated user and RLS policies decide what they
@@ -19,7 +17,7 @@ export function createSupabaseServerClient() {
 
   const cookieStore = cookies();
 
-  return createServerClient<Database>(url, anon, {
+  return createServerClient(url, anon, {
     cookies: {
       getAll() {
         return cookieStore.getAll();

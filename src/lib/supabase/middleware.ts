@@ -1,8 +1,6 @@
 import { type NextRequest, NextResponse } from 'next/server';
 import { type CookieOptions, createServerClient } from '@supabase/ssr';
 
-import type { Database } from '@/types/database';
-
 /**
  * Refreshes the Supabase session cookie on every request so that
  * subsequent Server Components and route handlers see a fresh JWT.
@@ -16,7 +14,7 @@ export async function updateSupabaseSession(
   const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   if (!url || !anon) return response;
 
-  const supabase = createServerClient<Database>(url, anon, {
+  const supabase = createServerClient(url, anon, {
     cookies: {
       getAll() {
         return request.cookies.getAll();

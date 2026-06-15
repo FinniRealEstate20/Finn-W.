@@ -54,10 +54,11 @@ export async function GET(req: NextRequest) {
     return NextResponse.redirect(`${origin}/${locale}/dashboard`);
   }
 
-  // No profile yet — bootstrap from user metadata when intent says broker.
+  // No profile yet — bootstrap from user metadata.
   const meta = user.user_metadata ?? {};
+  const service = createSupabaseServiceClient();
+
   if (meta.intent === 'broker' && typeof meta.full_name === 'string') {
-    const service = createSupabaseServiceClient();
     const orgName = meta.company || meta.full_name;
     const { data: org, error: orgError } = await service
       .from('orgs')
@@ -86,6 +87,44 @@ export async function GET(req: NextRequest) {
       );
     }
     return NextResponse.redirect(`${origin}/${locale}/broker?welcome=1`);
+  }
+
+  if (
+    meta.intent === 'buyer' &&
+    typeof meta.full_name === 'string' &&
+    typeof meta.invitation_id === 'string' &&
+    typeof meta.org_id === 'string'
+  ) {
+    // Re-validate the invitation server-side, because it may have been
+    // exhausted between the magic-link request and this callback.
+    const { data: inv } = await service
+      .from('invitations')
+      .select('id, org_id, max_uses, used_count, expires_at')
+      .eq('id', meta.invitation_id)
+      .maybeSingle();
+    if (
+      !inv ||
+      inv.org_id !== meta.org_id ||
+      (inv.max_uses != null && inv.used_count >= inv.max_uses) ||
+      (inv.expires_at && new Date(inv.expires_at) < new Date())
+    ) {
+      return NextResponse.redirect(
+        `${origin}/${locale}/signup/buyer?error=exhausted`
+      );
+    }
+    const { error: buyerErr } = await service.from('buyer_profiles').insert({
+      user_id: user.id,
+      org_id: meta.org_id,
+      invitation_id: meta.invitation_id,
+      full_name: meta.full_name,
+      email: user.email ?? '',
+    });
+    if (buyerErr) {
+      return NextResponse.redirect(
+        `${origin}/${locale}/login?error=profile_bootstrap_failed`
+      );
+    }
+    return NextResponse.redirect(`${origin}/${locale}/welcome`);
   }
 
   // Fallback: the user authenticated but we don't know what to do with
