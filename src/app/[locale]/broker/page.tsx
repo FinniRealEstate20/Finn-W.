@@ -56,6 +56,12 @@ export default async function BrokerDashboardPage({
                 Einladungen
               </Link>
               <Link
+                href={`/${locale}/broker/billing`}
+                className="hover:text-ink"
+              >
+                Abo
+              </Link>
+              <Link
                 href={`/${locale}/broker/reputation`}
                 className="hover:text-ink"
               >
