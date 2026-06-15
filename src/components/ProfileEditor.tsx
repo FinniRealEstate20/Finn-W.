@@ -11,27 +11,36 @@ import {
   type ProfileAddress,
   type ProfileData
 } from '@/lib/profileStore';
+import { saveProfileAction } from '@/lib/profile/saveAction';
 import type { AddressSuggestion } from '@/lib/datasources/types';
 import type { PropertyType } from '@/types';
 
 const PROPERTY_TYPES: PropertyType[] = ['ownUse', 'investment-self', 'investment-managed'];
+const SERVER_DEBOUNCE_MS = 1500;
 
 function inputClass(extra = ''): string {
   return `input ${extra}`.trim();
 }
 
-export function ProfileEditor() {
+export function ProfileEditor({
+  initialProfile,
+  enableServerSync = false,
+}: {
+  initialProfile?: ProfileData;
+  enableServerSync?: boolean;
+}) {
   const t = useTranslations('profile');
-  const [profile, setProfile] = useState<ProfileData | null>(null);
+  const [profile, setProfile] = useState<ProfileData | null>(initialProfile ?? null);
   const [savedAt, setSavedAt] = useState<string | null>(null);
   const [suggestions, setSuggestions] = useState<AddressSuggestion[]>([]);
   const [lookupOpen, setLookupOpen] = useState(false);
   const [lookupLoading, setLookupLoading] = useState(false);
   const lookupTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const serverSyncTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    setProfile(loadProfile());
-  }, []);
+    if (!initialProfile) setProfile(loadProfile());
+  }, [initialProfile]);
 
   const completeness = useMemo(
     () => (profile ? profileCompleteness(profile) : 0),
@@ -42,6 +51,12 @@ export function ProfileEditor() {
     setProfile(next);
     saveProfile(next);
     setSavedAt(new Date().toISOString());
+    if (enableServerSync) {
+      if (serverSyncTimer.current) clearTimeout(serverSyncTimer.current);
+      serverSyncTimer.current = setTimeout(() => {
+        void saveProfileAction(next);
+      }, SERVER_DEBOUNCE_MS);
+    }
   }
 
   function patchAddress(kind: 'newAddress' | 'oldAddress', patch: Partial<ProfileAddress>) {
