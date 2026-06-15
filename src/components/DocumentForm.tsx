@@ -144,6 +144,23 @@ export function DocumentForm({ form, fieldKeys, fieldLabels }: Props) {
     syncToServer(next);
   }
 
+  function resolveExternalUrl(): string | undefined {
+    if (form.externalUrlTemplate && profile) {
+      const replacements: Record<string, string> = {
+        postalCode: profile.newAddress.postalCode,
+        city: profile.newAddress.city,
+        street: profile.newAddress.street
+      };
+      const resolved = form.externalUrlTemplate.replace(/\{(\w+)\}/g, (_, key: string) => {
+        return encodeURIComponent(replacements[key] ?? '');
+      });
+      if (!/\{\w+\}/.test(resolved) && !resolved.includes('=&') && !resolved.endsWith('=')) {
+        return resolved;
+      }
+    }
+    return form.externalUrl;
+  }
+
   function openExternal() {
     const next = recordSubmission({
       formId: form.id,
@@ -154,8 +171,9 @@ export function DocumentForm({ form, fieldKeys, fieldLabels }: Props) {
     });
     setSubmission(next);
     syncToServer(next);
-    if (form.externalUrl) {
-      window.open(form.externalUrl, '_blank', 'noopener,noreferrer');
+    const url = resolveExternalUrl();
+    if (url) {
+      window.open(url, '_blank', 'noopener,noreferrer');
     }
   }
 
@@ -267,6 +285,29 @@ export function DocumentForm({ form, fieldKeys, fieldLabels }: Props) {
 
       {form.sourceType === 'external_link' && (
         <>
+          {smartFill === 'deep_link_only' && (
+            <section className="card mt-8 border-brand-200 bg-gradient-to-br from-brand-50 via-white to-white">
+              <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div className="min-w-0">
+                  <div className="inline-flex items-center gap-1.5 rounded-full bg-brand-100 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-brand-800">
+                    Direkt zum Anbieter
+                  </div>
+                  <h2 className="mt-2 text-lg font-semibold text-ink">{t(`items.${form.id}.name`)}</h2>
+                  <p className="mt-1 text-sm text-ink-soft">
+                    Dieses Formular ist so kompakt (3–5 Felder), dass Auto-Fill keinen großen Mehrwert bringt. Wir leiten dich direkt aufs offizielle Anmelde-Formular weiter — Daten zum Kopieren findest du unten.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={openExternal}
+                  className="btn-primary w-full whitespace-nowrap text-base sm:w-auto"
+                >
+                  Zum Anmelde-Formular →
+                </button>
+              </div>
+            </section>
+          )}
+
           {smartFill === 'available' && setupDone && (
             <section className="card mt-8 border-emerald-200 bg-gradient-to-br from-emerald-50 via-white to-white">
               <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -389,7 +430,9 @@ export function DocumentForm({ form, fieldKeys, fieldLabels }: Props) {
             <p className="mt-1 text-xs text-ink-muted">
               {smartFill === 'available'
                 ? `Backup: Falls Smart Pre-Fill nicht greift, hier deine Daten zum manuellen Kopieren (${sourceLabel}).`
-                : `Du wirst gleich zum offiziellen Portal weitergeleitet (${sourceLabel}). Hier deine Daten zum Kopieren:`}
+                : smartFill === 'deep_link_only'
+                  ? `Beim Klick oben öffnet sich das Formular bei ${sourceLabel}. Diese Werte kannst du dort einfach reinkopieren:`
+                  : `Du wirst gleich zum offiziellen Portal weitergeleitet (${sourceLabel}). Hier deine Daten zum Kopieren:`}
             </p>
             <div className="mt-4 space-y-2">
               {fields.map(f => (
@@ -411,7 +454,7 @@ export function DocumentForm({ form, fieldKeys, fieldLabels }: Props) {
                 </div>
               ))}
             </div>
-            {form.externalUrl && smartFill !== 'available' && smartFill !== 'excluded' && (
+            {form.externalUrl && smartFill === 'pending' && (
               <button type="button" onClick={openExternal} className="btn-primary mt-6 w-full">
                 {t('actions.external')} ↗
               </button>

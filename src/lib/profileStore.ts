@@ -212,6 +212,37 @@ export function resetProfile() {
   }
 }
 
+function onboardingKey(buyerId: string): string {
+  return `pac:profile:onboarded:${buyerId}`;
+}
+
+export function isOnboarded(): boolean {
+  if (typeof window === 'undefined') return true;
+  try {
+    return !!window.localStorage.getItem(onboardingKey(getActiveBuyerId()));
+  } catch {
+    return true;
+  }
+}
+
+export function markOnboarded() {
+  if (typeof window === 'undefined') return;
+  try {
+    window.localStorage.setItem(onboardingKey(getActiveBuyerId()), new Date().toISOString());
+  } catch {
+    // ignore
+  }
+}
+
+export function resetOnboarded() {
+  if (typeof window === 'undefined') return;
+  try {
+    window.localStorage.removeItem(onboardingKey(getActiveBuyerId()));
+  } catch {
+    // ignore
+  }
+}
+
 export function formatAddress(a: ProfileAddress): string {
   const street = [a.street, a.houseNumber].filter(Boolean).join(' ');
   const place = [a.postalCode, a.city].filter(Boolean).join(' ');

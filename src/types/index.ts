@@ -80,6 +80,7 @@ export interface FormEntry {
   consequenceIfMissing?: string;
   prefillCopyFields?: string[];
   externalUrl?: string;
+  externalUrlTemplate?: string;
 }
 
 export interface Broker {

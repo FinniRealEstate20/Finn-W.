@@ -104,6 +104,11 @@ export function DocumentItem({
                 ⚡ {setupDone ? 'Auto-Fill bereit' : 'Auto-Fill nach Setup'}
               </span>
             )}
+            {smartFill === 'deep_link_only' && !status && (
+              <span className="inline-flex items-center gap-1 rounded-full bg-brand-50 px-2 py-0.5 text-[10px] font-medium text-brand-700 ring-1 ring-brand-100">
+                → Direkt zum Anbieter
+              </span>
+            )}
           </div>
           <p className="mt-0.5 text-xs text-ink-muted">{t(`items.${form.id}.hint`)}</p>
           <p className="mt-1 text-[11px] text-ink-muted">

@@ -40,7 +40,7 @@ export const portalRecipes: readonly PortalRecipe[] = [
       { profileKey: 'newCity', label: 'Ort', selectors: ['input[name*="ort" i]:not([name*="alt" i])', 'input[name*="city" i]'] },
       { profileKey: 'email', label: 'E-Mail', selectors: ['input[type="email"]', 'input[name*="mail" i]'], optional: true }
     ],
-    reviewedAt: '2026-06-11'
+    reviewedAt: '2026-06-12'
   },
   {
     docId: 'kfz-paderborn',
@@ -54,25 +54,7 @@ export const portalRecipes: readonly PortalRecipe[] = [
       { profileKey: 'newPostalCode', label: 'PLZ', selectors: ['input[name*="plz" i]'] },
       { profileKey: 'newCity', label: 'Wohnort', selectors: ['input[name*="ort" i]', '#city'] }
     ],
-    reviewedAt: '2026-06-11'
-  },
-  {
-    docId: 'strom-westfalenweser',
-    portalName: 'Westfalen Weser Energie',
-    matchHost: 'westfalenweser.com',
-    fields: [
-      { profileKey: 'firstName', label: 'Vorname', selectors: ['input[name*="vorname" i]', 'input[name*="firstname" i]'] },
-      { profileKey: 'lastName', label: 'Nachname', selectors: ['input[name*="nachname" i]', 'input[name*="lastname" i]'] },
-      { profileKey: 'email', label: 'E-Mail', selectors: ['input[type="email"]'] },
-      { profileKey: 'phone', label: 'Telefon', selectors: ['input[type="tel"]', 'input[name*="telefon" i]'], optional: true },
-      { profileKey: 'newStreet', label: 'Straße', selectors: ['input[name*="strasse" i]'] },
-      { profileKey: 'newHouseNumber', label: 'Hausnummer', selectors: ['input[name*="hausnummer" i]'] },
-      { profileKey: 'newPostalCode', label: 'PLZ', selectors: ['input[name*="plz" i]'] },
-      { profileKey: 'newCity', label: 'Ort', selectors: ['input[name*="ort" i]'] },
-      { profileKey: 'iban', label: 'IBAN', selectors: ['input[name*="iban" i]'], transform: 'iban-no-spaces', optional: true },
-      { profileKey: 'meterReadingElectricity', label: 'Zählerstand', selectors: ['input[name*="zaehler" i]', 'input[name*="meter" i]'], optional: true }
-    ],
-    reviewedAt: '2026-06-11'
+    reviewedAt: '2026-06-12'
   },
   {
     docId: 'gez',
@@ -88,7 +70,7 @@ export const portalRecipes: readonly PortalRecipe[] = [
       { profileKey: 'newCity', label: 'Ort', selectors: ['input[name*="ort" i]'] },
       { profileKey: 'email', label: 'E-Mail', selectors: ['input[type="email"]'], optional: true }
     ],
-    reviewedAt: '2026-06-11'
+    reviewedAt: '2026-06-12'
   },
   {
     docId: 'post',
@@ -108,7 +90,7 @@ export const portalRecipes: readonly PortalRecipe[] = [
       { profileKey: 'newCity', label: 'Neuer Ort', selectors: ['input[name*="neu" i][name*="ort" i]'] },
       { profileKey: 'moveInDate', label: 'Einzugsdatum', selectors: ['input[type="date"]', 'input[name*="datum" i]'], transform: 'iso-date' }
     ],
-    reviewedAt: '2026-06-11'
+    reviewedAt: '2026-06-12'
   },
   {
     docId: 'hausrat',
@@ -122,43 +104,7 @@ export const portalRecipes: readonly PortalRecipe[] = [
       { profileKey: 'newHouseNumber', label: 'Hausnummer', selectors: ['input[name*="hausnummer" i]'], optional: true },
       { profileKey: 'birthDate', label: 'Geburtsdatum', selectors: ['input[type="date"]', 'input[name*="geburt" i]'], transform: 'iso-date', optional: true }
     ],
-    reviewedAt: '2026-06-11'
-  },
-  {
-    docId: 'gas',
-    portalName: 'Westfalen Weser Energie (Gas)',
-    matchHost: 'westfalenweser.com',
-    matchPath: 'gas',
-    fields: [
-      { profileKey: 'firstName', label: 'Vorname', selectors: ['input[name*="vorname" i]', 'input[name*="firstname" i]'] },
-      { profileKey: 'lastName', label: 'Nachname', selectors: ['input[name*="nachname" i]', 'input[name*="lastname" i]'] },
-      { profileKey: 'email', label: 'E-Mail', selectors: ['input[type="email"]'] },
-      { profileKey: 'phone', label: 'Telefon', selectors: ['input[type="tel"]', 'input[name*="telefon" i]'], optional: true },
-      { profileKey: 'newStreet', label: 'Straße', selectors: ['input[name*="strasse" i]'] },
-      { profileKey: 'newHouseNumber', label: 'Hausnummer', selectors: ['input[name*="hausnummer" i]'] },
-      { profileKey: 'newPostalCode', label: 'PLZ', selectors: ['input[name*="plz" i]'] },
-      { profileKey: 'newCity', label: 'Ort', selectors: ['input[name*="ort" i]'] },
-      { profileKey: 'iban', label: 'IBAN', selectors: ['input[name*="iban" i]'], transform: 'iban-no-spaces', optional: true },
-      { profileKey: 'meterReadingGas', label: 'Gas-Zählerstand', selectors: ['input[name*="zaehler" i]', 'input[name*="meter" i]'], optional: true }
-    ],
-    reviewedAt: '2026-06-11'
-  },
-  {
-    docId: 'internet',
-    portalName: 'Verivox DSL-Vergleich',
-    matchHost: 'verivox.de',
-    matchPath: 'dsl',
-    fields: [
-      { profileKey: 'newPostalCode', label: 'PLZ', selectors: ['input[name*="plz" i]', 'input[name*="zip" i]', 'input[id*="postal" i]'] },
-      { profileKey: 'newCity', label: 'Ort', selectors: ['input[name*="ort" i]', 'input[name*="city" i]'], optional: true },
-      { profileKey: 'newStreet', label: 'Straße', selectors: ['input[name*="strasse" i]', 'input[name*="street" i]'], optional: true },
-      { profileKey: 'newHouseNumber', label: 'Hausnummer', selectors: ['input[name*="hausnummer" i]', 'input[name*="number" i]'], optional: true },
-      { profileKey: 'firstName', label: 'Vorname', selectors: ['input[name*="vorname" i]', 'input[name*="firstname" i]'], optional: true },
-      { profileKey: 'lastName', label: 'Nachname', selectors: ['input[name*="nachname" i]', 'input[name*="lastname" i]'], optional: true },
-      { profileKey: 'email', label: 'E-Mail', selectors: ['input[type="email"]'], optional: true }
-    ],
-    reviewedAt: '2026-06-11',
-    note: 'Verivox lädt Felder dynamisch je nach Eingabe – PLZ ist der wichtigste Anker. KI-Mapper greift erfahrungsgemäß für Folgefelder.'
+    reviewedAt: '2026-06-12'
   },
   {
     docId: 'vermieterhaftpflicht',
@@ -175,7 +121,7 @@ export const portalRecipes: readonly PortalRecipe[] = [
       { profileKey: 'birthDate', label: 'Geburtsdatum', selectors: ['input[type="date"]', 'input[name*="geburt" i]'], transform: 'iso-date', optional: true },
       { profileKey: 'email', label: 'E-Mail', selectors: ['input[type="email"]'], optional: true }
     ],
-    reviewedAt: '2026-06-11'
+    reviewedAt: '2026-06-12'
   }
 ];
 
@@ -205,10 +151,17 @@ export const SMART_FILL_EXCLUDED: ReadonlySet<DocumentId> = new Set<DocumentId>(
   'grundsteuer'
 ]);
 
-export function smartFillStatus(
-  docId: DocumentId
-): 'available' | 'excluded' | 'pending' {
+export const SMART_FILL_DEEP_LINK_ONLY: ReadonlySet<DocumentId> = new Set<DocumentId>([
+  'strom-westfalenweser',
+  'gas',
+  'internet'
+]);
+
+export type SmartFillStatus = 'available' | 'excluded' | 'deep_link_only' | 'pending';
+
+export function smartFillStatus(docId: DocumentId): SmartFillStatus {
   if (SMART_FILL_EXCLUDED.has(docId)) return 'excluded';
+  if (SMART_FILL_DEEP_LINK_ONLY.has(docId)) return 'deep_link_only';
   if (SMART_FILL_DOC_IDS.has(docId)) return 'available';
   return 'pending';
 }

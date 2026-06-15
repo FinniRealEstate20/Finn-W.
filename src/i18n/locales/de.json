@@ -98,8 +98,46 @@
   },
   "onboarding": {
     "title": "Lass uns dich kurz kennenlernen",
-    "subtitle": "Nur das Nötigste. Den Rest fragen wir bei Bedarf später ab.",
+    "subtitle": "Wir fragen einmalig alle wichtigen Daten ab — danach füllen wir Behörden- und Versorger-Formulare automatisch für dich aus.",
+    "stepLabel": "Schritt {current} von {total}",
+    "finish": "Fertig & loslegen",
+    "steps": {
+      "1": {
+        "title": "Wer bist du?",
+        "subtitle": "Die Basis für jeden Behördengang."
+      },
+      "2": {
+        "title": "Deine Adressen",
+        "subtitle": "Alte und neue Anschrift — wichtig für Ummeldung und Nachsendung."
+      },
+      "3": {
+        "title": "Bank & Kaufkontext",
+        "subtitle": "Für Lastschriften und damit wir wissen, ob du selbst einziehst oder vermietest."
+      },
+      "4": {
+        "title": "Optional: Zählerstände",
+        "subtitle": "Wenn du sie schon hast, sparen wir uns später eine Rückfrage.",
+        "skipHint": "Kannst du auch leer lassen — wir fragen später beim Versorger noch mal."
+      }
+    },
     "fields": {
+      "firstName": "Vorname",
+      "lastName": "Nachname",
+      "email": "E-Mail",
+      "phone": "Telefon",
+      "birthDate": "Geburtsdatum",
+      "steuerId": "Steuer-Identifikationsnummer",
+      "steuerIdHint": "Findest du auf deinem Steuerbescheid (11 Ziffern).",
+      "newAddressTitle": "Neue Adresse (Einzug)",
+      "oldAddressTitle": "Alte Adresse (Auszug)",
+      "street": "Straße",
+      "houseNumber": "Nr.",
+      "postalCode": "PLZ",
+      "iban": "IBAN",
+      "ibanHint": "Wir nutzen sie nur für Formulare — keine Abbuchungen durch uns.",
+      "meterElectricity": "Stromzählerstand",
+      "meterGas": "Gaszählerstand",
+      "meterPlaceholder": "z.B. 12345",
       "propertyType": "Was hast du gekauft?",
       "propertyTypeOptions": {
         "ownUse": "Zum Selbstbewohnen",
@@ -110,7 +148,7 @@
         "investmentManagedHint": "Eine Verwaltung kümmert sich um den Mieter"
       },
       "moveInDate": "Geschätztes Einzugsdatum / Übergabedatum",
-      "city": "Stadt",
+      "city": "Ort",
       "cityHint": "Aktuell nur Paderborn verfügbar",
       "name": "Wie sollen wir dich ansprechen?"
     },

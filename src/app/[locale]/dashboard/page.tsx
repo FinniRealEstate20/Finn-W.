@@ -6,6 +6,7 @@ import { mockBroker } from '@/lib/mockData';
 import { getActiveBuyer } from '@/lib/activeBuyer';
 import { BrokerHeader } from '@/components/BrokerHeader';
 import { InteractiveDashboard } from '@/components/InteractiveDashboard';
+import { OnboardingGate } from '@/components/OnboardingGate';
 import { ProfileCompletenessCard } from '@/components/ProfileCompletenessCard';
 
 export default async function DashboardPage({
@@ -23,6 +24,7 @@ export default async function DashboardPage({
   return (
     <main className="min-h-screen bg-slate-50">
       <BrokerHeader broker={mockBroker} locale={locale} activeBuyerId={buyer.id} />
+      <OnboardingGate locale={locale} />
 
       <div className="container-page py-10">
         <InteractiveDashboard buyer={buyer} locale={locale} />
