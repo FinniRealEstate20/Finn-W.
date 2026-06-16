@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { loadProfile, markOnboarded, saveProfile, type ProfileData } from '@/lib/profileStore';
+import { saveProfileAction } from '@/lib/profile/saveAction';
 import type { PropertyType } from '@/types';
 
 const TOTAL_STEPS = 4;
@@ -75,7 +76,9 @@ export function OnboardingForm({ locale }: { locale: string }) {
     setSubmitting(true);
     saveProfile(profile!);
     markOnboarded();
-    router.push(`/${locale}/dashboard`);
+    void saveProfileAction(profile!).finally(() => {
+      router.push(`/${locale}/dashboard`);
+    });
   }
 
   const canForward =

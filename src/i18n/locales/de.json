@@ -404,6 +404,38 @@
       "curators": "Mitkuratoren",
       "settings": "Einstellungen"
     },
+    "invitations": {
+      "title": "Käufer-Einladungen",
+      "subtitle": "Erstelle einen Code für jeden Käufer und sende ihm den Link.",
+      "backToDashboard": "Zurück zum Dashboard",
+      "listTitle": "Bestehende Einladungen",
+      "empty": "Noch keine Einladung erstellt.",
+      "create": {
+        "title": "Neue Einladung",
+        "subtitle": "Ein Code = ein Käufer. Wir erinnern uns am Label, wer wer war.",
+        "labelLabel": "Label (optional)",
+        "labelPlaceholder": "z. B. Familie Müller · Hauptstr. 12",
+        "submit": "Code erstellen",
+        "sending": "Erstelle …",
+        "successHeading": "Code erstellt",
+        "copy": "Link kopieren",
+        "copied": "Kopiert ✓",
+        "shareHint": "Sende diesen Link per WhatsApp oder E-Mail an deinen Käufer."
+      },
+      "row": {
+        "noLabel": "kein Label",
+        "copyLink": "Link kopieren",
+        "copied": "Kopiert ✓",
+        "delete": "Löschen",
+        "deleting": "Lösche …",
+        "confirmDelete": "Einladung wirklich löschen?"
+      },
+      "status": {
+        "open": "offen",
+        "used": "eingelöst",
+        "expired": "abgelaufen"
+      }
+    },
     "dashboard": {
       "title": "Makler-Cockpit",
       "subtitle": "Alle aktiven Käuferprozesse auf einen Blick.",
@@ -500,40 +532,6 @@
       "submit": "Magic Link senden",
       "sending": "Sende …",
       "trustNote": "DSGVO-konform · EU-Hosting · keine Werbe-Mails"
-    }
-  },
-  "broker": {
-    "invitations": {
-      "title": "Käufer-Einladungen",
-      "subtitle": "Erstelle einen Code für jeden Käufer und sende ihm den Link.",
-      "backToDashboard": "Zurück zum Dashboard",
-      "listTitle": "Bestehende Einladungen",
-      "empty": "Noch keine Einladung erstellt.",
-      "create": {
-        "title": "Neue Einladung",
-        "subtitle": "Ein Code = ein Käufer. Wir erinnern uns am Label, wer wer war.",
-        "labelLabel": "Label (optional)",
-        "labelPlaceholder": "z. B. Familie Müller · Hauptstr. 12",
-        "submit": "Code erstellen",
-        "sending": "Erstelle …",
-        "successHeading": "Code erstellt",
-        "copy": "Link kopieren",
-        "copied": "Kopiert ✓",
-        "shareHint": "Sende diesen Link per WhatsApp oder E-Mail an deinen Käufer."
-      },
-      "row": {
-        "noLabel": "kein Label",
-        "copyLink": "Link kopieren",
-        "copied": "Kopiert ✓",
-        "delete": "Löschen",
-        "deleting": "Lösche …",
-        "confirmDelete": "Einladung wirklich löschen?"
-      },
-      "status": {
-        "open": "offen",
-        "used": "eingelöst",
-        "expired": "abgelaufen"
-      }
     }
   }
 }
