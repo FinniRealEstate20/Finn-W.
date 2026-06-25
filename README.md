@@ -30,8 +30,10 @@ npm run dev
 ### 1. Supabase (EU-Region/Frankfurt)
 
 1. Neues Projekt anlegen, Region **eu-central-1**.
-2. SQL-Editor: `supabase/migrations/0001_init.sql` ausführen.
-3. SQL-Editor: `supabase/migrations/0002_storage.sql` ausführen.
+2. SQL-Editor: alle Migrations der Reihe nach ausführen:
+   - `supabase/migrations/0001_init.sql`
+   - `supabase/migrations/0002_storage.sql`
+   - `supabase/migrations/0003_invitations_email.sql`
 4. Env-Vars notieren: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`.
 5. Auth → URL-Konfiguration → Redirect-URL `https://<dein-host>/auth/callback` eintragen.
 
@@ -54,12 +56,24 @@ node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
 
 In `DATA_ENCRYPTION_KEY_V1` ablegen. **Niemals rotieren ohne Re-Encryption-Job.**
 
-### 4. Cron-Job
+### 4. Resend (Käufer-Einladungs-Emails, optional)
+
+Wenn `RESEND_API_KEY` gesetzt ist, kann ein Makler beim Anlegen einer
+Einladung direkt eine E-Mail-Adresse mitgeben — der Code wird dann
+white-label im Namen des Maklerbüros versendet (Branding aus
+`broker_profiles`, Reply-To = Makler-Adresse). Ohne Key bleibt der
+Copy-Paste-Link-Flow als Fallback aktiv.
+
+1. Domain in Resend verifizieren (`propaftercare.de` oder Sub-Domain).
+2. `EMAIL_FROM` auf die verifizierte Absender-Adresse setzen.
+3. API-Key in `RESEND_API_KEY` ablegen.
+
+### 5. Cron-Job
 
 `vercel.json` aktiviert automatisch täglich 03:00 UTC den DSGVO-Sweeper.
 `CRON_SECRET` (32+ Zeichen Zufall) als Env-Var hinterlegen.
 
-### 5. Vercel Deploy
+### 6. Vercel Deploy
 
 ```bash
 vercel --prod

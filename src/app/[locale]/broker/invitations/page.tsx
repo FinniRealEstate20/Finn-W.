@@ -13,10 +13,14 @@ interface Invitation {
   id: string;
   code: string;
   label: string | null;
+  email: string | null;
   max_uses: number | null;
   used_count: number;
   expires_at: string | null;
   created_at: string;
+  sent_at: string | null;
+  send_count: number;
+  last_send_error: string | null;
 }
 
 export default async function BrokerInvitationsPage({
@@ -34,7 +38,7 @@ export default async function BrokerInvitationsPage({
   const supabase = createSupabaseServerClient();
   const { data } = await supabase
     .from('invitations')
-    .select('id, code, label, max_uses, used_count, expires_at, created_at')
+    .select('id, code, label, email, max_uses, used_count, expires_at, created_at, sent_at, send_count, last_send_error')
     .eq('org_id', session.orgId!)
     .order('created_at', { ascending: false });
   const invitations = (data ?? []) as Invitation[];

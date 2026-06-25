@@ -16,6 +16,7 @@ export function CreateInvitationCard({
   const [pending, startTransition] = useTransition();
   const [created, setCreated] = useState<CreateInvitationResult | null>(null);
   const [copied, setCopied] = useState(false);
+  const [emailDraft, setEmailDraft] = useState('');
 
   function handleSubmit(formData: FormData) {
     setCopied(false);
@@ -23,6 +24,7 @@ export function CreateInvitationCard({
     startTransition(async () => {
       const result = await createInvitation(formData);
       setCreated(result);
+      if (result.ok) setEmailDraft('');
     });
   }
 
@@ -35,6 +37,8 @@ export function CreateInvitationCard({
       // ignore — fallback would be to focus the readonly input
     }
   }
+
+  const submitLabel = emailDraft.trim() ? t('submitWithEmail') : t('submit');
 
   return (
     <div className="card">
@@ -52,17 +56,39 @@ export function CreateInvitationCard({
             disabled={pending}
           />
         </label>
+        <label className="block">
+          <span className="text-sm font-medium text-ink">{t('emailLabel')}</span>
+          <input
+            type="email"
+            name="email"
+            value={emailDraft}
+            onChange={e => setEmailDraft(e.target.value)}
+            className="input mt-1 w-full"
+            placeholder={t('emailPlaceholder')}
+            disabled={pending}
+            autoComplete="off"
+          />
+          <span className="mt-1 block text-xs text-ink-muted">{t('emailHint')}</span>
+        </label>
         <button type="submit" className="btn-primary w-full" disabled={pending}>
-          {pending ? t('sending') : t('submit')}
+          {pending ? t('sending') : submitLabel}
         </button>
       </form>
 
       {created?.ok && created.code && created.link && (
         <div className="mt-4 rounded-xl border border-emerald-200 bg-emerald-50 p-3">
           <div className="text-xs font-semibold uppercase tracking-wide text-emerald-700">
-            {t('successHeading')}
+            {created.emailSent ? t('successHeadingEmail') : t('successHeading')}
           </div>
           <div className="mt-1 font-mono text-lg text-emerald-900">{created.code}</div>
+          {created.emailSent && (
+            <p className="mt-2 text-xs text-emerald-800">{t('emailSentNotice')}</p>
+          )}
+          {created.emailError && (
+            <p className="mt-2 rounded-md bg-amber-50 px-2 py-1.5 text-xs text-amber-900">
+              {t('emailFailedNotice')} <span className="font-mono">({created.emailError})</span>
+            </p>
+          )}
           <div className="mt-3 flex items-center gap-2">
             <input
               type="text"
@@ -79,7 +105,9 @@ export function CreateInvitationCard({
               {copied ? t('copied') : t('copy')}
             </button>
           </div>
-          <p className="mt-2 text-xs text-emerald-800">{t('shareHint')}</p>
+          {!created.emailSent && (
+            <p className="mt-2 text-xs text-emerald-800">{t('shareHint')}</p>
+          )}
         </div>
       )}
       {created && !created.ok && (
