@@ -8,6 +8,7 @@ import { getSession } from '@/lib/auth/getUser';
 import { getBrokerForOrg } from '@/lib/data/brokers';
 import { mockBroker } from '@/lib/mockData';
 import { BrokerHeader } from '@/components/BrokerHeader';
+import { DemoModeBanner } from '@/components/DemoModeBanner';
 import { InteractiveDashboard } from '@/components/InteractiveDashboard';
 
 export default async function MilestonesPage({
@@ -30,6 +31,7 @@ export default async function MilestonesPage({
 
   return (
     <main className="min-h-screen bg-slate-50">
+      <DemoModeBanner locale={locale} />
       <BrokerHeader broker={broker} locale={locale} activeBuyerId={buyer.id} />
 
       <div className="container-page py-10">

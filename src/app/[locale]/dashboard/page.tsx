@@ -6,9 +6,11 @@ import { getSession } from '@/lib/auth/getUser';
 import { getBrokerForOrg } from '@/lib/data/brokers';
 import { mockBroker } from '@/lib/mockData';
 import { BrokerHeader } from '@/components/BrokerHeader';
+import { DemoModeBanner } from '@/components/DemoModeBanner';
 import { OnboardingGate } from '@/components/OnboardingGate';
 import { ProfileCompletenessCard } from '@/components/ProfileCompletenessCard';
 import { ToolChooser } from '@/components/ToolChooser';
+import { readDemoBuyer } from '@/lib/demoBuyer';
 
 export default async function DashboardPage({
   params
@@ -22,14 +24,16 @@ export default async function DashboardPage({
   const buyer = await getActiveBuyer();
   const session = await getSession();
   const isRealBuyer = session?.role === 'buyer' && !!session.orgId;
+  const isDemoMode = !isRealBuyer && (await readDemoBuyer()) !== null;
   const broker = isRealBuyer
     ? (await getBrokerForOrg(session.orgId!)) ?? mockBroker
     : mockBroker;
 
   return (
     <main className="min-h-screen bg-slate-50">
+      <DemoModeBanner locale={locale} />
       <BrokerHeader broker={broker} locale={locale} activeBuyerId={buyer.id} />
-      <OnboardingGate locale={locale} />
+      {!isDemoMode && <OnboardingGate locale={locale} />}
 
       <div className="container-page py-10">
         <section className="card mb-8">

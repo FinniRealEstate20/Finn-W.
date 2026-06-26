@@ -51,7 +51,10 @@ export default async function LandingPage({
         </div>
 
         <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-          <Link href={`/${locale}/dashboard`} className="btn-primary">
+          <Link href={`/${locale}/demo`} className="btn-primary">
+            {t('hero.ctaPrimary')}
+          </Link>
+          <Link href={`/${locale}/dashboard`} className="btn-secondary">
             {t('hero.ctaSecondary')}
           </Link>
         </div>
@@ -92,7 +95,7 @@ export default async function LandingPage({
         </div>
       </section>
 
-      {/* Demo: 3-Wege-Chooser, identisch zur eingeloggten Ansicht */}
+      {/* Demo: 3-Wege-Chooser + Live-Eingabe-CTA */}
       <section id="demo" className="container-page py-16">
         <div className="mx-auto max-w-5xl">
           <div className="mx-auto max-w-2xl text-center">
@@ -105,6 +108,12 @@ export default async function LandingPage({
               milestones={demoBuyer.milestones}
               variant="demo"
             />
+          </div>
+          <div className="mt-8 flex flex-col items-center gap-2 text-center">
+            <Link href={`/${locale}/demo`} className="btn-primary">
+              {t('demo.liveCta')}
+            </Link>
+            <p className="text-xs text-ink-muted">{t('demo.liveSubtitle')}</p>
           </div>
         </div>
       </section>

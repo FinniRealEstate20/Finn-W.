@@ -10,7 +10,8 @@
       "eyebrow": "Pilotmarkt Paderborn · Sommer 2026",
       "title": "Aus jedem Notartermin werden vier Google-Bewertungen.",
       "subtitle": "PropAfterCare betreut deine Käufer automatisch von der Unterschrift bis zum Einzug. Du sammelst Bewertungen, Empfehlungen und Folgegeschäft – ohne einen einzigen Anruf zu machen.",
-      "ctaSecondary": "Live-Demo ansehen",
+      "ctaPrimary": "Live-Demo selbst durchspielen",
+      "ctaSecondary": "Demo nur ansehen",
       "trust": "Paderborn-spezifisch · DSGVO-konform · EU-Hosting"
     },
     "pitch": {
@@ -47,7 +48,9 @@
     "demo": {
       "title": "Live-Demo: Was deine Käufer nach dem Notartermin sehen",
       "subtitle": "Drei Werkzeuge, eine Ansicht – wähle eines, um es selbst auszuprobieren.",
-      "cta": "Demo öffnen"
+      "cta": "Demo öffnen",
+      "liveCta": "Mit eigenen Daten durchspielen",
+      "liveSubtitle": "Dauert 30 Sekunden – keine Anmeldung, alles bleibt im Browser-Cookie."
     },
     "founder": {
       "kicker": "Founder Story",
@@ -176,6 +179,40 @@
       "cta": "Jetzt ergänzen"
     },
     "criticalBanner": "Kritische Frist – {days} Tage verbleibend"
+  },
+  "demoBanner": {
+    "badge": "Live-Demo",
+    "runningAs": "läuft als {name}",
+    "editLink": "Daten ändern",
+    "exitLink": "Demo verlassen"
+  },
+  "demoStart": {
+    "eyebrow": "Live-Demo",
+    "title": "Spiel das System mit deinen Daten durch",
+    "subtitle": "Trag deine Eckdaten ein – Tracker, Formular-Hub und KI-Hilfe rendern dann mit genau diesem Profil. Pilot-User und Key-User sehen so den echten Ablauf vor dem Rollout.",
+    "nameLabel": "Vorname",
+    "namePlaceholder": "z. B. Lisa",
+    "emailLabel": "E-Mail",
+    "emailPlaceholder": "z. B. lisa@example.de",
+    "optional": "optional",
+    "propertyTypeLabel": "Was hast du gekauft?",
+    "propertyType": {
+      "ownUse": "Eigennutzung",
+      "investmentSelf": "Kapitalanlage – ich verwalte selbst",
+      "investmentManaged": "Kapitalanlage – Hausverwaltung"
+    },
+    "cityLabel": "Stadt",
+    "cityPlaceholder": "Paderborn",
+    "moveInLabel": "Einzugsdatum",
+    "startCta": "Demo starten →",
+    "restartCta": "Demo mit neuen Daten neu starten",
+    "privacyNote": "Nichts wird gespeichert oder gesendet – die Daten leben in einem Cookie und kannst du jederzeit löschen.",
+    "footerHint": "Tipp: Nach dem Start kannst du oben jederzeit 'Demo verlassen' klicken.",
+    "existingHeading": "Demo läuft als {name}",
+    "existingHint": "Du kannst direkt weitermachen oder die Daten unten ändern.",
+    "continueCta": "Weiter →",
+    "clearCta": "Demo komplett zurücksetzen",
+    "errorInvalid": "Bitte alle Pflichtfelder ausfüllen (Name, Stadt, Einzugsdatum)."
   },
   "milestonesPage": {
     "backToOverview": "← Zur Übersicht",
