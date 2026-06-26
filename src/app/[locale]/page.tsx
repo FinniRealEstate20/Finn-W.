@@ -2,6 +2,8 @@ import Link from 'next/link';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Logo } from '@/components/Logo';
 import { PromoVideo } from '@/components/PromoVideo';
+import { ToolChooser } from '@/components/ToolChooser';
+import { getActiveBuyer } from '@/lib/activeBuyer';
 
 export default async function LandingPage({
   params
@@ -11,6 +13,7 @@ export default async function LandingPage({
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations('marketing');
+  const demoBuyer = await getActiveBuyer();
 
   const features = t.raw('features.items') as Array<{ title: string; body: string }>;
 
@@ -89,14 +92,20 @@ export default async function LandingPage({
         </div>
       </section>
 
-      {/* Demo CTA */}
+      {/* Demo: 3-Wege-Chooser, identisch zur eingeloggten Ansicht */}
       <section id="demo" className="container-page py-16">
-        <div className="card mx-auto max-w-3xl text-center">
-          <h2 className="text-2xl font-bold text-ink">{t('demo.title')}</h2>
-          <p className="mt-2 text-ink-soft">{t('demo.subtitle')}</p>
-          <Link href={`/${locale}/documents`} className="btn-primary mt-6">
-            {t('demo.cta')}
-          </Link>
+        <div className="mx-auto max-w-5xl">
+          <div className="mx-auto max-w-2xl text-center">
+            <h2 className="text-2xl font-bold text-ink sm:text-3xl">{t('demo.title')}</h2>
+            <p className="mt-2 text-ink-soft">{t('demo.subtitle')}</p>
+          </div>
+          <div className="mt-8">
+            <ToolChooser
+              locale={locale}
+              milestones={demoBuyer.milestones}
+              variant="demo"
+            />
+          </div>
         </div>
       </section>
 

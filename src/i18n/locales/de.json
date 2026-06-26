@@ -45,8 +45,8 @@
       ]
     },
     "demo": {
-      "title": "Live-Demo: So meldet ein Käufer den Wohnsitz in Paderborn an",
-      "subtitle": "Das stärkste Verkaufsargument – in 60 Sekunden.",
+      "title": "Live-Demo: Was deine Käufer nach dem Notartermin sehen",
+      "subtitle": "Drei Werkzeuge, eine Ansicht – wähle eines, um es selbst auszuprobieren.",
       "cta": "Demo öffnen"
     },
     "founder": {
@@ -167,6 +167,7 @@
     },
     "askAi": "Frag den Assistenten",
     "documents": "Formular-Hub Paderborn",
+    "chooserLead": "Wähle dein Werkzeug – alle drei greifen auf denselben Stand zu.",
     "tasksDone": "{done} von {total} erledigt",
     "profileCard": {
       "title": "Profil vervollständigen",
@@ -175,6 +176,46 @@
       "cta": "Jetzt ergänzen"
     },
     "criticalBanner": "Kritische Frist – {days} Tage verbleibend"
+  },
+  "milestonesPage": {
+    "backToOverview": "← Zur Übersicht",
+    "title": "Dein Meilenstein-Tracker",
+    "subtitle": "Phase für Phase – kreuze ab, was erledigt ist. Dein Stand wird gespeichert."
+  },
+  "toolChooser": {
+    "regionLabel": "Werkzeuge",
+    "demoNote": "Live-Demo mit Beispiel-Käufer. Nach dem Login siehst du hier deinen echten Stand.",
+    "hub": {
+      "title": "Formular-Hub Paderborn",
+      "body": "Wohnsitz, KFZ, Stadtwerke, ASP – alle Anmeldungen mit Profildaten vorausgefüllt.",
+      "meta": "17 Formulare bereit →"
+    },
+    "milestones": {
+      "title": "Meilenstein-Tracker",
+      "nextHint": "Als Nächstes: {task}",
+      "allDone": "Alle Aufgaben erledigt – glückwunsch!",
+      "progress": "{done} von {total} erledigt"
+    },
+    "ai": {
+      "title": "KI-Hilfe",
+      "body": "Stell deine Frage – wir antworten mit Paderborn-Bezug und eskalieren bei Bedarf an einen echten Experten.",
+      "meta": "Antwort in <10 Sek. →"
+    },
+    "milestoneLabels": {
+      "auflassung": "Auflassungsvormerkung prüfen",
+      "faelligkeit": "Fälligkeitsmitteilung abwarten",
+      "kaufpreis": "Kaufpreis überweisen",
+      "grunderwerb": "Grunderwerbsteuer zahlen",
+      "wohngebaeude": "Wohngebäudeversicherung übernehmen",
+      "handwerker": "Handwerker koordinieren",
+      "verwaltung": "Hausverwaltung auswählen",
+      "mietvertrag": "Mietvertrag vorbereiten",
+      "uebergabe": "Übergabeprotokoll vorbereiten",
+      "ummeldung": "Beim Bürgerservice ummelden",
+      "versorger": "Versorger anmelden",
+      "afa": "AfA-Dokumentation anlegen",
+      "nebenkosten": "Erste Nebenkostenabrechnung"
+    }
   },
   "milestones": {
     "auflassung": {
