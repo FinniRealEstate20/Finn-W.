@@ -1,12 +1,13 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { useTranslations } from 'next-intl';
+import { getTranslations } from 'next-intl/server';
 import { Logo } from './Logo';
 import { BuyerSwitcher } from './BuyerSwitcher';
 import { mockBuyers } from '@/lib/mockData';
+import { readDemoBuyer } from '@/lib/demoBuyer';
 import type { Broker } from '@/types';
 
-export function BrokerHeader({
+export async function BrokerHeader({
   broker,
   locale,
   activeBuyerId
@@ -15,12 +16,26 @@ export function BrokerHeader({
   locale: string;
   activeBuyerId: string;
 }) {
-  const t = useTranslations('common');
-  const switcherBuyers = mockBuyers.map(b => ({
-    id: b.id,
-    name: b.name,
-    propertyType: b.propertyType
-  }));
+  const t = await getTranslations('common');
+  const tc = await getTranslations('toolChooser');
+  const demo = await readDemoBuyer();
+
+  const switcherBuyers = [
+    ...mockBuyers.map(b => ({
+      id: b.id,
+      name: b.name,
+      propertyType: b.propertyType,
+      isLive: false as const
+    })),
+    ...(demo
+      ? [{
+          id: demo.id,
+          name: tc('switcherLiveLabel', { name: demo.name.split(' ')[0] }),
+          propertyType: demo.propertyType,
+          isLive: true as const
+        }]
+      : [])
+  ];
 
   return (
     <header className="border-b border-slate-200 bg-white">
@@ -43,7 +58,11 @@ export function BrokerHeader({
           </div>
         </Link>
         <div className="flex items-center gap-3">
-          <BuyerSwitcher buyers={switcherBuyers} activeId={activeBuyerId} />
+          <BuyerSwitcher
+            buyers={switcherBuyers}
+            activeId={activeBuyerId}
+            locale={locale}
+          />
           <div className="hidden items-center gap-2 text-xs text-ink-muted sm:flex">
             <span>{t('poweredByShort')}</span>
             <Logo variant="mark" className="h-6 w-6" />

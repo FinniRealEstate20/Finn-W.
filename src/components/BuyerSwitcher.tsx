@@ -1,11 +1,13 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 interface BuyerOption {
   id: string;
   name: string;
   propertyType: string;
+  isLive: boolean;
 }
 
 const PROPERTY_LABEL: Record<string, string> = {
@@ -16,12 +18,15 @@ const PROPERTY_LABEL: Record<string, string> = {
 
 export function BuyerSwitcher({
   buyers,
-  activeId
+  activeId,
+  locale
 }: {
   buyers: BuyerOption[];
   activeId: string;
+  locale: string;
 }) {
   const [busy, setBusy] = useState(false);
+  const router = useRouter();
 
   async function change(id: string) {
     if (id === activeId || busy) return;
@@ -36,6 +41,10 @@ export function BuyerSwitcher({
     } catch {
       setBusy(false);
     }
+  }
+
+  function startLiveDemo() {
+    router.push(`/${locale}/demo`);
   }
 
   return (
@@ -53,8 +62,12 @@ export function BuyerSwitcher({
             disabled={busy}
             className={`rounded-full px-2.5 py-1 text-xs font-medium transition ${
               active
-                ? 'bg-white text-brand-700 shadow-sm ring-1 ring-brand-200'
-                : 'text-ink-soft hover:text-ink'
+                ? b.isLive
+                  ? 'bg-amber-50 text-amber-800 shadow-sm ring-1 ring-amber-300'
+                  : 'bg-white text-brand-700 shadow-sm ring-1 ring-brand-200'
+                : b.isLive
+                  ? 'text-amber-800 hover:text-amber-900'
+                  : 'text-ink-soft hover:text-ink'
             }`}
             title={PROPERTY_LABEL[b.propertyType] ?? b.propertyType}
           >
@@ -62,6 +75,17 @@ export function BuyerSwitcher({
           </button>
         );
       })}
+      {!buyers.some(b => b.isLive) && (
+        <button
+          type="button"
+          onClick={startLiveDemo}
+          disabled={busy}
+          className="rounded-full border border-dashed border-slate-300 px-2.5 py-1 text-xs font-medium text-ink-muted transition hover:border-brand-300 hover:text-brand-700"
+          title="Live-Demo mit eigenen Daten"
+        >
+          + Eigene
+        </button>
+      )}
     </div>
   );
 }

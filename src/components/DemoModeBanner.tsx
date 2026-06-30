@@ -1,11 +1,17 @@
+import { cookies } from 'next/headers';
 import Link from 'next/link';
 import { getTranslations } from 'next-intl/server';
 
-import { readDemoBuyer } from '@/lib/demoBuyer';
+import { ACTIVE_BUYER_COOKIE } from '@/lib/activeBuyer';
+import { DEMO_SELF_ID, readDemoBuyer } from '@/lib/demoBuyer';
 
-import { resetLiveDemoAction } from '@/app/[locale]/demo/actions';
+import { DemoExitButton } from './DemoExitButton';
 
 export async function DemoModeBanner({ locale }: { locale: string }) {
+  const store = await cookies();
+  const activeId = store.get(ACTIVE_BUYER_COOKIE)?.value;
+  if (activeId !== DEMO_SELF_ID) return null;
+
   const demo = await readDemoBuyer();
   if (!demo) return null;
   const t = await getTranslations('demoBanner');
@@ -22,12 +28,7 @@ export async function DemoModeBanner({ locale }: { locale: string }) {
           <Link href={`/${locale}/demo`} className="font-medium text-amber-900 hover:underline">
             {t('editLink')}
           </Link>
-          <form action={resetLiveDemoAction}>
-            <input type="hidden" name="locale" value={locale} />
-            <button type="submit" className="font-medium text-amber-900 hover:underline">
-              {t('exitLink')}
-            </button>
-          </form>
+          <DemoExitButton locale={locale} label={t('exitLink')} />
         </div>
       </div>
     </div>

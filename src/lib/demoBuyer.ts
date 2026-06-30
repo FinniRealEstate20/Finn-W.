@@ -5,6 +5,7 @@ import { buildMilestonesFor } from './milestones';
 import type { Buyer, PropertyType } from '@/types';
 
 export const DEMO_BUYER_COOKIE = 'pac-demo-buyer';
+export const DEMO_SELF_ID = 'demo-self';
 
 const MAX_AGE_SECONDS = 60 * 60 * 24 * 30;
 
@@ -78,7 +79,7 @@ export async function readDemoBuyer(): Promise<Buyer | null> {
 
   const milestones = buildMilestonesFor(parsed.propertyType);
   return {
-    id: 'demo-self',
+    id: DEMO_SELF_ID,
     name: parsed.name,
     email: parsed.email ?? 'demo@example.com',
     language: 'de',

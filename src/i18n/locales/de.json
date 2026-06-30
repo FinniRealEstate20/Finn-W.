@@ -188,8 +188,12 @@
   },
   "demoStart": {
     "eyebrow": "Live-Demo",
-    "title": "Spiel das System mit deinen Daten durch",
-    "subtitle": "Trag deine Eckdaten ein – Tracker, Formular-Hub und KI-Hilfe rendern dann mit genau diesem Profil. Pilot-User und Key-User sehen so den echten Ablauf vor dem Rollout.",
+    "title": "Spiel das System einmal durch",
+    "subtitle": "Wähle eine vorbereitete Beispiel-Käuferin oder trag unten deine eigenen Daten ein – Pilot-User und Key-User sehen so den echten Ablauf vor dem Rollout.",
+    "personasHeading": "Beispiel-Käufer:innen",
+    "personasHint": "ein Klick – sofort drin",
+    "orSeparator": "oder",
+    "customHeading": "Mit eigenen Daten durchspielen",
     "nameLabel": "Vorname",
     "namePlaceholder": "z. B. Lisa",
     "emailLabel": "E-Mail",
@@ -222,6 +226,7 @@
   "toolChooser": {
     "regionLabel": "Werkzeuge",
     "demoNote": "Live-Demo mit Beispiel-Käufer. Nach dem Login siehst du hier deinen echten Stand.",
+    "switcherLiveLabel": "{name} (Live)",
     "hub": {
       "title": "Formular-Hub Paderborn",
       "body": "Wohnsitz, KFZ, Stadtwerke, ASP – alle Anmeldungen mit Profildaten vorausgefüllt.",

@@ -10,7 +10,7 @@ import { DemoModeBanner } from '@/components/DemoModeBanner';
 import { OnboardingGate } from '@/components/OnboardingGate';
 import { ProfileCompletenessCard } from '@/components/ProfileCompletenessCard';
 import { ToolChooser } from '@/components/ToolChooser';
-import { readDemoBuyer } from '@/lib/demoBuyer';
+import { DEMO_SELF_ID } from '@/lib/demoBuyer';
 
 export default async function DashboardPage({
   params
@@ -24,7 +24,7 @@ export default async function DashboardPage({
   const buyer = await getActiveBuyer();
   const session = await getSession();
   const isRealBuyer = session?.role === 'buyer' && !!session.orgId;
-  const isDemoMode = !isRealBuyer && (await readDemoBuyer()) !== null;
+  const isDemoMode = !isRealBuyer && buyer.id === DEMO_SELF_ID;
   const broker = isRealBuyer
     ? (await getBrokerForOrg(session.orgId!)) ?? mockBroker
     : mockBroker;

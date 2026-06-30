@@ -17,7 +17,14 @@ export interface SessionInfo {
  * round-trips. Returns null when no session is present.
  */
 export const getSession = cache(async (): Promise<SessionInfo | null> => {
-  const supabase = createSupabaseServerClient();
+  let supabase;
+  try {
+    supabase = createSupabaseServerClient();
+  } catch {
+    // Supabase env missing (e.g. local preview / pure demo). Treat as
+    // anonymous so the marketing + demo paths still render.
+    return null;
+  }
   const {
     data: { user },
   } = await supabase.auth.getUser();
