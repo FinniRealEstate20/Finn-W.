@@ -298,7 +298,7 @@
     },
     "versorger": {
       "title": "Versorger anmelden",
-      "body": "Strom, Gas, Wasser, Internet. Wir zeigen dir die Optionen für Osnabrück – Stadtwerke oder Westfalen Weser."
+      "body": "Strom, Gas, Wasser, Internet. Wir zeigen dir die Optionen für Osnabrück – Stadtwerke Osnabrück oder EWE."
     },
     "mietvertrag": {
       "title": "Mietvertrag vorbereiten",
@@ -334,14 +334,14 @@
       "communal_pdf": "Offizielles Behördenformular, mit deinen Daten ausgefüllt"
     },
     "items": {
-      "wohnsitz-paderborn": { "name": "Wohnsitz-Anmeldung Osnabrück", "hint": "Pflicht innerhalb 14 Tagen" },
-      "kfz-paderborn": { "name": "KFZ ummelden (i-Kfz)", "hint": "Komplett online in 3 Min" },
+      "wohnsitz-osnabrueck": { "name": "Wohnsitz-Anmeldung Osnabrück", "hint": "Pflicht innerhalb 14 Tagen" },
+      "kfz-osnabrueck": { "name": "KFZ ummelden (i-Kfz)", "hint": "Komplett online in 3 Min" },
       "grundsteuer": { "name": "Grundsteuer-Erklärung (ELSTER)", "hint": "Seit Reform 2022 Pflicht" },
-      "strom-westfalenweser": { "name": "Strom: Westfalen Weser Energie", "hint": "Online-Anmeldung möglich" },
-      "strom-stadtwerke-pb": { "name": "Strom: Stadtwerke Osnabrück", "hint": "Termin vor Ort erforderlich" },
-      "gas": { "name": "Gas anmelden", "hint": "Westfalen Weser oder Stadtwerke" },
-      "wasser": { "name": "Wasseranmeldung", "hint": "Nur als Eigentümer/Vermieter" },
-      "asp-abfall": { "name": "ASP Abfallanmeldung Osnabrück", "hint": "20 € pro Änderung, nur Eigentümer" },
+      "strom-ewe": { "name": "Strom & Gas: EWE", "hint": "Regionaler Grundversorger, online" },
+      "strom-swo": { "name": "Strom: Stadtwerke Osnabrück (SWO)", "hint": "Kommunaler Anbieter, online" },
+      "gas": { "name": "Gas: Stadtwerke Osnabrück", "hint": "Erdgas-Anmeldung online" },
+      "wasser": { "name": "Wasseranmeldung SWO", "hint": "Nur als Eigentümer/Vermieter" },
+      "asp-abfall": { "name": "Abfall Osnabrück", "hint": "Behälter-An- und Ummeldung" },
       "internet": { "name": "Internet & Telefon", "hint": "Verivox-Vergleich" },
       "wohngebaeude": { "name": "Wohngebäudeversicherung", "hint": "Sonderkündigungsrecht 1 Monat" },
       "hausrat": { "name": "Hausratversicherung", "hint": "Neue Adresse" },
@@ -464,7 +464,7 @@
     "suggested": [
       "Wann muss ich den Kaufpreis überweisen?",
       "Wie funktioniert die elektronische Wohnsitz-Anmeldung in Osnabrück?",
-      "Stadtwerke oder Westfalen Weser?",
+      "Stadtwerke Osnabrück oder EWE?",
       "Welche Versicherungen brauche ich?"
     ]
   },

@@ -22,14 +22,14 @@ const STORAGE_KEY = 'pac:milestones:v1';
 const POLL_INTERVAL_MS = 4000;
 
 const FORM_LABEL: Record<string, string> = {
-  'wohnsitz-paderborn': 'Wohnsitz-Anmeldung',
-  'kfz-paderborn': 'KFZ ummelden',
+  'wohnsitz-osnabrueck': 'Wohnsitz-Anmeldung',
+  'kfz-osnabrueck': 'KFZ ummelden',
   grundsteuer: 'Grundsteuer',
-  'strom-westfalenweser': 'Strom Westfalen Weser',
-  'strom-stadtwerke-pb': 'Strom Stadtwerke',
+  'strom-ewe': 'Strom EWE',
+  'strom-swo': 'Strom Stadtwerke Osnabrück',
   gas: 'Gas',
   wasser: 'Wasser',
-  'asp-abfall': 'ASP Abfall',
+  'asp-abfall': 'Abfall Osnabrück',
   internet: 'Internet',
   wohngebaeude: 'Wohngebäudeversicherung',
   hausrat: 'Hausrat',

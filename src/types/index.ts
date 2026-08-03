@@ -42,11 +42,11 @@ export type FormStatus = 'active' | 'under_review' | 'outdated';
 export type SubmissionMethod = 'in_person' | 'postal' | 'online_portal' | 'email';
 
 export type DocumentId =
-  | 'wohnsitz-paderborn'
-  | 'kfz-paderborn'
+  | 'wohnsitz-osnabrueck'
+  | 'kfz-osnabrueck'
   | 'grundsteuer'
-  | 'strom-westfalenweser'
-  | 'strom-stadtwerke-pb'
+  | 'strom-ewe'
+  | 'strom-swo'
   | 'gas'
   | 'wasser'
   | 'asp-abfall'
@@ -69,7 +69,7 @@ export interface FormEntry {
   lastCheckedAt: string;
   sourceVersion?: string;
   forPropertyType: PropertyType | 'all';
-  region: 'paderborn' | 'nationwide';
+  region: 'osnabrueck' | 'nationwide';
   submissionMethod: SubmissionMethod;
   submissionTarget?: string;
   triggerMilestone?: MilestoneId;
