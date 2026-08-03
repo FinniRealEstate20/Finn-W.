@@ -153,7 +153,7 @@ export function LiveDemoForm({
               name="city"
               required
               maxLength={80}
-              defaultValue={existing?.city ?? 'Paderborn'}
+              defaultValue={existing?.city ?? 'Osnabrück'}
               className="input mt-1 w-full"
               placeholder={labels.cityPlaceholder}
             />

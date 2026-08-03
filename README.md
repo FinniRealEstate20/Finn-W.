@@ -4,7 +4,7 @@ Post-Transaction Betreuungsplattform für Immobilienmakler – B2B2C SaaS.
 
 Aus jedem Notartermin werden vier Google-Bewertungen: Der Käufer erlebt Fürsorge, der Makler erntet Bewertungen und Folgegeschäft.
 
-**Pilotmarkt:** Paderborn, Sommer 2026.
+**Pilotmarkt:** Osnabrück, Sommer 2026.
 
 ## Stack
 
@@ -89,7 +89,7 @@ Env-Vars vor dem Deploy alle im Vercel-Dashboard setzen.
 | `/de/welcome` | Begrüßung nach Notar-E-Mail (White-Label) |
 | `/de/onboarding` | 2-Minuten-Setup für Käufer |
 | `/de/dashboard` | Käufer-Dashboard mit Meilenstein-Tracker |
-| `/de/documents` | Formular-Hub Paderborn |
+| `/de/documents` | Formular-Hub Osnabrück |
 | `/de/documents/[docId]` | Einzelnes Formular |
 | `/de/chat` | KI-Assistent mit Guardrails |
 | `/de/dsgvo` | Datenexport + 14-Tage-Löschung |
@@ -123,4 +123,4 @@ Alle PII-Felder werden über `src/lib/security/encryption.ts` versionsfähig ver
 
 ✅ MVP komplett · ✅ Supabase-Schema + RLS · ✅ Stripe Billing · ✅ DSGVO Export+Delete · ✅ PII-Verschlüsselung · ✅ Build sauber
 
-📍 Pilotmarkt Paderborn (17 Formulare) · 📍 EU-Hosting (Frankfurt) · 📍 14-Tage-Grace-Period bei Account-Löschung
+📍 Pilotmarkt Osnabrück (17 Formulare) · 📍 EU-Hosting (Frankfurt) · 📍 14-Tage-Grace-Period bei Account-Löschung

@@ -7,12 +7,12 @@
       "login": "Anmelden"
     },
     "hero": {
-      "eyebrow": "Pilotmarkt Paderborn · Sommer 2026",
+      "eyebrow": "Pilotmarkt Osnabrück · Sommer 2026",
       "title": "Aus jedem Notartermin werden vier Google-Bewertungen.",
       "subtitle": "PropAfterCare betreut deine Käufer automatisch von der Unterschrift bis zum Einzug. Du sammelst Bewertungen, Empfehlungen und Folgegeschäft – ohne einen einzigen Anruf zu machen.",
       "ctaPrimary": "Live-Demo selbst durchspielen",
       "ctaSecondary": "Demo nur ansehen",
-      "trust": "Paderborn-spezifisch · DSGVO-konform · EU-Hosting"
+      "trust": "Osnabrück-spezifisch · DSGVO-konform · EU-Hosting"
     },
     "pitch": {
       "title": "Das eigentliche Problem ist nicht der Käufer.",
@@ -20,7 +20,7 @@
       "stat1Value": "+10",
       "stat1Label": "neue Google-Bewertungen pro Jahr (25 Deals × 40% Conversion)",
       "stat2Value": "4,9 / 5",
-      "stat2Label": "Ø-Sterne im Paderborner Pilot",
+      "stat2Label": "Ø-Sterne im Osnabrücker Pilot",
       "stat3Value": "<15 Min",
       "stat3Label": "Setup pro Käufer – vollautomatisch via CRM-Trigger"
     },
@@ -32,12 +32,12 @@
           "body": "Von der Auflassungsvormerkung bis zur Nebenkostenabrechnung – jede Phase als To-do, klar erklärt."
         },
         {
-          "title": "Formular-Hub für Paderborn",
+          "title": "Formular-Hub für Osnabrück",
           "body": "Wohnsitz-Anmeldung, KFZ, Stadtwerke, ASP-Abfall. Mit Profildaten vorausgefüllt oder als Direktlink. Quelle und Stand transparent."
         },
         {
           "title": "KI-Assistent mit Guardrails",
-          "body": "Antwortet auf typische Fragen, gibt aber nie konkreten Rechts- oder Steuerrat. Eskaliert direkt an unsere Paderborner Experten."
+          "body": "Antwortet auf typische Fragen, gibt aber nie konkreten Rechts- oder Steuerrat. Eskaliert direkt an unsere Osnabrücker Experten."
         },
         {
           "title": "Reputations-Cockpit",
@@ -67,9 +67,9 @@
     "pricing": {
       "chip": "Pilot-Phase",
       "title": "Preis auf Anfrage",
-      "body": "Während des Pilots in Paderborn passen wir Konditionen individuell an dein Dealvolumen und deinen Team-Setup an. Schreib uns kurz – wir melden uns innerhalb von 24 Stunden mit einem fairen Angebot.",
+      "body": "Während des Pilots in Osnabrück passen wir Konditionen individuell an dein Dealvolumen und deinen Team-Setup an. Schreib uns kurz – wir melden uns innerhalb von 24 Stunden mit einem fairen Angebot.",
       "cta": "Angebot anfordern",
-      "trust": "Pilotmarkt Paderborn · Antwort innerhalb von 24 Stunden",
+      "trust": "Pilotmarkt Osnabrück · Antwort innerhalb von 24 Stunden",
       "contactEmail": "finn.luca.wenzel@gmx.de",
       "mailSubject": "PropAfterCare – Preisanfrage"
     },
@@ -95,7 +95,7 @@
   },
   "welcome": {
     "greeting": "Herzlichen Glückwunsch, {name}!",
-    "subtitle": "Du hast gerade einen großen Schritt gemacht. Die nächsten Wochen begleiten wir dich – Schritt für Schritt durch deinen Einzug in Paderborn.",
+    "subtitle": "Du hast gerade einen großen Schritt gemacht. Die nächsten Wochen begleiten wir dich – Schritt für Schritt durch deinen Einzug in Osnabrück.",
     "brokerLine": "{broker} hat dich bei PropAfterCare angemeldet, damit du nichts Wichtiges vergisst.",
     "startCta": "In 2 Minuten startklar"
   },
@@ -152,7 +152,7 @@
       },
       "moveInDate": "Geschätztes Einzugsdatum / Übergabedatum",
       "city": "Ort",
-      "cityHint": "Aktuell nur Paderborn verfügbar",
+      "cityHint": "Aktuell nur Osnabrück verfügbar",
       "name": "Wie sollen wir dich ansprechen?"
     },
     "submit": "Mein Dashboard öffnen"
@@ -169,7 +169,7 @@
       "4": { "title": "Nach dem Einzug", "subtitle": "Monat 3–12" }
     },
     "askAi": "Frag den Assistenten",
-    "documents": "Formular-Hub Paderborn",
+    "documents": "Formular-Hub Osnabrück",
     "chooserLead": "Wähle dein Werkzeug – alle drei greifen auf denselben Stand zu.",
     "tasksDone": "{done} von {total} erledigt",
     "profileCard": {
@@ -206,7 +206,7 @@
       "investmentManaged": "Kapitalanlage – Hausverwaltung"
     },
     "cityLabel": "Stadt",
-    "cityPlaceholder": "Paderborn",
+    "cityPlaceholder": "Osnabrück",
     "moveInLabel": "Einzugsdatum",
     "startCta": "Demo starten →",
     "restartCta": "Demo mit neuen Daten neu starten",
@@ -228,7 +228,7 @@
     "demoNote": "Live-Demo mit Beispiel-Käufer. Nach dem Login siehst du hier deinen echten Stand.",
     "switcherLiveLabel": "{name} (Live)",
     "hub": {
-      "title": "Formular-Hub Paderborn",
+      "title": "Formular-Hub Osnabrück",
       "body": "Wohnsitz, KFZ, Stadtwerke, ASP – alle Anmeldungen mit Profildaten vorausgefüllt.",
       "meta": "17 Formulare bereit →"
     },
@@ -240,7 +240,7 @@
     },
     "ai": {
       "title": "KI-Hilfe",
-      "body": "Stell deine Frage – wir antworten mit Paderborn-Bezug und eskalieren bei Bedarf an einen echten Experten.",
+      "body": "Stell deine Frage – wir antworten mit Osnabrück-Bezug und eskalieren bei Bedarf an einen echten Experten.",
       "meta": "Antwort in <10 Sek. →"
     },
     "milestoneLabels": {
@@ -274,7 +274,7 @@
     },
     "grunderwerb": {
       "title": "Grunderwerbsteuer zahlen",
-      "body": "Das Finanzamt Paderborn schickt den Bescheid. Erst nach Zahlung gibt es die Unbedenklichkeitsbescheinigung – Voraussetzung für die Umschreibung im Grundbuch."
+      "body": "Das Finanzamt Osnabrück schickt den Bescheid. Erst nach Zahlung gibt es die Unbedenklichkeitsbescheinigung – Voraussetzung für die Umschreibung im Grundbuch."
     },
     "wohngebaeude": {
       "title": "Wohngebäudeversicherung übernehmen",
@@ -282,23 +282,23 @@
     },
     "handwerker": {
       "title": "Handwerker koordinieren",
-      "body": "Du planst Renovierungen? Aus unserem geprüften Paderborner Netzwerk erhältst du 3 Angebote in 48 Stunden."
+      "body": "Du planst Renovierungen? Aus unserem geprüften Osnabrücker Netzwerk erhältst du 3 Angebote in 48 Stunden."
     },
     "verwaltung": {
       "title": "Hausverwaltung auswählen",
-      "body": "Wir empfehlen geprüfte Hausverwaltungen aus Paderborn und Umgebung. Die Verwaltung übernimmt danach Mietersuche, Abfall, Wasser und Nebenkosten."
+      "body": "Wir empfehlen geprüfte Hausverwaltungen aus Osnabrück und Umgebung. Die Verwaltung übernimmt danach Mietersuche, Abfall, Wasser und Nebenkosten."
     },
     "uebergabe": {
       "title": "Übergabeprotokoll vorbereiten",
       "body": "Lade unsere Checkliste – Zählerstände, Mängel, Schlüsselanzahl. Nichts vergessen."
     },
     "ummeldung": {
-      "title": "Beim Bürgerservice Paderborn ummelden",
-      "body": "Pflicht innerhalb von 14 Tagen nach Einzug. In Paderborn elektronisch oder mit Termin in Bahnhofstraße 50."
+      "title": "Beim Bürgerservice Osnabrück ummelden",
+      "body": "Pflicht innerhalb von 14 Tagen nach Einzug. In Osnabrück online mit aktiviertem Personalausweis oder mit Termin im Bürgeramt, Bierstraße 28."
     },
     "versorger": {
       "title": "Versorger anmelden",
-      "body": "Strom, Gas, Wasser, Internet. Wir zeigen dir die Optionen für Paderborn – Stadtwerke oder Westfalen Weser."
+      "body": "Strom, Gas, Wasser, Internet. Wir zeigen dir die Optionen für Osnabrück – Stadtwerke oder Westfalen Weser."
     },
     "mietvertrag": {
       "title": "Mietvertrag vorbereiten",
@@ -306,7 +306,7 @@
     },
     "afa": {
       "title": "AfA-Dokumentation anlegen",
-      "body": "Sammle ab jetzt alle relevanten Belege. Wir verlinken dich mit einem Paderborner Steuerberater aus dem Netzwerk."
+      "body": "Sammle ab jetzt alle relevanten Belege. Wir verlinken dich mit einem Osnabrücker Steuerberater aus dem Netzwerk."
     },
     "nebenkosten": {
       "title": "Erste Nebenkostenabrechnung",
@@ -314,7 +314,7 @@
     }
   },
   "documents": {
-    "title": "Formular-Hub Paderborn",
+    "title": "Formular-Hub Osnabrück",
     "subtitle": "Alle Anmeldungen und Ummeldungen an einem Ort. Wir haben deine Daten schon eingetragen oder verlinken dich direkt zum offiziellen Portal.",
     "categories": {
       "authorities": "Behörden & Meldewesen",
@@ -334,21 +334,21 @@
       "communal_pdf": "Offizielles Behördenformular, mit deinen Daten ausgefüllt"
     },
     "items": {
-      "wohnsitz-paderborn": { "name": "Wohnsitz-Anmeldung Paderborn", "hint": "Pflicht innerhalb 14 Tagen" },
+      "wohnsitz-paderborn": { "name": "Wohnsitz-Anmeldung Osnabrück", "hint": "Pflicht innerhalb 14 Tagen" },
       "kfz-paderborn": { "name": "KFZ ummelden (i-Kfz)", "hint": "Komplett online in 3 Min" },
       "grundsteuer": { "name": "Grundsteuer-Erklärung (ELSTER)", "hint": "Seit Reform 2022 Pflicht" },
       "strom-westfalenweser": { "name": "Strom: Westfalen Weser Energie", "hint": "Online-Anmeldung möglich" },
-      "strom-stadtwerke-pb": { "name": "Strom: Stadtwerke Paderborn", "hint": "Termin vor Ort erforderlich" },
+      "strom-stadtwerke-pb": { "name": "Strom: Stadtwerke Osnabrück", "hint": "Termin vor Ort erforderlich" },
       "gas": { "name": "Gas anmelden", "hint": "Westfalen Weser oder Stadtwerke" },
       "wasser": { "name": "Wasseranmeldung", "hint": "Nur als Eigentümer/Vermieter" },
-      "asp-abfall": { "name": "ASP Abfallanmeldung Paderborn", "hint": "20 € pro Änderung, nur Eigentümer" },
+      "asp-abfall": { "name": "ASP Abfallanmeldung Osnabrück", "hint": "20 € pro Änderung, nur Eigentümer" },
       "internet": { "name": "Internet & Telefon", "hint": "Verivox-Vergleich" },
       "wohngebaeude": { "name": "Wohngebäudeversicherung", "hint": "Sonderkündigungsrecht 1 Monat" },
       "hausrat": { "name": "Hausratversicherung", "hint": "Neue Adresse" },
       "gez": { "name": "Rundfunkbeitrag (GEZ)", "hint": "Neue Wohnung anmelden" },
       "post": { "name": "Nachsendeauftrag", "hint": "Sofort nach Umzug" },
       "bank": { "name": "Daueraufträge aktualisieren", "hint": "Checkliste mit Empfängern" },
-      "verwaltung": { "name": "Hausverwaltung beauftragen", "hint": "Aus unserem Paderborner Netzwerk" },
+      "verwaltung": { "name": "Hausverwaltung beauftragen", "hint": "Aus unserem Osnabrücker Netzwerk" },
       "mietvertrag": { "name": "Mietvertrag erstellen", "hint": "Rechtlich geprüftes Template" },
       "vermieterhaftpflicht": { "name": "Vermieter-Haftpflicht", "hint": "Spezialversicherung" }
     },
@@ -459,11 +459,11 @@
     "title": "Frag den Assistenten",
     "placeholder": "Was ist die Auflassungsvormerkung?",
     "send": "Senden",
-    "intro": "Ich beantworte deine Fragen rund um Einzug, Behörden und Versicherungen – verständlich und immer mit Bezug auf Paderborn.",
-    "guardrail": "Bei steuerlichen oder rechtlichen Fragen leite ich dich direkt an einen geprüften Paderborner Experten weiter.",
+    "intro": "Ich beantworte deine Fragen rund um Einzug, Behörden und Versicherungen – verständlich und immer mit Bezug auf Osnabrück.",
+    "guardrail": "Bei steuerlichen oder rechtlichen Fragen leite ich dich direkt an einen geprüften Osnabrücker Experten weiter.",
     "suggested": [
       "Wann muss ich den Kaufpreis überweisen?",
-      "Wie funktioniert die elektronische Wohnsitz-Anmeldung in Paderborn?",
+      "Wie funktioniert die elektronische Wohnsitz-Anmeldung in Osnabrück?",
       "Stadtwerke oder Westfalen Weser?",
       "Welche Versicherungen brauche ich?"
     ]
@@ -553,7 +553,7 @@
         "conversion": "Conversion-Rate"
       },
       "lastReviewTitle": "Letzte Bewertung",
-      "pitch": "Bei 25 Deals/Jahr in Paderborn und 40% Conversion: 10 neue Google-Bewertungen jährlich – ohne einen Anruf. Nach 2 Jahren stehst du an der Spitze deines lokalen Marktes.",
+      "pitch": "Bei 25 Deals/Jahr in Osnabrück und 40% Conversion: 10 neue Google-Bewertungen jährlich – ohne einen Anruf. Nach 2 Jahren stehst du an der Spitze deines lokalen Marktes.",
       "triggerTitle": "Wie der Bewertungs-Trigger funktioniert",
       "triggerSteps": [
         "Käufer hakt 'Eingezogen' im Dashboard ab",

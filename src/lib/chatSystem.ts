@@ -1,11 +1,11 @@
-export const CHAT_SYSTEM_PROMPT = `Du bist der digitale Assistent von PropAfterCare – einer Plattform, die Immobilienkäufer von der Notar-Unterschrift bis zum Einzug begleitet. Der Pilotmarkt ist Paderborn.
+export const CHAT_SYSTEM_PROMPT = `Du bist der digitale Assistent von PropAfterCare – einer Plattform, die Immobilienkäufer von der Notar-Unterschrift bis zum Einzug begleitet. Der Pilotmarkt ist Osnabrück.
 
 Deine Aufgabe ist es, Fragen rund um den Immobilienkauf nach dem Notartermin zu beantworten: Behörden, Versorger, Versicherungen, Meldepflichten, Einzug, Übergabe.
 
 Verhaltensregeln:
 - Du-Form, warm aber präzise. Keine Floskeln.
 - Antworten kurz halten – maximal 4–6 Sätze. Bei komplexen Fragen Struktur mit kurzen Stichpunkten.
-- Beziehe dich konkret auf Paderborn, wenn relevant (z.B. Bürgerservice Bahnhofstraße 50, Stadtwerke Paderborn vs. Westfalen Weser, i-Kfz Stufe 4, ASP-Abfallanmeldung).
+- Beziehe dich konkret auf Osnabrück, wenn relevant (z.B. Bürgeramt Bierstraße 28, Stadtwerke Osnabrück (SWO) vs. EWE, i-Kfz Niedersachsen, Abfallwirtschaft der Stadt Osnabrück).
 - KEINE konkrete Rechts- oder Steuerberatung. Bei steuerlichen oder rechtlichen Detailfragen verweise auf einen geprüften Experten aus dem Partnernetzwerk und ergänze "Das ist keine Rechtsberatung."
 - Bei Unsicherheit ehrlich sagen: "Da bin ich nicht sicher – frag am besten deinen Makler."
 - Erwähne, wo es sinnvoll ist, das passende Formular im Hub (z.B. "Im Formular-Hub findest du den Direktlink zur elektronischen Wohnsitz-Anmeldung").
@@ -29,14 +29,14 @@ export const DEMO_RESPONSES: readonly DemoResponse[] = [
       'Den Kaufpreis darfst du **erst nach der Fälligkeitsmitteilung** vom Notar überweisen – nie vorher. Die Fälligkeitsmitteilung kommt typisch 2–4 Wochen nach dem Notartermin, wenn drei Bedingungen erfüllt sind: Auflassungsvormerkung im Grundbuch, alle Vorkaufsrechte geklärt, lastenfreie Übergabe gesichert.\n\nSobald sie da ist, hast du meist 14 Tage Zeit. Achte penibel auf die Kontoverbindung – und wenn deine Bank finanziert, informiere sie sofort, damit der Geldeingang zum Tag X passt.\n\nDas ist keine Rechtsberatung – bei Unsicherheit frag deinen Makler oder den Notar.'
   },
   {
-    keywords: ['wohnsitz', 'anmeld', 'bürgerservice', 'einwohner', 'meldeamt', 'paderborn'],
+    keywords: ['wohnsitz', 'anmeld', 'bürgeramt', 'bürgerservice', 'einwohner', 'meldeamt', 'osnabrück'],
     answer:
-      'In Paderborn hast du zwei Wege:\n\n• **Elektronisch (empfohlen)** – mit aktiviertem Online-Ausweis und PIN über mein-digiport.de. Du brauchst keinen Termin, dauert 10–15 Min.\n• **Persönlich** – mit Termin in Bahnhofstraße 50 (oder Schloß Neuhaus / Elsen). Termin online unter termine-reservieren.de/termine/paderborn oder telefonisch 05251 88-11188.\n\nWichtig: Pflicht innerhalb von **14 Tagen nach Einzug**, sonst Bußgeld bis 1.000 €. Im Formular-Hub findest du den Direktlink zur elektronischen Variante.'
+      'In Osnabrück hast du zwei Wege:\n\n• **Online** – wenn dein Personalausweis den aktivierten Online-Ausweis (eID) plus PIN hat, geht die Ummeldung über das Serviceportal der Stadt bequem von zu Hause. Dauer 10–15 Min, kein Termin nötig.\n• **Persönlich** – mit Termin im Bürgeramt, Bierstraße 28 (Rathaus). Termin online über osnabrueck.de/termin oder telefonisch 0541 323-0.\n\nWichtig: Pflicht innerhalb von **14 Tagen nach Einzug**, sonst Bußgeld bis 1.000 €. Im Formular-Hub findest du den Direktlink zum Bürgeramt.'
   },
   {
-    keywords: ['stadtwerke', 'westfalen weser', 'strom', 'gas', 'anbieter', 'versorger'],
+    keywords: ['stadtwerke', 'swo', 'ewe', 'strom', 'gas', 'anbieter', 'versorger'],
     answer:
-      'Beides legitime Optionen in Paderborn:\n\n• **Stadtwerke Paderborn** – kommunaler Versorger, aber Vertragsabschluss nur persönlich im Kundenzentrum (Rolandsweg 80). Plane für einen Termin etwa 30 Min ein.\n• **Westfalen Weser Energie** – online buchbar in 5 Min. Auch regional verankert (Sitz Paderborn), oft etwas günstiger.\n\nFür reine Effizienz und Vorab-Erledigung ist Westfalen Weser meist die schnellere Wahl. Im Formular-Hub hast du beide Optionen mit Direktlinks bzw. Termin-Buchung.'
+      'Zwei gängige Optionen in Osnabrück:\n\n• **Stadtwerke Osnabrück (SWO)** – kommunaler Grundversorger mit lokaler Präsenz. Strom-, Gas- und Wasseranmeldung online über stadtwerke-osnabrueck.de, meist in wenigen Minuten erledigt.\n• **EWE** – regional dominierender Versorger im Weser-Ems-Raum. Umzugsformular kombiniert Strom und Gas, Anmeldung online in ca. 5 Min.\n\nFür maximale Bequemlichkeit ist SWO als lokaler Ansprechpartner meist die einfachere Wahl. Im Formular-Hub hast du beide Optionen mit Direktlinks.'
   },
   {
     keywords: ['versicherung', 'wohngebäude', 'hausrat', 'haftpflicht'],
