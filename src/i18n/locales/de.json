@@ -366,17 +366,6 @@
       "copy": "Kopieren",
       "copied": "Kopiert"
     },
-    "smartFill": {
-      "availableTitle": "Smart Pre-Fill verfügbar",
-      "availableBody": "Wir können deine Profildaten direkt in das offizielle Portal eintragen. Du prüfst alles und drückst selbst Absenden — wir senden nie für dich.",
-      "setupLink": "Setup öffnen",
-      "activate": "Smart Pre-Fill aktivieren & Portal öffnen",
-      "tokenIssued": "Token erzeugt (15 Min gültig). Portal sollte sich in einem neuen Tab geöffnet haben.",
-      "excludedTitle": "Hier brauchst du deinen Steuerberater",
-      "excludedBody": "ELSTER nutzt Software-Zertifikate und das Steuerberatungsgesetz (§5 StBerG) erlaubt uns hier kein Pre-Fill. Wir verweisen dich an unser Partnernetzwerk: zwei Paderborner Kanzleien mit Immobilien-Schwerpunkt.",
-      "excludedCta": "Trotzdem zu ELSTER",
-      "reverseConfirm": "Nach dem Absenden im Portal: Komm zurück hierher und klick oben „Als erledigt markieren\". So bleibt deine Übersicht in Meine Formulare aktuell."
-    },
     "submission": {
       "in_person": "Persönlich vor Ort",
       "postal": "Per Post",
@@ -484,7 +473,6 @@
       "dashboard": "Übersicht",
       "customers": "Kunden",
       "reputation": "Reputation",
-      "curators": "Mitkuratoren",
       "settings": "Einstellungen"
     },
     "invitations": {
@@ -574,20 +562,6 @@
         "Persönliche E-Mail im Namen des Maklers mit Direktlink zu Google",
         "Käufer hinterlässt Bewertung mit nur einem Klick"
       ]
-    },
-    "curators": {
-      "title": "Mitkuratoren-Programm",
-      "subtitle": "Melde veraltete Formulare und hilf allen Maklern in deiner Region.",
-      "yourPoints": "Deine Punkte (Quartal)",
-      "totalConfirmed": "Bestätigt insgesamt",
-      "yourRank": "Dein Rang in OWL",
-      "rewards": {
-        "title": "Belohnungen",
-        "tier3": "3 Punkte → 1 Monat Abo kostenlos",
-        "tier6": "6 Punkte → 2 Monate kostenlos + Top-Mitkurator-Badge",
-        "tier9": "9+ Punkte → persönliches Dankschreiben der Geschäftsführung"
-      },
-      "leaderboardTitle": "Top 5 Mitkuratoren OWL (dieses Quartal)"
     }
   },
   "auth": {

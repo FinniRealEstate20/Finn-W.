@@ -1,13 +1,11 @@
 import { randomBytes } from 'node:crypto';
 
 import { createSupabaseServerClient } from '@/lib/supabase/server';
-import { createSupabaseServiceClient } from '@/lib/supabase/service';
 import type {
   SubmissionChannel,
   SubmissionRecord,
   SubmissionStatus,
 } from '@/lib/submissions/server';
-import type { FillAuditEntry, FillSummary } from '@/lib/fillAudit';
 
 type SubmissionStatusDb = 'draft' | 'submitted' | 'confirmed' | 'failed';
 
@@ -110,63 +108,6 @@ function toRecord(
     buyer: { id: input.buyerId },
     submittedAt: input.submittedAt,
     persistedAt: input.persistedAt,
-  };
-}
-
-/**
- * Attach fill-audit entries to an existing submission. Called from the
- * bookmarklet via a recipe-token, so there's no session — we use the
- * service role to bypass RLS, but only after looking up the submission
- * by the unguessable client_receipt_id so the surface is still tight.
- */
-export async function attachDbFillReceipt(
-  clientReceiptId: string,
-  fillAudit: FillAuditEntry[],
-  fillSummary: FillSummary
-): Promise<{ serverReceiptId: string; fillReceiptAt: string; audited: number } | null> {
-  const service = createSupabaseServiceClient();
-
-  const { data: submission } = await service
-    .from('submissions')
-    .select('id, buyer_id, server_receipt_id, fill_summary')
-    .eq('client_receipt_id', clientReceiptId)
-    .maybeSingle<{
-      id: string;
-      buyer_id: string;
-      server_receipt_id: string;
-      fill_summary: Record<string, unknown> | null;
-    }>();
-  if (!submission) return null;
-
-  const now = new Date().toISOString();
-  const mergedSummary = {
-    ...(submission.fill_summary ?? {}),
-    fillSummary,
-    fillReceiptAt: now,
-  };
-
-  await service
-    .from('submissions')
-    .update({ fill_summary: mergedSummary })
-    .eq('id', submission.id);
-
-  if (fillAudit.length > 0) {
-    await service.from('fill_audit_entries').insert(
-      fillAudit.map(entry => ({
-        submission_id: submission.id,
-        label: entry.label,
-        profile_key: entry.profileKey,
-        value_redacted: entry.value,
-        selector: entry.selector,
-        source: entry.source,
-      }))
-    );
-  }
-
-  return {
-    serverReceiptId: submission.server_receipt_id,
-    fillReceiptAt: now,
-    audited: fillAudit.length,
   };
 }
 

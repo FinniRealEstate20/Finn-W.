@@ -8,7 +8,6 @@ import {
   type ProfileData
 } from '@/lib/profileStore';
 import { valueFromProfile, setValueOnProfile } from '@/lib/portalMapping';
-import { smartFillStatus } from '@/lib/portalRecipes';
 import {
   confirmSubmission,
   getSubmission,
@@ -39,10 +38,6 @@ export function DocumentForm({ form, fieldKeys, fieldLabels }: Props) {
   const [values, setValues] = useState<Record<string, string>>({});
   const [submission, setSubmission] = useState<Submission | null>(null);
   const [copied, setCopied] = useState<string | null>(null);
-  const [smartFillToken, setSmartFillToken] = useState<string | null>(null);
-  const [smartFillError, setSmartFillError] = useState<string | null>(null);
-  const [setupDone, setSetupDone] = useState(false);
-  const smartFill = useMemo(() => smartFillStatus(form.id), [form.id]);
 
   useEffect(() => {
     const p = loadProfile();
@@ -51,11 +46,6 @@ export function DocumentForm({ form, fieldKeys, fieldLabels }: Props) {
     for (const k of fieldKeys) initial[k] = valueFromProfile(p, k);
     setValues(initial);
     setSubmission(getSubmission(form.id) ?? null);
-    try {
-      setSetupDone(!!window.localStorage.getItem('pac:smart-fill:setup-done'));
-    } catch {
-      // ignore
-    }
     setHydrated(true);
   }, [form.id, fieldKeys]);
 
@@ -177,38 +167,6 @@ export function DocumentForm({ form, fieldKeys, fieldLabels }: Props) {
     }
   }
 
-  async function activateSmartFill() {
-    setSmartFillError(null);
-    try {
-      const placeholder = recordSubmission({
-        formId: form.id,
-        channel: 'external_link',
-        data: values,
-        source: form.officialSource,
-        status: 'submitted'
-      });
-      const res = await fetch('/api/recipes/token', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ clientReceiptId: placeholder.receiptId })
-      });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data = (await res.json()) as { token?: string };
-      if (!data.token) throw new Error('no_token');
-      setSmartFillToken(data.token);
-      if (form.externalUrl) {
-        const url = new URL(form.externalUrl);
-        url.hash = `${url.hash ? `${url.hash}&` : ''}pac-token=${encodeURIComponent(data.token)}`;
-        window.open(url.toString(), '_blank', 'noopener,noreferrer');
-      }
-      setSubmission(placeholder);
-      syncToServer(placeholder);
-    } catch (err) {
-      const message = err instanceof Error ? err.message : 'unknown';
-      setSmartFillError(message);
-    }
-  }
-
   function markConfirmed() {
     const next = confirmSubmission(form.id);
     if (next) {
@@ -285,154 +243,31 @@ export function DocumentForm({ form, fieldKeys, fieldLabels }: Props) {
 
       {form.sourceType === 'external_link' && (
         <>
-          {smartFill === 'deep_link_only' && (
-            <section className="card mt-8 border-brand-200 bg-gradient-to-br from-brand-50 via-white to-white">
-              <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
-                <div className="min-w-0">
-                  <div className="inline-flex items-center gap-1.5 rounded-full bg-brand-100 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-brand-800">
-                    Direkt zum Anbieter
-                  </div>
-                  <h2 className="mt-2 text-lg font-semibold text-ink">{t(`items.${form.id}.name`)}</h2>
-                  <p className="mt-1 text-sm text-ink-soft">
-                    Dieses Formular ist so kompakt (3–5 Felder), dass Auto-Fill keinen großen Mehrwert bringt. Wir leiten dich direkt aufs offizielle Anmelde-Formular weiter — Daten zum Kopieren findest du unten.
-                  </p>
+          <section className="card mt-8 border-brand-200 bg-gradient-to-br from-brand-50 via-white to-white">
+            <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="min-w-0">
+                <div className="inline-flex items-center gap-1.5 rounded-full bg-brand-100 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-brand-800">
+                  Direkt zum Anbieter
                 </div>
-                <button
-                  type="button"
-                  onClick={openExternal}
-                  className="btn-primary w-full whitespace-nowrap text-base sm:w-auto"
-                >
-                  Zum Anmelde-Formular →
-                </button>
-              </div>
-            </section>
-          )}
-
-          {smartFill === 'available' && setupDone && (
-            <section className="card mt-8 border-emerald-200 bg-gradient-to-br from-emerald-50 via-white to-white">
-              <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
-                <div className="min-w-0">
-                  <div className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-emerald-800">
-                    <svg className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                    </svg>
-                    Auto-Fill bereit
-                  </div>
-                  <h2 className="mt-2 text-lg font-semibold text-ink">{t(`items.${form.id}.name`)}</h2>
-                  <p className="mt-1 text-sm text-ink-soft">
-                    Wir öffnen das offizielle Portal und füllen deine Daten direkt ein. Du prüfst, drückst Absenden — wir senden nie für dich.
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  onClick={activateSmartFill}
-                  className="btn-primary w-full whitespace-nowrap text-base sm:w-auto"
-                >
-                  Jetzt ausfüllen lassen →
-                </button>
-              </div>
-              {smartFillToken && (
-                <p className="mt-3 text-xs text-emerald-700">
-                  ✓ Portal sollte sich in einem neuen Tab geöffnet haben. Klick dort dein <strong>PropAfterCare Auto-Fill</strong>-Lesezeichen.
+                <h2 className="mt-2 text-lg font-semibold text-ink">{t(`items.${form.id}.name`)}</h2>
+                <p className="mt-1 text-sm text-ink-soft">
+                  Du landest direkt auf dem offiziellen Portal ({sourceLabel}). Deine Daten liegen unten zum Kopieren bereit.
                 </p>
-              )}
-              {smartFillError && (
-                <p className="mt-3 text-xs text-rose-700">
-                  Etwas hat nicht geklappt ({smartFillError}). Versuch es nochmal oder nutze unten die Kopier-Variante.
-                </p>
-              )}
-              <details className="mt-4 text-xs text-ink-muted">
-                <summary className="cursor-pointer font-semibold text-ink-soft">Wie genau läuft das ab?</summary>
-                <ol className="mt-2 space-y-1 pl-1">
-                  <li>1. Du klickst „Jetzt ausfüllen lassen&quot; — wir öffnen das Portal in einem neuen Tab.</li>
-                  <li>2. Im Portal klickst du dein <strong>PropAfterCare Auto-Fill</strong>-Lesezeichen oben in der Leiste.</li>
-                  <li>3. Ein Sidepanel rechts zeigt dir live, welche Werte wo eingetragen wurden.</li>
-                  <li>4. Du prüfst alles, drückst Absenden — die Quittung findest du danach in <strong>Meine Formulare</strong>.</li>
-                </ol>
-              </details>
-            </section>
-          )}
-
-          {smartFill === 'available' && !setupDone && (
-            <section className="card mt-8 border-sky-200 bg-gradient-to-br from-sky-50 via-white to-white">
-              <div className="flex items-start gap-3">
-                <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-sky-100 text-sky-700">
-                  <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                  </svg>
-                </div>
-                <div className="min-w-0 flex-1">
-                  <h2 className="text-base font-semibold text-ink">Auto-Fill für dieses Formular</h2>
-                  <p className="mt-1 text-sm text-ink-soft">
-                    Statt jedes Feld zu tippen, füllt PropAfterCare das offizielle Portal in Sekunden für dich aus. Einmalig 30 Sekunden einrichten — danach läuft alles automatisch.
-                  </p>
-                  <div className="mt-4 flex flex-col gap-2 sm:flex-row">
-                    <a
-                      href="/bookmarklet-installer.html"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="btn-primary text-center"
-                    >
-                      In 30 Sekunden einrichten →
-                    </a>
-                    <button
-                      type="button"
-                      onClick={openExternal}
-                      className="rounded-md bg-white px-4 py-2 text-sm font-semibold text-ink-soft ring-1 ring-slate-200 hover:bg-slate-50"
-                    >
-                      Lieber manuell zum Portal
-                    </button>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      try {
-                        window.localStorage.setItem('pac:smart-fill:setup-done', new Date().toISOString());
-                        setSetupDone(true);
-                      } catch {
-                        // ignore
-                      }
-                    }}
-                    className="mt-3 text-xs text-sky-700 underline hover:text-sky-900"
-                  >
-                    Bereits eingerichtet? Hier markieren
-                  </button>
-                </div>
               </div>
-            </section>
-          )}
-
-          {smartFill === 'excluded' && (
-            <section className="card mt-8 border-amber-200 bg-amber-50">
-              <div className="flex items-start gap-3">
-                <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-800">
-                  <LandmarkIcon className="h-5 w-5" />
-                </div>
-                <div>
-                  <h2 className="text-sm font-semibold text-amber-900">
-                    Hier brauchst du deinen Steuerberater
-                  </h2>
-                  <p className="mt-1 text-sm text-amber-900">
-                    ELSTER nutzt Software-Zertifikate und das Steuerberatungsgesetz (§5 StBerG) erlaubt uns hier kein Pre-Fill. Wir verweisen dich an unser Partnernetzwerk: zwei Paderborner Kanzleien mit Immobilien-Schwerpunkt.
-                  </p>
-                  {form.externalUrl && (
-                    <button type="button" onClick={openExternal} className="btn-secondary mt-4">
-                      Trotzdem zu ELSTER ↗
-                    </button>
-                  )}
-                </div>
-              </div>
-            </section>
-          )}
+              <button
+                type="button"
+                onClick={openExternal}
+                className="btn-primary w-full whitespace-nowrap text-base sm:w-auto"
+              >
+                Zum Anmelde-Formular →
+              </button>
+            </div>
+          </section>
 
           <section className="card mt-8">
             <h2 className="text-sm font-semibold text-ink">{t('copyBox.title')}</h2>
             <p className="mt-1 text-xs text-ink-muted">
-              {smartFill === 'available'
-                ? `Backup: Falls Smart Pre-Fill nicht greift, hier deine Daten zum manuellen Kopieren (${sourceLabel}).`
-                : smartFill === 'deep_link_only'
-                  ? `Beim Klick oben öffnet sich das Formular bei ${sourceLabel}. Diese Werte kannst du dort einfach reinkopieren:`
-                  : `Du wirst gleich zum offiziellen Portal weitergeleitet (${sourceLabel}). Hier deine Daten zum Kopieren:`}
+              Diese Werte kannst du im Portal direkt reinkopieren:
             </p>
             <div className="mt-4 space-y-2">
               {fields.map(f => (
@@ -454,11 +289,6 @@ export function DocumentForm({ form, fieldKeys, fieldLabels }: Props) {
                 </div>
               ))}
             </div>
-            {form.externalUrl && smartFill === 'pending' && (
-              <button type="button" onClick={openExternal} className="btn-primary mt-6 w-full">
-                {t('actions.external')} ↗
-              </button>
-            )}
           </section>
 
           {submission && submission.status === 'submitted' && (

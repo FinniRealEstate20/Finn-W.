@@ -1,7 +1,6 @@
 'use client';
 
 import { jsPDF } from 'jspdf';
-import type { FillAuditEntry, FillSummary } from './fillAudit';
 
 interface PdfFieldRow {
   label: string;
@@ -17,9 +16,6 @@ export interface PdfDocumentInput {
   consequence?: string;
   submissionTarget?: string;
   buyerName?: string;
-  fillAudit?: FillAuditEntry[];
-  fillSummary?: FillSummary;
-  fillReceiptAt?: string;
 }
 
 const MARGIN_X = 18;
@@ -116,92 +112,10 @@ function drawFooter(doc: jsPDF, y: number, input: PdfDocumentInput) {
   );
 }
 
-function drawFillAudit(doc: jsPDF, y: number, input: PdfDocumentInput): number {
-  if (!input.fillAudit || input.fillAudit.length === 0) return y;
-
-  let cursor = y + 8;
-  cursor = ensureSpace(doc, cursor, 20);
-
-  doc.setDrawColor(16, 185, 129);
-  doc.setLineWidth(0.6);
-  doc.line(MARGIN_X, cursor, MARGIN_X + CONTENT_WIDTH, cursor);
-  cursor += 6;
-
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(12);
-  doc.setTextColor(6, 95, 70);
-  doc.text('Smart-Fill-Quittung', MARGIN_X, cursor);
-
-  if (input.fillSummary) {
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(9);
-    doc.setTextColor(71, 85, 105);
-    const summary = `${input.fillSummary.filled} von ${input.fillSummary.total} Feldern ausgefüllt` +
-      (input.fillSummary.aiAssisted ? ` · ${input.fillSummary.aiAssisted} per KI ergänzt` : '') +
-      (input.fillSummary.missingRequired ? ` · ${input.fillSummary.missingRequired} manuell` : '');
-    doc.text(summary, MARGIN_X, cursor + 5);
-    cursor += 10;
-  } else {
-    cursor += 6;
-  }
-
-  if (input.fillReceiptAt) {
-    doc.setFontSize(8);
-    doc.setTextColor(100);
-    doc.text(
-      `Quittung erstellt: ${new Date(input.fillReceiptAt).toLocaleString('de-DE')}`,
-      MARGIN_X,
-      cursor
-    );
-    cursor += 6;
-  }
-
-  for (const entry of input.fillAudit) {
-    cursor = ensureSpace(doc, cursor, 16);
-    const bgColor: [number, number, number] =
-      entry.source === 'failed'
-        ? [254, 243, 199]
-        : entry.source === 'ai'
-          ? [243, 232, 255]
-          : [236, 253, 245];
-    doc.setFillColor(...bgColor);
-    doc.rect(MARGIN_X, cursor, CONTENT_WIDTH, 14, 'F');
-
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(9);
-    doc.setTextColor(15, 23, 42);
-    doc.text(entry.label, MARGIN_X + 3, cursor + 5);
-
-    const sourceTag =
-      entry.source === 'recipe' ? 'Recipe' : entry.source === 'ai' ? 'KI-ergänzt' : 'Nicht gefunden';
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(7);
-    doc.setTextColor(120);
-    doc.text(sourceTag, MARGIN_X + CONTENT_WIDTH - 25, cursor + 5);
-
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(10);
-    doc.setTextColor(30, 41, 59);
-    const valueLines = doc.splitTextToSize(entry.value || '—', CONTENT_WIDTH - 6);
-    doc.text(valueLines[0] ?? '—', MARGIN_X + 3, cursor + 10);
-
-    if (entry.selector) {
-      doc.setFont('courier', 'normal');
-      doc.setFontSize(7);
-      doc.setTextColor(100);
-      const sel = entry.selector.length > 90 ? entry.selector.slice(0, 87) + '…' : entry.selector;
-      doc.text(sel, MARGIN_X + 3, cursor + 13);
-    }
-    cursor += 16;
-  }
-  return cursor;
-}
-
 export function buildSubmissionPdf(input: PdfDocumentInput): Blob {
   const doc = new jsPDF({ unit: 'mm', format: 'a4' });
   drawHeader(doc, input);
-  let y = drawFields(doc, input.fields, 68);
-  y = drawFillAudit(doc, y, input);
+  const y = drawFields(doc, input.fields, 68);
   drawFooter(doc, y, input);
   return doc.output('blob');
 }

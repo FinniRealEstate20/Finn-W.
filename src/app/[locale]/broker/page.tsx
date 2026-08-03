@@ -67,12 +67,6 @@ export default async function BrokerDashboardPage({
               >
                 {t('nav.reputation')}
               </Link>
-              <Link
-                href={`/${locale}/broker/curators`}
-                className="hover:text-ink"
-              >
-                {t('nav.curators')}
-              </Link>
             </nav>
             <div className="flex items-center gap-2">
               <Image

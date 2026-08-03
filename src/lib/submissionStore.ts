@@ -1,7 +1,6 @@
 'use client';
 
 import type { DocumentId } from '@/types';
-import type { FillAuditEntry, FillSummary } from './fillAudit';
 
 const STORAGE_PREFIX = 'pac:submissions';
 const LEGACY_KEY = 'pac:submissions:v1';
@@ -21,9 +20,6 @@ export interface Submission {
   confirmedAt?: string;
   data: Record<string, string>;
   source?: string;
-  fillAudit?: FillAuditEntry[];
-  fillSummary?: FillSummary;
-  fillReceiptAt?: string;
 }
 
 type Store = Record<string, Submission>;
@@ -179,64 +175,3 @@ export function clearSubmissions() {
   }
 }
 
-interface ServerSubmissionItem {
-  formId: DocumentId;
-  status: SubmissionStatus;
-  clientReceiptId: string;
-  serverReceiptId?: string;
-  persistedAt?: string;
-  fillAudit?: FillAuditEntry[];
-  fillSummary?: FillSummary;
-  fillReceiptAt?: string;
-}
-
-export async function fetchServerSubmissions(buyerId?: string): Promise<{
-  merged: number;
-  added: number;
-}> {
-  if (typeof window === 'undefined') return { merged: 0, added: 0 };
-  const id = buyerId ?? getActiveBuyerId();
-  try {
-    const res = await fetch(`/api/submissions?buyerId=${encodeURIComponent(id)}`, {
-      cache: 'no-store'
-    });
-    if (!res.ok) return { merged: 0, added: 0 };
-    const data = (await res.json()) as { items: ServerSubmissionItem[] };
-    const store = read();
-    let merged = 0;
-    let added = 0;
-    for (const item of data.items ?? []) {
-      if (!item.fillAudit && !item.fillSummary) continue;
-      const existing = store[item.formId];
-      if (existing && existing.receiptId === item.clientReceiptId) {
-        store[item.formId] = {
-          ...existing,
-          fillAudit: item.fillAudit ?? existing.fillAudit,
-          fillSummary: item.fillSummary ?? existing.fillSummary,
-          fillReceiptAt: item.fillReceiptAt ?? existing.fillReceiptAt,
-          serverReceiptId: item.serverReceiptId ?? existing.serverReceiptId
-        };
-        merged += 1;
-      } else if (!existing && item.fillAudit) {
-        store[item.formId] = {
-          formId: item.formId,
-          status: item.status,
-          receiptId: item.clientReceiptId,
-          serverReceiptId: item.serverReceiptId,
-          serverPersistedAt: item.persistedAt,
-          channel: 'external_link',
-          submittedAt: item.persistedAt ?? new Date().toISOString(),
-          data: {},
-          fillAudit: item.fillAudit,
-          fillSummary: item.fillSummary,
-          fillReceiptAt: item.fillReceiptAt
-        };
-        added += 1;
-      }
-    }
-    if (merged > 0 || added > 0) write(store);
-    return { merged, added };
-  } catch {
-    return { merged: 0, added: 0 };
-  }
-}

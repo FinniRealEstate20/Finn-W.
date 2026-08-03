@@ -134,11 +134,3 @@ export function transformValue(raw: string, transform?: FieldTransform): string 
   }
 }
 
-export function buildProfileSnapshot(
-  profile: ProfileData,
-  keys: readonly string[]
-): Record<string, string> {
-  const out: Record<string, string> = {};
-  for (const k of keys) out[k] = valueFromProfile(profile, k);
-  return out;
-}

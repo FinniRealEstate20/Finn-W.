@@ -1,5 +1,4 @@
 import { randomBytes } from 'node:crypto';
-import type { FillAuditEntry, FillSummary } from '../fillAudit';
 
 export type SubmissionChannel = 'inhouse' | 'external_link' | 'communal_pdf';
 export type SubmissionStatus = 'draft' | 'submitted' | 'confirmed' | 'failed';
@@ -15,9 +14,6 @@ export interface SubmissionRecord {
   buyer?: { id?: string; email?: string };
   submittedAt: string;
   persistedAt: string;
-  fillAudit?: FillAuditEntry[];
-  fillSummary?: FillSummary;
-  fillReceiptAt?: string;
 }
 
 const MAX_ENTRIES = 500;
@@ -52,10 +48,7 @@ export function persistSubmission(
       status: input.status,
       data: input.data,
       buyer: input.buyer ?? existing.buyer,
-      persistedAt: new Date().toISOString(),
-      fillAudit: input.fillAudit ?? existing.fillAudit,
-      fillSummary: input.fillSummary ?? existing.fillSummary,
-      fillReceiptAt: input.fillReceiptAt ?? existing.fillReceiptAt
+      persistedAt: new Date().toISOString()
     };
     store.byClientReceipt.set(updated.clientReceiptId, updated);
     const idx = store.list.findIndex(r => r.clientReceiptId === updated.clientReceiptId);
@@ -71,27 +64,6 @@ export function persistSubmission(
   if (store.list.length > MAX_ENTRIES) store.list.length = MAX_ENTRIES;
   store.byClientReceipt.set(record.clientReceiptId, record);
   return record;
-}
-
-export function attachFillReceipt(
-  clientReceiptId: string,
-  fillAudit: FillAuditEntry[],
-  fillSummary: FillSummary
-): SubmissionRecord | null {
-  const store = getStore();
-  const existing = store.byClientReceipt.get(clientReceiptId);
-  if (!existing) return null;
-  const updated: SubmissionRecord = {
-    ...existing,
-    fillAudit,
-    fillSummary,
-    fillReceiptAt: new Date().toISOString(),
-    persistedAt: new Date().toISOString()
-  };
-  store.byClientReceipt.set(clientReceiptId, updated);
-  const idx = store.list.findIndex(r => r.clientReceiptId === clientReceiptId);
-  if (idx >= 0) store.list[idx] = updated;
-  return updated;
 }
 
 export function listSubmissions(opts?: { limit?: number; buyerId?: string }): SubmissionRecord[] {

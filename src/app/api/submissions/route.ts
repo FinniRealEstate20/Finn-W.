@@ -136,9 +136,6 @@ export async function GET(request: Request) {
     submittedAt: r.submittedAt,
     persistedAt: r.persistedAt,
     buyer: r.buyer,
-    fillAudit: r.fillAudit,
-    fillSummary: r.fillSummary,
-    fillReceiptAt: r.fillReceiptAt,
   }));
   return NextResponse.json({ count: items.length, items });
 }
