@@ -7,7 +7,7 @@ import {
   type ProfileData
 } from '@/lib/profileStore';
 import { valueFromProfile, setValueOnProfile } from '@/lib/portalMapping';
-import { computeDeadline } from '@/lib/fristen';
+import { computeDeadline, formatDeadlineDate } from '@/lib/fristen';
 import {
   confirmSubmission,
   getSubmission,
@@ -16,39 +16,58 @@ import {
   type Submission
 } from '@/lib/submissionStore';
 import type { FormEntry, HubDeeplink } from '@/types';
+import { cn } from '@/lib/cn';
 import { DeadlineBanner } from './DeadlineBanner';
-import { CheckIcon, ExternalLinkIcon } from './icons';
+import {
+  AtSignIcon,
+  CalendarIcon,
+  CheckIcon,
+  ClockIcon,
+  CreditCardIcon,
+  ExternalLinkIcon,
+  FileTextIcon,
+  HashIcon,
+  LandmarkIcon,
+  MapPinIcon,
+  PhoneIcon,
+  ScaleIcon,
+  UsersIcon,
+  ZapIcon
+} from './icons';
 
 interface Props {
   form: FormEntry;
   fieldLabels: Record<string, string>;
+  headerTitle?: string;
+  headerHint?: string;
 }
 
-const KIND_STYLES: Record<HubDeeplink['kind'], string> = {
-  vergleich: 'border-sky-200 bg-sky-50 hover:bg-sky-100 text-sky-900',
-  lokal: 'border-brand-200 bg-brand-50 hover:bg-brand-100 text-brand-900',
-  kommune: 'border-amber-200 bg-amber-50 hover:bg-amber-100 text-amber-900',
-  formular: 'border-slate-200 bg-slate-50 hover:bg-slate-100 text-ink'
+type IconComponent = (props: { className?: string }) => React.ReactElement;
+
+const KIND_META: Record<HubDeeplink['kind'], { label: string; Icon: IconComponent }> = {
+  vergleich: { label: 'Vergleich', Icon: ScaleIcon },
+  lokal: { label: 'Lokaler Anbieter', Icon: LandmarkIcon },
+  kommune: { label: 'Kommune', Icon: LandmarkIcon },
+  formular: { label: 'Formular', Icon: FileTextIcon }
 };
 
-const KIND_LABELS: Record<HubDeeplink['kind'], string> = {
-  vergleich: 'Vergleich',
-  lokal: 'Lokal',
-  kommune: 'Kommune',
-  formular: 'Formular'
-};
-
-const PFLICHT_BADGE_STYLES = {
-  pflicht: 'bg-rose-100 text-rose-800 ring-rose-200',
-  frei: 'bg-emerald-100 text-emerald-800 ring-emerald-200',
-  automatisch: 'bg-slate-100 text-slate-700 ring-slate-200'
+const PFLICHT_META = {
+  pflicht: { label: 'Pflicht', cls: 'bg-ink text-white' },
+  frei: { label: 'Freie Wahl', cls: 'bg-white text-ink ring-1 ring-slate-300' },
+  automatisch: { label: 'Läuft automatisch', cls: 'bg-slate-100 text-ink-soft ring-1 ring-slate-200' }
 } as const;
 
-const PFLICHT_BADGE_LABELS = {
-  pflicht: 'Pflicht',
-  frei: 'Freie Wahl',
-  automatisch: 'Automatisch'
-} as const;
+function iconForCopyKey(key: string): IconComponent {
+  if (/(address|street|city|postal)/i.test(key)) return MapPinIcon;
+  if (/(iban|payment|karte)/i.test(key)) return CreditCardIcon;
+  if (/(date|birth|einzug|moveIn)/i.test(key)) return CalendarIcon;
+  if (/(meter|zaehler|reading|kwh|consumption|malo)/i.test(key)) return ZapIcon;
+  if (/(email|mail)/i.test(key)) return AtSignIcon;
+  if (/(phone|tel)/i.test(key)) return PhoneIcon;
+  if (/(household|personen|size)/i.test(key)) return UsersIcon;
+  if (/(number|nummer|id|steuer|beitragsnummer)/i.test(key)) return HashIcon;
+  return FileTextIcon;
+}
 
 function readActiveBuyerId(): string | undefined {
   if (typeof document === 'undefined') return undefined;
@@ -74,7 +93,7 @@ function resolveDeeplinkUrl(link: HubDeeplink, profile: ProfileData | null): str
   return resolved;
 }
 
-export function HubTabTemplate({ form, fieldLabels }: Props) {
+export function HubTabTemplate({ form, fieldLabels, headerTitle, headerHint }: Props) {
   const hub = form.hub;
   const [hydrated, setHydrated] = useState(false);
   const [profile, setProfile] = useState<ProfileData | null>(null);
@@ -98,12 +117,21 @@ export function HubTabTemplate({ form, fieldLabels }: Props) {
     if (!hub?.kopierdaten || !profile) return [];
     return hub.kopierdaten.map(key => ({
       key,
-      label: fieldLabels[key] ?? key,
-      value: valueFromProfile(profile, key)
+      label: fieldLabels[key] ?? humanizeKey(key),
+      value: valueFromProfile(profile, key),
+      Icon: iconForCopyKey(key)
     }));
   }, [hub?.kopierdaten, profile, fieldLabels]);
 
+  const completeness = useMemo(() => {
+    if (copyRows.length === 0) return null;
+    const filled = copyRows.filter(r => r.value.trim().length > 0).length;
+    return { filled, total: copyRows.length };
+  }, [copyRows]);
+
   if (!hub) return null;
+
+  const [primaryLink, ...secondaryLinks] = hub.deeplinks;
 
   function syncToServer(record: Submission) {
     const buyerId = readActiveBuyerId();
@@ -131,8 +159,8 @@ export function HubTabTemplate({ form, fieldLabels }: Props) {
   }
 
   function openDeeplink(link: HubDeeplink) {
-    const url = resolveDeeplinkUrl(link, profile);
     if (!profile) return;
+    const url = resolveDeeplinkUrl(link, profile);
     const next = recordSubmission({
       formId: form.id,
       channel: 'external_link',
@@ -153,74 +181,137 @@ export function HubTabTemplate({ form, fieldLabels }: Props) {
     }
   }
 
-  const primaryDeeplink = hub.deeplinks[0];
   const situationChoice = hub.situationsCheck?.options.find(o => o.flow === situationFlow);
 
   if (!hydrated) {
     return (
-      <section className="card mt-8 animate-pulse">
-        <div className="h-4 w-1/3 rounded bg-slate-200" />
-        <div className="mt-4 h-16 rounded bg-slate-100" />
-      </section>
+      <div className="mt-6 space-y-8 animate-pulse">
+        <div className="rounded-3xl bg-white p-10 shadow-card">
+          <div className="h-4 w-1/4 rounded bg-slate-200" />
+          <div className="mt-6 h-8 w-3/4 rounded bg-slate-200" />
+          <div className="mt-4 h-4 w-full rounded bg-slate-100" />
+          <div className="mt-2 h-4 w-5/6 rounded bg-slate-100" />
+        </div>
+      </div>
     );
   }
 
   return (
-    <div className="mt-8 space-y-6">
-      {/* 0 · Fristen-Banner (nur bei Ampel ≥ yellow) */}
-      {deadlineInfo && <DeadlineBanner deadline={deadlineInfo} />}
-
-      {/* Submission-Status */}
-      {submission && (
-        <div
-          className={`flex flex-wrap items-center justify-between gap-3 rounded-xl px-4 py-3 text-sm ring-1 ${
-            submission.status === 'confirmed'
-              ? 'bg-emerald-50 text-emerald-900 ring-emerald-200'
-              : submission.status === 'draft'
-                ? 'bg-slate-50 text-ink-soft ring-slate-200'
-                : 'bg-sky-50 text-sky-900 ring-sky-200'
-          }`}
-        >
-          <div className="inline-flex items-center gap-1.5 text-xs font-semibold">
-            {submission.status === 'confirmed' && <CheckIcon className="h-4 w-4" strokeWidth={3} />}
-            {submission.status === 'confirmed'
-              ? 'Als erledigt markiert'
-              : submission.status === 'draft'
-                ? 'Entwurf gespeichert'
-                : 'In Bearbeitung'}
+    <div className="mt-6 space-y-10">
+      {/* ══════════════════════════ HERO ══════════════════════════ */}
+      <section className="relative overflow-hidden rounded-3xl border border-slate-200 bg-gradient-to-br from-brand-50/50 via-white to-white p-8 shadow-card sm:p-10">
+        <div className="flex flex-col gap-6">
+          {/* Top row: Pflicht-Badge links, Countdown / Erledigt-Status rechts */}
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            {hub.pflichtBadge && (
+              <span
+                className={cn(
+                  'inline-flex items-center rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.08em]',
+                  PFLICHT_META[hub.pflichtBadge].cls
+                )}
+              >
+                {PFLICHT_META[hub.pflichtBadge].label}
+              </span>
+            )}
+            {submission?.status === 'confirmed' ? (
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-[11px] font-semibold text-emerald-800 ring-1 ring-emerald-200">
+                <CheckIcon className="h-3 w-3" strokeWidth={3} />
+                Als erledigt markiert
+              </span>
+            ) : deadlineInfo && deadlineInfo.level !== 'green' ? (
+              <span
+                className={cn(
+                  'inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-semibold ring-1',
+                  deadlineInfo.level === 'expired' || deadlineInfo.level === 'red'
+                    ? 'bg-rose-50 text-rose-800 ring-rose-200'
+                    : deadlineInfo.level === 'orange'
+                      ? 'bg-orange-50 text-orange-800 ring-orange-200'
+                      : 'bg-amber-50 text-amber-800 ring-amber-200'
+                )}
+                title={deadlineInfo.message}
+              >
+                <ClockIcon className="h-3 w-3" />
+                {deadlineInfo.countdown} · {formatDeadlineDate(deadlineInfo.target)}
+              </span>
+            ) : null}
           </div>
-          {submission.status !== 'confirmed' && (
-            <button
-              type="button"
-              onClick={markConfirmed}
-              className="rounded-md bg-white px-3 py-1.5 text-xs font-semibold text-emerald-700 ring-1 ring-emerald-200 hover:bg-emerald-50"
-            >
-              Als erledigt markieren
-            </button>
-          )}
-        </div>
-      )}
 
-      {/* 1 · Kurz-Status */}
-      <section className="card">
-        <div className="flex flex-wrap items-center gap-2">
-          {hub.pflichtBadge && (
-            <span
-              className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide ring-1 ${PFLICHT_BADGE_STYLES[hub.pflichtBadge]}`}
-            >
-              {PFLICHT_BADGE_LABELS[hub.pflichtBadge]}
-            </span>
+          {/* Titel + Lead */}
+          <div className="max-w-2xl">
+            {headerTitle && (
+              <h1 className="text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
+                {headerTitle}
+              </h1>
+            )}
+            {headerHint && (
+              <p className="mt-1 text-sm text-ink-muted">{headerHint}</p>
+            )}
+            <p className={cn('text-base leading-relaxed text-ink-soft', headerTitle ? 'mt-5' : '')}>
+              {hub.kurzStatus}
+            </p>
+          </div>
+
+          {/* Meta-Chips: Duration / Cost / Processing */}
+          {(form.estimatedTimeMin || form.estimatedCost || form.estimatedProcessing) && (
+            <div className="flex flex-wrap gap-2 text-xs text-ink-muted">
+              {form.estimatedTimeMin && (
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 ring-1 ring-slate-200">
+                  <ClockIcon className="h-3 w-3" />
+                  {form.estimatedTimeMin} Min
+                </span>
+              )}
+              {form.estimatedCost && (
+                <span className="inline-flex items-center rounded-full bg-white px-3 py-1 ring-1 ring-slate-200">
+                  {form.estimatedCost}
+                </span>
+              )}
+              {form.estimatedProcessing && (
+                <span className="inline-flex items-center rounded-full bg-white px-3 py-1 ring-1 ring-slate-200">
+                  Bearbeitung: {form.estimatedProcessing}
+                </span>
+              )}
+            </div>
           )}
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-ink-soft">Kurz-Status</h2>
+
+          {/* Nächster Schritt + primärer CTA */}
+          {primaryLink && (
+            <div className="mt-2 flex flex-col gap-4 border-t border-slate-200/60 pt-6 sm:flex-row sm:items-end sm:justify-between">
+              <div className="min-w-0">
+                <div className="text-[11px] font-semibold uppercase tracking-[0.1em] text-ink-muted">
+                  Dein nächster Schritt
+                </div>
+                <p className="mt-1 text-base text-ink">{hub.naechsterSchritt}</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => openDeeplink(primaryLink)}
+                className="btn-primary w-full whitespace-nowrap sm:w-auto"
+              >
+                {primaryLink.label} →
+              </button>
+            </div>
+          )}
         </div>
-        <p className="mt-2 text-sm text-ink-soft">{hub.kurzStatus}</p>
       </section>
 
-      {/* 2 · Situations-Check (optional, nur wenn definiert) */}
+      {/* Fristen-Banner (nur wenn wirklich dringend, ergänzt Hero-Chip) */}
+      {deadlineInfo &&
+        (deadlineInfo.level === 'red' ||
+          deadlineInfo.level === 'orange' ||
+          deadlineInfo.level === 'expired') && (
+          <DeadlineBanner deadline={deadlineInfo} />
+        )}
+
+      {/* Situations-Check */}
       {hub.situationsCheck && (
-        <section className="card border-brand-200 bg-brand-50">
-          <h2 className="text-sm font-semibold text-ink">{hub.situationsCheck.question}</h2>
-          <div className="mt-3 flex flex-wrap gap-2">
+        <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-card">
+          <div className="text-[11px] font-semibold uppercase tracking-[0.1em] text-ink-muted">
+            Situations-Check
+          </div>
+          <h2 className="mt-2 text-lg font-semibold tracking-tight text-ink">
+            {hub.situationsCheck.question}
+          </h2>
+          <div className="mt-4 flex flex-wrap gap-2">
             {hub.situationsCheck.options.map(opt => (
               <button
                 key={opt.flow}
@@ -231,152 +322,223 @@ export function HubTabTemplate({ form, fieldLabels }: Props) {
                     updateProfileField(opt.profileWrite.field, String(opt.profileWrite.value));
                   }
                 }}
-                className={`rounded-full px-3 py-1.5 text-xs font-semibold ring-1 transition ${
+                className={cn(
+                  'rounded-full px-4 py-2 text-sm font-medium transition',
                   situationFlow === opt.flow
-                    ? 'bg-brand-600 text-white ring-brand-600'
-                    : 'bg-white text-brand-700 ring-brand-200 hover:bg-brand-100'
-                }`}
+                    ? 'bg-ink text-white'
+                    : 'bg-slate-100 text-ink-soft hover:bg-slate-200'
+                )}
               >
                 {opt.label}
               </button>
             ))}
           </div>
           {situationChoice && (
-            <p className="mt-3 text-xs text-brand-900">
-              Gewählt: <strong>{situationChoice.label}</strong>
+            <p className="mt-4 text-sm text-ink-muted">
+              Gewählt: <span className="font-semibold text-ink">{situationChoice.label}</span>
             </p>
           )}
         </section>
       )}
 
-      {/* 3 · Nächster Schritt (mit primärem Deeplink) */}
-      <section className="card border-brand-200 bg-gradient-to-br from-brand-50 via-white to-white">
-        <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="min-w-0">
-            <h2 className="text-sm font-semibold uppercase tracking-wide text-ink-soft">
-              Nächster Schritt
-            </h2>
-            <p className="mt-1 text-base text-ink">{hub.naechsterSchritt}</p>
+      {/* ═════════════════════ WEITERE DIREKTLINKS ═════════════════════ */}
+      {secondaryLinks.length > 0 && (
+        <section>
+          <div className="mb-4 flex items-baseline justify-between">
+            <h2 className="text-lg font-semibold tracking-tight text-ink">Alternativen</h2>
+            <span className="text-xs text-ink-muted">
+              {secondaryLinks.length} weitere{' '}
+              {secondaryLinks.length === 1 ? 'Option' : 'Optionen'}
+            </span>
           </div>
-          {primaryDeeplink && (
-            <button
-              type="button"
-              onClick={() => openDeeplink(primaryDeeplink)}
-              className="btn-primary w-full whitespace-nowrap sm:w-auto"
-            >
-              {primaryDeeplink.label} →
-            </button>
-          )}
-        </div>
-      </section>
-
-      {/* 4 · Alle Deeplinks (Grid) */}
-      {hub.deeplinks.length > 1 && (
-        <section className="card">
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-ink-soft">
-            Direktlinks
-          </h2>
-          <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
-            {hub.deeplinks.map(link => (
-              <button
-                key={link.url}
-                type="button"
-                onClick={() => openDeeplink(link)}
-                className={`flex items-start gap-3 rounded-xl border p-3 text-left text-sm transition ${KIND_STYLES[link.kind]}`}
-              >
-                <ExternalLinkIcon className="mt-0.5 h-4 w-4 flex-shrink-0" />
-                <div className="min-w-0 flex-1">
-                  <div className="text-[10px] font-bold uppercase tracking-wide opacity-70">
-                    {KIND_LABELS[link.kind]}
-                  </div>
-                  <div className="mt-0.5 font-medium">{link.label}</div>
-                  {link.note && <div className="mt-0.5 text-xs opacity-80">{link.note}</div>}
-                </div>
-              </button>
-            ))}
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            {secondaryLinks.map(link => {
+              const meta = KIND_META[link.kind];
+              const Icon = meta.Icon;
+              return (
+                <button
+                  key={link.url}
+                  type="button"
+                  onClick={() => openDeeplink(link)}
+                  className="group flex items-start gap-3 rounded-2xl border border-slate-200 bg-white p-4 text-left transition hover:border-ink hover:shadow-card"
+                >
+                  <span className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-slate-100 text-ink-soft transition group-hover:bg-ink group-hover:text-white">
+                    <Icon className="h-4 w-4" />
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="text-[10px] font-semibold uppercase tracking-[0.08em] text-ink-muted">
+                      {meta.label}
+                    </span>
+                    <span className="mt-0.5 block truncate text-sm font-semibold text-ink">
+                      {link.label}
+                    </span>
+                    {link.note && (
+                      <span className="mt-1 block text-xs text-ink-muted">{link.note}</span>
+                    )}
+                  </span>
+                  <ExternalLinkIcon className="mt-1 h-3.5 w-3.5 flex-shrink-0 text-ink-muted transition group-hover:text-ink" />
+                </button>
+              );
+            })}
           </div>
         </section>
       )}
 
-      {/* 5 · Daten zum Kopieren */}
+      {/* ═════════════════════ DATEN ZUM KOPIEREN ═════════════════════ */}
       {copyRows.length > 0 && (
-        <section className="card">
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-ink-soft">
-            Daten zum Kopieren
-          </h2>
-          <p className="mt-1 text-xs text-ink-muted">
-            Aus deinem Profil vorbefüllt. Klick auf &bdquo;Kopieren&ldquo;, dann im Portal einfügen.
-          </p>
-          <div className="mt-4 space-y-2">
-            {copyRows.map(row => (
-              <div
-                key={row.key}
-                className="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2"
+        <section>
+          <div className="mb-4 flex items-baseline justify-between gap-3">
+            <h2 className="text-lg font-semibold tracking-tight text-ink">
+              Deine Daten zum Kopieren
+            </h2>
+            {completeness && (
+              <span
+                className={cn(
+                  'text-xs font-medium',
+                  completeness.filled === completeness.total
+                    ? 'text-emerald-700'
+                    : 'text-amber-700'
+                )}
               >
-                <div className="min-w-0">
-                  <div className="text-[11px] uppercase tracking-wide text-ink-muted">
-                    {row.label}
-                  </div>
-                  <div className="truncate text-sm font-medium text-ink">{row.value || '—'}</div>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => copyField(row.label, row.value)}
-                  className="ml-3 rounded-md bg-white px-3 py-1 text-xs font-semibold text-brand-700 ring-1 ring-slate-200 hover:bg-brand-50"
-                  disabled={!row.value}
+                {completeness.filled} von {completeness.total} ausgefüllt
+              </span>
+            )}
+          </div>
+          <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-card">
+            {copyRows.map((row, i) => {
+              const Icon = row.Icon;
+              const isEmpty = !row.value.trim();
+              return (
+                <div
+                  key={row.key}
+                  className={cn(
+                    'group relative flex items-start gap-4 p-4 transition hover:bg-slate-50/60',
+                    i > 0 && 'border-t border-slate-100'
+                  )}
                 >
-                  {copied === row.label ? 'Kopiert' : 'Kopieren'}
-                </button>
+                  {/* Linker Statusbalken */}
+                  <span
+                    aria-hidden
+                    className={cn(
+                      'absolute left-0 top-4 bottom-4 w-0.5 rounded-full',
+                      isEmpty ? 'bg-amber-400' : 'bg-emerald-400'
+                    )}
+                  />
+                  <span
+                    className={cn(
+                      'ml-2 flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full',
+                      isEmpty
+                        ? 'bg-amber-50 text-amber-700'
+                        : 'bg-slate-100 text-ink-soft'
+                    )}
+                  >
+                    <Icon className="h-4 w-4" />
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <div className="text-[11px] font-semibold uppercase tracking-[0.08em] text-ink-muted">
+                      {row.label}
+                    </div>
+                    <div
+                      className={cn(
+                        'mt-1 truncate text-sm font-medium',
+                        isEmpty ? 'text-amber-800' : 'text-ink'
+                      )}
+                    >
+                      {isEmpty ? 'Noch nicht ausgefüllt' : row.value}
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      isEmpty ? undefined : copyField(row.label, row.value)
+                    }
+                    disabled={isEmpty}
+                    className={cn(
+                      'flex-shrink-0 rounded-lg px-3 py-1.5 text-xs font-semibold transition',
+                      isEmpty
+                        ? 'cursor-not-allowed text-ink-muted'
+                        : copied === row.label
+                          ? 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200'
+                          : 'bg-white text-ink ring-1 ring-slate-300 hover:bg-slate-50'
+                    )}
+                  >
+                    {isEmpty ? 'Ergänzen' : copied === row.label ? 'Kopiert' : 'Kopieren'}
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      )}
+
+      {/* ═════════════════════ CHECKLISTE ═════════════════════ */}
+      {hub.checkliste && hub.checkliste.length > 0 && (
+        <section>
+          <h2 className="mb-4 text-lg font-semibold tracking-tight text-ink">
+            Das brauchst du dabei
+          </h2>
+          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-card">
+            <ul className="space-y-3">
+              {hub.checkliste.map((item, i) => (
+                <li key={i} className="flex items-start gap-3 text-sm text-ink-soft">
+                  <span className="mt-1 flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full border border-slate-300" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      )}
+
+      {/* ═════════════════════ TIPPS ═════════════════════ */}
+      {hub.tipps && hub.tipps.length > 0 && (
+        <section>
+          <h2 className="mb-4 text-lg font-semibold tracking-tight text-ink">
+            Worauf du achten solltest
+          </h2>
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+            {hub.tipps.map((tip, i) => (
+              <div
+                key={i}
+                className="rounded-2xl border border-slate-200 bg-white p-5 text-sm leading-relaxed text-ink-soft shadow-card"
+              >
+                {tip}
               </div>
             ))}
           </div>
         </section>
       )}
 
-      {/* 6 · Checkliste „das brauchst du dabei" */}
-      {hub.checkliste && hub.checkliste.length > 0 && (
-        <section className="card">
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-ink-soft">
-            Das brauchst du dabei
-          </h2>
-          <ul className="mt-3 space-y-1.5">
-            {hub.checkliste.map((item, i) => (
-              <li key={i} className="flex items-start gap-2 text-sm text-ink-soft">
-                <span className="mt-1 inline-block h-1.5 w-1.5 flex-shrink-0 rounded-full bg-brand-500" />
-                <span>{item}</span>
-              </li>
-            ))}
-          </ul>
+      {/* ═════════════════════ ERLEDIGT-CTA ═════════════════════ */}
+      {submission && submission.status !== 'confirmed' && (
+        <section className="rounded-2xl bg-slate-50 p-5 text-center ring-1 ring-slate-200">
+          <p className="text-sm text-ink-soft">
+            Fertig im Portal?{' '}
+            <button
+              type="button"
+              onClick={markConfirmed}
+              className="ml-1 rounded-md bg-ink px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-black"
+            >
+              Als erledigt markieren
+            </button>
+          </p>
+          {submission.receiptId && (
+            <p className="mt-2 text-[11px] text-ink-muted">
+              Beleg-ID <span className="font-mono">{submission.receiptId}</span>
+            </p>
+          )}
         </section>
-      )}
-
-      {/* 7 · Tipps zum Abschließen */}
-      {hub.tipps && hub.tipps.length > 0 && (
-        <details className="card group">
-          <summary className="cursor-pointer list-none">
-            <h2 className="inline text-sm font-semibold uppercase tracking-wide text-ink-soft">
-              Tipps zum Abschließen
-            </h2>
-            <span className="ml-2 text-xs text-ink-muted">({hub.tipps.length})</span>
-          </summary>
-          <ul className="mt-3 space-y-2">
-            {hub.tipps.map((tip, i) => (
-              <li key={i} className="flex items-start gap-2 text-sm text-ink-soft">
-                <span className="mt-1 inline-block h-1.5 w-1.5 flex-shrink-0 rounded-full bg-amber-500" />
-                <span>{tip}</span>
-              </li>
-            ))}
-          </ul>
-        </details>
-      )}
-
-      {/* Nach-Absenden-Hinweis */}
-      {submission && submission.status === 'submitted' && (
-        <div className="rounded-xl bg-slate-50 px-4 py-3 text-xs text-ink-soft ring-1 ring-slate-200">
-          <strong>Nach dem Absenden im Portal:</strong> Komm zurück hierher und klick oben
-          &bdquo;Als erledigt markieren&ldquo;. So bleibt deine Übersicht in <em>Meine Formulare</em> aktuell.
-        </div>
       )}
     </div>
   );
+}
+
+function humanizeKey(key: string): string {
+  // 'meters.electricity.meterNumber' → 'Zählernummer Strom' etc.
+  const parts = key.split('.');
+  const last = parts[parts.length - 1];
+  return last
+    .replace(/([A-Z])/g, ' $1')
+    .replace(/^./, c => c.toUpperCase())
+    .trim();
 }
