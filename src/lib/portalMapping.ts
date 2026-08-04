@@ -25,7 +25,23 @@ export type ProfileKey =
   | 'oldPostalCode'
   | 'oldCity';
 
+function readNested(profile: ProfileData, path: string): unknown {
+  return path.split('.').reduce<unknown>((acc, seg) => {
+    if (acc && typeof acc === 'object' && seg in (acc as Record<string, unknown>)) {
+      return (acc as Record<string, unknown>)[seg];
+    }
+    return undefined;
+  }, profile);
+}
+
 export function valueFromProfile(profile: ProfileData, key: string): string {
+  if (key.includes('.')) {
+    const v = readNested(profile, key);
+    if (v === undefined || v === null) return '';
+    if (typeof v === 'string') return v;
+    if (typeof v === 'number') return String(v);
+    return '';
+  }
   switch (key as ProfileKey) {
     case 'name':
       return `${profile.firstName} ${profile.lastName}`.trim();
