@@ -35,11 +35,64 @@ export type DocumentCategory =
   | 'media'
   | 'rental';
 
-export type FormSourceType = 'inhouse' | 'external_link' | 'communal_pdf';
+export type FormSourceType =
+  | 'inhouse'
+  | 'external_link'
+  | 'communal_pdf'
+  | 'info_only'
+  | 'generator';
 
 export type FormStatus = 'active' | 'under_review' | 'outdated';
 
 export type SubmissionMethod = 'in_person' | 'postal' | 'online_portal' | 'email';
+
+export type DeadlineAnchor = 'moveInDate' | 'purchaseDate';
+export type DeadlineSeverity = 'info' | 'warn' | 'critical';
+
+export interface HubDeadline {
+  anchor: DeadlineAnchor;
+  offsetDays: number;
+  severity: DeadlineSeverity;
+  message: string;
+}
+
+export type HubDeeplinkKind = 'vergleich' | 'lokal' | 'kommune' | 'formular';
+
+export interface HubDeeplink {
+  kind: HubDeeplinkKind;
+  label: string;
+  url: string;
+  urlTemplate?: string;
+  note?: string;
+}
+
+export interface HubSituationsCheck {
+  question: string;
+  options: ReadonlyArray<{
+    label: string;
+    flow: string;
+    profileWrite?: { field: string; value: unknown };
+  }>;
+}
+
+export interface HubConditional {
+  profileField: string;
+  equals?: unknown;
+  truthy?: boolean;
+}
+
+export interface HubBlock {
+  kurzStatus: string;
+  naechsterSchritt: string;
+  deeplinks: readonly HubDeeplink[];
+  kopierdaten?: readonly string[];
+  checkliste?: readonly string[];
+  tipps?: readonly string[];
+  deadline?: HubDeadline;
+  situationsCheck?: HubSituationsCheck;
+  conditional?: HubConditional;
+  pflichtBadge?: 'pflicht' | 'frei' | 'automatisch';
+}
 
 export type DocumentId =
   | 'wohnsitz-osnabrueck'
@@ -81,6 +134,7 @@ export interface FormEntry {
   prefillCopyFields?: string[];
   externalUrl?: string;
   externalUrlTemplate?: string;
+  hub?: HubBlock;
 }
 
 export interface Broker {

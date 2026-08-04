@@ -5,8 +5,11 @@ import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/cn';
 import { formatDate } from '@/lib/documents';
+import { computeDeadline, type DeadlineInfo } from '@/lib/fristen';
+import { loadProfile } from '@/lib/profileStore';
 import { getSubmission, type SubmissionStatus } from '@/lib/submissionStore';
 import type { FormEntry } from '@/types';
+import { DeadlineBadge } from './DeadlineBadge';
 import {
   CheckIcon,
   ClockIcon,
@@ -19,17 +22,21 @@ import {
 const SOURCE_BADGE_STYLES: Record<FormEntry['sourceType'], string> = {
   inhouse: 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-100',
   external_link: 'bg-sky-50 text-sky-700 ring-1 ring-sky-100',
-  communal_pdf: 'bg-amber-50 text-amber-800 ring-1 ring-amber-100'
+  communal_pdf: 'bg-amber-50 text-amber-800 ring-1 ring-amber-100',
+  info_only: 'bg-slate-100 text-ink-soft ring-1 ring-slate-200',
+  generator: 'bg-brand-50 text-brand-800 ring-1 ring-brand-100'
 };
 
 const SOURCE_ICON_STYLES: Record<FormEntry['sourceType'], string> = {
   inhouse: 'bg-emerald-50 text-emerald-700',
   external_link: 'bg-sky-50 text-sky-700',
-  communal_pdf: 'bg-amber-50 text-amber-800'
+  communal_pdf: 'bg-amber-50 text-amber-800',
+  info_only: 'bg-slate-100 text-ink-soft',
+  generator: 'bg-brand-50 text-brand-800'
 };
 
 function SourceIcon({ type, className }: { type: FormEntry['sourceType']; className?: string }) {
-  if (type === 'inhouse') return <FileTextIcon className={className} />;
+  if (type === 'inhouse' || type === 'generator') return <FileTextIcon className={className} />;
   if (type === 'external_link') return <ExternalLinkIcon className={className} />;
   return <LandmarkIcon className={className} />;
 }
@@ -50,10 +57,15 @@ export function DocumentItem({
 }) {
   const t = useTranslations('documents');
   const [status, setStatus] = useState<SubmissionStatus | null>(null);
+  const [deadline, setDeadline] = useState<DeadlineInfo | null>(null);
 
   useEffect(() => {
     setStatus(getSubmission(form.id)?.status ?? null);
-  }, [form.id]);
+    if (form.hub?.deadline) {
+      const p = loadProfile();
+      setDeadline(computeDeadline(form.hub.deadline, p));
+    }
+  }, [form.id, form.hub?.deadline]);
 
   return (
     <article className="flex flex-col gap-3 rounded-xl border border-slate-200 bg-white p-4 transition hover:border-brand-200 hover:shadow-card">
@@ -84,6 +96,7 @@ export function DocumentItem({
                 {STATUS_BADGE[status].label}
               </span>
             )}
+            {deadline && status !== 'confirmed' && <DeadlineBadge deadline={deadline} />}
           </div>
           <p className="mt-0.5 text-xs text-ink-muted">{t(`items.${form.id}.hint`)}</p>
           <p className="mt-1 text-[11px] text-ink-muted">

@@ -8,6 +8,30 @@ export interface ProfileAddress {
   district?: string;
 }
 
+/**
+ * Strukturierter Zählerstand — gemeinsam genutzt von den Versorger-Hubs
+ * (Strom/Gas/Wasser) und dem Übergabeprotokoll-Generator. Alle Felder
+ * optional, weil der Käufer sie erst bei Hub-Kontakt eingibt.
+ */
+export interface MeterReading {
+  meterNumber?: string;
+  reading?: string;
+  readAt?: string;
+  photoDataUrl?: string;
+  maLoId?: string;
+}
+
+export interface SellerContact {
+  name?: string;
+  email?: string;
+  phone?: string;
+}
+
+export interface YearlyConsumptionKwh {
+  electricity?: number;
+  gas?: number;
+}
+
 export interface ProfileData {
   firstName: string;
   lastName: string;
@@ -27,6 +51,20 @@ export interface ProfileData {
     newAddress?: string;
     place?: string;
   };
+  meters?: {
+    electricity?: MeterReading;
+    gas?: MeterReading;
+    water?: MeterReading;
+  };
+  rundfunkBeitragsnummer?: string;
+  householdSize?: number;
+  hasGasConnection?: boolean;
+  livingAreaSqm?: number;
+  constructionYearBracket?: string;
+  yearlyConsumptionKwh?: YearlyConsumptionKwh;
+  sealedGroundAreaSqm?: number;
+  sellerContact?: SellerContact;
+  purchaseDate?: string;
 }
 
 /**

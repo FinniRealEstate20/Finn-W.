@@ -6,6 +6,7 @@ import { getActiveBuyer } from '@/lib/activeBuyer';
 import { getForm, formatDate } from '@/lib/documents';
 import { BrokerHeader } from '@/components/BrokerHeader';
 import { DocumentForm } from '@/components/DocumentForm';
+import { HubTabTemplate } from '@/components/HubTabTemplate';
 import { AlertTriangleIcon } from '@/components/icons';
 import type { DocumentId } from '@/types';
 
@@ -91,11 +92,15 @@ export default async function DocumentDetailPage({
             </div>
           </div>
 
-          <DocumentForm
-            form={form}
-            fieldKeys={fieldKeys}
-            fieldLabels={PROFILE_FIELD_LABELS}
-          />
+          {form.hub ? (
+            <HubTabTemplate form={form} fieldLabels={PROFILE_FIELD_LABELS} />
+          ) : (
+            <DocumentForm
+              form={form}
+              fieldKeys={fieldKeys}
+              fieldLabels={PROFILE_FIELD_LABELS}
+            />
+          )}
 
           {/* Submission-Info */}
           <div className="mt-6 rounded-xl border border-slate-200 bg-white p-4">
