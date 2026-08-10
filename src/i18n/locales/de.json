@@ -326,12 +326,16 @@
     "sourceType": {
       "inhouse": "Vorausgefüllt",
       "external_link": "Externes Portal",
-      "communal_pdf": "Behörden-PDF"
+      "communal_pdf": "Behörden-PDF",
+      "info_only": "Nur Info",
+      "generator": "Vordruck-Generator"
     },
     "sourceTypeHint": {
       "inhouse": "Wir generieren das Formular mit deinen Daten",
       "external_link": "Direkt zum offiziellen Anbieter – Daten zum Kopieren bereit",
-      "communal_pdf": "Offizielles Behördenformular, mit deinen Daten ausgefüllt"
+      "communal_pdf": "Offizielles Behördenformular, mit deinen Daten ausgefüllt",
+      "info_only": "Kein Formular — nur Erklärung, was auf dich zukommt",
+      "generator": "Wir befüllen einen geprüften Vordruck mit deinen Daten"
     },
     "items": {
       "wohnsitz-osnabrueck": { "name": "Wohnsitz-Anmeldung Osnabrück", "hint": "Pflicht innerhalb 14 Tagen" },
