@@ -469,18 +469,90 @@ export const formCatalog: readonly FormEntry[] = [
   {
     id: 'gez',
     category: 'media',
-    sourceType: 'inhouse',
+    sourceType: 'external_link',
     officialSource: 'https://www.rundfunkbeitrag.de',
-    externalUrl: 'https://www.rundfunkbeitrag.de/anmelden/',
+    externalUrl: 'https://www.rundfunkbeitrag.de/buergerinnen_und_buerger/formulare/index_ger.html',
     status: 'active',
-    lastCheckedAt: '2026-05-19',
-    sourceVersion: 'RB-Anmeldung 2026',
-    forPropertyType: 'ownUse',
+    lastCheckedAt: '2026-06-30',
+    sourceVersion: 'RB-Formularsystem 2026',
+    forPropertyType: 'all',
     region: 'nationwide',
     submissionMethod: 'online_portal',
+    triggerMilestone: 'ummeldung',
+    urgencyDays: 30,
     estimatedTimeMin: 5,
-    estimatedCost: '18,36 €/Monat',
-    prefillCopyFields: ['name', 'newAddress', 'birthDate']
+    estimatedCost: '18,36 €/Monat (Stand 2026)',
+    prefillCopyFields: [
+      'rundfunkBeitragsnummer',
+      'name',
+      'oldAddress',
+      'newAddress',
+      'moveInDate',
+      'iban'
+    ],
+    hub: {
+      pflichtBadge: 'pflicht',
+      kurzStatus:
+        'Der Rundfunkbeitrag finanziert ARD/ZDF und beträgt 18,36 € pro Monat je Wohnung — unabhängig von Personenzahl und Geräten.',
+      naechsterSchritt:
+        'Wähle unten, ob du schon eine Beitragsnummer hast — danach den passenden Vorgang beim Beitragsservice auslösen.',
+      situationsCheck: {
+        question:
+          'Zahlst du aktuell schon Rundfunkbeitrag — also hast eine 9-stellige Beitragsnummer?',
+        options: [
+          {
+            label: 'Ja, ich habe eine Beitragsnummer',
+            flow: 'umeldung'
+          },
+          {
+            label: 'Nein, neue Anmeldung',
+            flow: 'neuanmeldung'
+          }
+        ]
+      },
+      deeplinks: [
+        {
+          kind: 'formular',
+          label: 'Adresse ändern (bestehende Beitragsnummer)',
+          url: 'https://www.rundfunkbeitrag.de/buergerinnen_und_buerger/formulare/aendern/index_ger.html',
+          note: 'Umzug melden — deine Nummer bleibt.'
+        },
+        {
+          kind: 'formular',
+          label: 'Wohnung anmelden (Neuanmeldung)',
+          url: 'https://www.rundfunkbeitrag.de/buergerinnen_und_buerger/formulare/anmelden/index_ger.html',
+          note: 'Erste Anmeldung — neue Beitragsnummer wird vergeben.'
+        },
+        {
+          kind: 'formular',
+          label: 'Wohnung abmelden (alte Adresse)',
+          url: 'https://www.rundfunkbeitrag.de/buergerinnen_und_buerger/formulare/abmelden/index_ger.html',
+          note: 'Wichtig, wenn die alte Wohnung aufgegeben wird — sonst Doppelzahlung.'
+        }
+      ],
+      checkliste: [
+        '9-stellige Beitragsnummer heraussuchen (steht auf jedem Bescheid) — falls du bereits zahlst',
+        'Bisherige Adresse (falls du sie schon meldest)',
+        'Neue Osnabrücker Adresse',
+        'Einzugsdatum',
+        'IBAN für Lastschrift'
+      ],
+      tipps: [
+        'Nicht auf Post warten: Wer nichts tut, wird per Meldedaten-Abgleich rückwirkend zum Einzugsdatum angemeldet — mit Nachzahlung.',
+        'Die alte Wohnung aktiv abmelden, wenn sie aufgegeben wird. Sonst laufen zwei Konten parallel.',
+        'Nur ein Beitrag pro Wohnung: Ziehen zwei zusammen, meldet einer sein Konto ab und gibt die Nummer des anderen an.',
+        'Die Nummer des Vorbesitzers ignorieren — das Konto ist personengebunden und geht mit ihm.',
+        'Beitragsnummer vorher heraussuchen — das ist der einzige Wert, der die Ummeldung ausbremst.',
+        'Zweitwohnung/Kapitalanlage: Befreiung von der Zweitwohnungs-Pflicht prüfen — spart den doppelten Beitrag.'
+      ],
+      deadline: {
+        anchor: 'moveInDate',
+        offsetDays: 30,
+        severity: 'warn',
+        message:
+          'Beitrag sammelt sich ab Einzug an. Innerhalb eines Monats erledigen, sonst kommt eine Nachzahlung.'
+      }
+    }
   },
   {
     id: 'post',

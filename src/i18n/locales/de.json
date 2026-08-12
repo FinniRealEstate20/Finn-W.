@@ -349,7 +349,7 @@
       "internet": { "name": "Internet & Telefon", "hint": "Verfügbarkeit prüfen · 4–6 Wochen vorher" },
       "wohngebaeude": { "name": "Wohngebäudeversicherung", "hint": "Sonderkündigungsrecht 1 Monat" },
       "hausrat": { "name": "Hausratversicherung", "hint": "Neue Adresse" },
-      "gez": { "name": "Rundfunkbeitrag (GEZ)", "hint": "Neue Wohnung anmelden" },
+      "gez": { "name": "Rundfunkbeitrag (früher GEZ)", "hint": "18,36 €/Monat je Wohnung · Pflicht" },
       "post": { "name": "Nachsendeauftrag", "hint": "Sofort nach Umzug" },
       "bank": { "name": "Daueraufträge aktualisieren", "hint": "Checkliste mit Empfängern" },
       "verwaltung": { "name": "Hausverwaltung beauftragen", "hint": "Aus unserem Osnabrücker Netzwerk" },

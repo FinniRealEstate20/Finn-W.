@@ -23,7 +23,8 @@ export type ProfileKey =
   | 'oldStreet'
   | 'oldHouseNumber'
   | 'oldPostalCode'
-  | 'oldCity';
+  | 'oldCity'
+  | 'rundfunkBeitragsnummer';
 
 function readNested(profile: ProfileData, path: string): unknown {
   return path.split('.').reduce<unknown>((acc, seg) => {
@@ -89,6 +90,8 @@ export function valueFromProfile(profile: ProfileData, key: string): string {
       return profile.oldAddress.postalCode;
     case 'oldCity':
       return profile.oldAddress.city;
+    case 'rundfunkBeitragsnummer':
+      return profile.rundfunkBeitragsnummer ?? '';
     default:
       return '';
   }
@@ -123,6 +126,8 @@ export function setValueOnProfile(
       return { ...profile, meterReadingElectricity: raw };
     case 'meterReadingGas':
       return { ...profile, meterReadingGas: raw };
+    case 'rundfunkBeitragsnummer':
+      return { ...profile, rundfunkBeitragsnummer: raw };
     default:
       return profile;
   }

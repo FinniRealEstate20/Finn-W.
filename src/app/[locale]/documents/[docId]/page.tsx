@@ -31,7 +31,8 @@ const PROFILE_FIELD_LABELS: Record<string, string> = {
   'meters.water.reading': 'Wasserstand',
   'yearlyConsumptionKwh.electricity': 'Jahresverbrauch Strom (kWh)',
   'yearlyConsumptionKwh.gas': 'Jahresverbrauch Gas (kWh)',
-  livingAreaSqm: 'Wohnfläche (m²)'
+  livingAreaSqm: 'Wohnfläche (m²)',
+  rundfunkBeitragsnummer: 'Beitragsnummer (9-stellig)'
 };
 
 export default async function DocumentDetailPage({
